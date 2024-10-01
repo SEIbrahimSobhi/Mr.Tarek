@@ -6,216 +6,217 @@
     <title>المساعدة - التواصل</title>
     <style>
         /* إعدادات عامة */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #1a1a1a;
-            color: #fff;
-            height: 100%;
-            background: url('https://img.freepik.com/free-vector/math-chalkboard-background_23-2148152440.jpg') no-repeat center center fixed;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            position: relative;
-        }
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a;
+    color: #fff;
+    height: 100%;
+    background: url('https://img.freepik.com/free-vector/math-chalkboard-background_23-2148152440.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+}
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: -1;
-        }
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+}
 
+/* شريط التنقل */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
 
-        /* شريط التنقل */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
+.navbar-brand {
+    font-size: 32px;
+    font-weight: bold;
+    color: #FFD700;
+    text-transform: capitalize;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+}
 
-        .navbar-brand {
-            font-size: 32px;
-            font-weight: bold;
-            color: #FFD700;
-            text-transform: capitalize;
-            transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
-        }
+.navbar-brand:hover {
+    color: #fff;
+    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+    transform: scale(1.1);
+}
 
-        .navbar-brand:hover {
-            color: #fff;
-            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
-            transform: scale(1.1);
-        }
+/* زر القائمة (همبرغر) */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
 
-        /* زر القائمة (همبرغر) */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
+.menu-toggle:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
 
-        .menu-toggle:hover {
-            background-color: rgba(0, 0, 0, 1);
-        }
+.menu-toggle .bar {
+    width: 30px;
+    height: 3px;
+    background: #fff;
+    margin: 4px 0;
+    transition: all 0.3s ease;
+}
 
-        .menu-toggle .bar {
-            width: 30px;
-            height: 3px;
-            background: #fff;
-            margin: 4px 0;
-            transition: all 0.3s ease;
-        }
+.menu-toggle.open .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
 
-        .menu-toggle.open .bar:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
+.menu-toggle.open .bar:nth-child(2) {
+    opacity: 0;
+}
 
-        .menu-toggle.open .bar:nth-child(2) {
-            opacity: 0;
-        }
+.menu-toggle.open .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
 
-        .menu-toggle.open .bar:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
+/* قائمة التنقل */
+.navbar-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
 
-        /* قائمة التنقل */
-        .navbar-links {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
+.navbar-links li {
+    margin: 0 15px;
+}
 
-        .navbar-links li {
-            margin: 0 15px;
-        }
+.navbar-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    position: relative;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
 
-        .navbar-links a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 18px;
-            position: relative;
-            padding: 5px 0;
-            transition: color 0.3s ease;
-        }
+.navbar-links a:hover {
+    color: #FFD700;
+}
 
-        .navbar-links a:hover {
-            color: #FFD700;
-        }
+.navbar-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: #FFD700;
+    transition: width 0.3s ease;
+}
 
-        .navbar-links a::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -5px;
-            width: 0;
-            height: 2px;
-            background: #FFD700;
-            transition: width 0.3s ease;
-        }
+.navbar-links a:hover::after {
+    width: 100%;
+}
 
-        .navbar-links a:hover::after {
-            width: 100%;
-        }
+/* القائمة عند الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .navbar-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px;
+        border-radius: 5px;
+    }
 
-        /* القائمة عند الشاشات الصغيرة */
-        @media (max-width: 768px) {
-            .navbar-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                padding: 20px;
-                border-radius: 5px;
-            }
+    .menu-toggle {
+        display: flex;
+    }
 
-            .menu-toggle {
-                display: flex;
-            }
+    .navbar-links.active {
+        display: flex;
+    }
+}
 
-            .navbar-links.active {
-                display: flex;
-            }
-        }
+/* تصميم العنوان الرئيسي */
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    color: #FFD700;
+    margin: 120px 0 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
 
-        /* تصميم العنوان الرئيسي */
-        .page-title {
-            text-align: center;
-            font-size: 36px;
-            color: #FFD700;
-            margin: 120px 0 10px 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
+.subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 30px;
+}
 
-        .subtitle {
-            text-align: center;
-            font-size: 18px;
-            color: #fff;
-            margin-bottom: 30px;
-        }
+/* تصميم الأيقونات */
+.contact-icons {
+    display: flex;
+    justify-content: center;
+    gap: 60px; /* زيادة المسافة بين الأيقونات */
+    margin-bottom: 30px;
+}
 
-        /* تصميم الأيقونات */
-        .contact-icons {
-            display: flex;
-            justify-content: center;
-            gap: 60px; /* زيادة المسافة بين الأيقونات */
-            margin-bottom: 30px;
-        }
+.contact-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* توسيط العناصر */
+}
 
-        .contact-icon {
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* توسيط العناصر */
-        }
+.contact-icons a {
+    color: #FFD700;
+    font-size: 32px; /* حجم أكبر للأيقونات */
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s;
+}
 
-        .contact-icons a {
-            color: #FFD700;
-            font-size: 32px; /* حجم أكبر للأيقونات */
-            text-decoration: none;
-            transition: transform 0.3s ease, color 0.3s;
-        }
+.contact-icons a:hover {
+    transform: scale(1.2);
+    color: #e6c200;
+}
 
-        .contact-icons a:hover {
-            transform: scale(1.2);
-            color: #e6c200;
-        }
+.contact-number {
+    font-size: 16px;
+    color: #fff; /* لون النص */
+    margin-top: 5px; /* مساحة بين الأيقونة والنص */
+    text-align: center;
+}
 
-        .contact-number {
-            font-size: 16px;
-            color: #fff; /* لون النص */
-            margin-top: 5px; /* مساحة بين الأيقونة والنص */
-            text-align: center;
-        }/* تصميم الحقول */
+/* تصميم الحقول */
 .contact-form {
     width: 80%;
     max-width: 600px;
@@ -270,6 +271,7 @@
     outline: 2px solid #FFD700;
     background-color: #444;
 }
+
 /* تصميم زر الإرسال */
 .submit-btn {
     width: 100%;
@@ -294,6 +296,7 @@
     transform: translateY(0); /* إعادة الزر لموقعه الأصلي عند الضغط */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* إعادة الظل الأصلي عند الضغط */
 }
+
 /* التصميم المتجاوب */
 @media (max-width: 600px) {
     .form-group {
@@ -316,18 +319,19 @@
         padding: 10px; /* تقليل padding في زر الإرسال */
     }
 }
-
 /* الفوتر */
 .footer {
     width: 100%; /* جعل الفوتر بعرض كامل */
     text-align: center;
-    padding: 20px;
+    padding: 20px; /* يمكنك تعديل الحشوة حسب الحاجة */
     font-size: 16px;
     background: rgba(0, 0, 0, 0.9);
     border-top: 4px solid #FFD700;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
     margin-top: 40px; /* يمكنك تقليل أو إزالة هذا إذا كنت تريد قربه من المحتوى السابق */
     box-sizing: border-box; /* لضمان احتساب الحشوة والحدود داخل العرض */
+    position: relative; /* تعيين موقع الفوتر بشكل نسبي */
+    clear: both; /* التأكد من إظهار الفوتر بعد أي عناصر عائمة */
 }
 
 .footer p {
@@ -336,7 +340,6 @@
     font-size: 18px;
     line-height: 1.5;
 }
-        
 
 /* تحسين العرض على الشاشات الصغيرة */
 @media (max-width: 600px) {
@@ -424,11 +427,22 @@
         font-size: 16px; /* تقليل حجم الخط في زر الإرسال */
         padding: 12px; /* زيادة padding في زر الإرسال */
     }
-
-    .footer {
+.footer {
         padding: 15px; /* تقليل padding في الفوتر */
         font-size: 14px; /* تقليل حجم الخط في الفوتر */
     }
+}
+
+/* إذا كنت ترغب في إضافة المزيد من العناصر */
+.footer a {
+    color: #FFD700; /* لون الروابط */
+    text-decoration: none; /* إزالة خط التسطير */
+    margin: 0 10px; /* إضافة مسافة بين الروابط */
+}
+
+.footer a:hover {
+    text-decoration: underline; /* إضافة تأثير عند التمرير */
+}
 
     /* تحسين الصور أو الخلفيات */
     img {
@@ -441,6 +455,7 @@
         font-size: 24px; /* تقليل حجم الأيقونات */
     }
 }
+
     </style>
     <!-- روابط لأيقونات التواصل الاجتماعي -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
