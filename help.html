@@ -336,7 +336,111 @@
     font-size: 18px;
     line-height: 1.5;
 }
+        
 
+/* تحسين العرض على الشاشات الصغيرة */
+@media (max-width: 600px) {
+    body {
+        padding: 15px; /* تقليل padding حول المحتوى */
+        overflow-x: hidden; /* منع التمرير الأفقي */
+    }
+
+    .navbar {
+        padding: 10px 15px; /* تحسين padding لشريط التنقل */
+    }
+
+    .navbar-brand {
+        font-size: 28px; /* تقليل حجم اسم العلامة التجارية */
+    }
+
+    .navbar-links {
+        flex-direction: column; /* عرض القائمة بشكل عمودي */
+        width: 100%; /* جعل القائمة بعرض كامل */
+        text-align: center; /* توسيط النص في القائمة */
+        position: absolute; /* جعل القائمة تظهر فوق المحتوى */
+        top: 60px; /* مسافة من الأعلى */
+        left: 0; /* محاذاة لليسار */
+        background: rgba(0, 0, 0, 0.95); /* خلفية مظلمة للقائمة */
+        border-radius: 5px; /* زوايا مستديرة */
+        padding: 10px 0; /* إضافة padding للقائمة */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* إضافة ظل للقائمة */
+        display: none; /* إخفاء القائمة بشكل افتراضي */
+    }
+
+    .navbar-links.active {
+        display: flex; /* عرض القائمة عند تفعيلها */
+    }
+
+    .navbar-links li {
+        margin: 0px 0; /* زيادة المسافة بين العناصر في القائمة */
+    }
+
+    .page-title {
+        font-size: 28px; /* تقليل حجم العنوان الرئيسي */
+        margin: 80px 0 10px; /* تقليل المسافة العلوية */
+    }
+
+    .subtitle {
+        font-size: 16px; /* تقليل حجم النص الفرعي */
+        margin-bottom: 20px; /* زيادة المسافة السفلية */
+    }
+
+    .contact-icons {
+        flex-direction: row; /* عرض الأيقونات بشكل أفقي */
+        justify-content: center; /* توسيط الأيقونات */
+        gap: 20px; /* تقليل المسافة بين الأيقونات */
+        margin-bottom: 20px; /* تقليل المسافة السفلية */
+    }
+
+    .contact-icons a {
+        font-size: 28px; /* تقليل حجم الأيقونات */
+    }
+
+    .contact-number {
+        font-size: 14px; /* تقليل حجم النص تحت الأيقونات */
+    }
+
+    .contact-form {
+        width: 100%; /* جعل النموذج بعرض كامل */
+        padding: 15px; /* تقليل padding للنموذج */
+        margin: 0 auto; /* توسيط النموذج */
+        border-radius: 10px; /* زوايا مستديرة للنموذج */
+    }
+
+    .form-group {
+        flex-direction: column; /* تغيير اتجاه العناصر في الحقل */
+        margin-bottom: 15px; /* تقليل المسافة بين الحقول */
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%; /* توسيع الحقول لتملأ العرض بالكامل */
+        margin-bottom: 10px; /* إضافة مساحة بين الحقول */
+        font-size: 16px; /* تقليل حجم الخط في الحقول */
+        padding: 10px; /* تحسين padding للحقل */
+    }
+
+    .submit-btn {
+        font-size: 16px; /* تقليل حجم الخط في زر الإرسال */
+        padding: 12px; /* زيادة padding في زر الإرسال */
+    }
+
+    .footer {
+        padding: 15px; /* تقليل padding في الفوتر */
+        font-size: 14px; /* تقليل حجم الخط في الفوتر */
+    }
+
+    /* تحسين الصور أو الخلفيات */
+    img {
+        max-width: 100%; /* جعل الصور تأخذ عرض 100% */
+        height: auto; /* الحفاظ على نسبة العرض إلى الارتفاع */
+    }
+
+    /* إخفاء الأيقونات الكبيرة */
+    .contact-icons a {
+        font-size: 24px; /* تقليل حجم الأيقونات */
+    }
+}
     </style>
     <!-- روابط لأيقونات التواصل الاجتماعي -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
