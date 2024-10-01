@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مراجعات و اختبارات</title>
+    <style>
+        /* إعدادات عامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #fff;
+            height: 100%;
+            background: url('https://img.freepik.com/free-vector/math-chalkboard-background_23-2148152440.jpg') no-repeat center center fixed;
+            background-size: cover;
+            overflow-y: auto;
+        }
+
+        /* طبقة داكنة فوق الخلفية */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        /* شريط التنقل */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+            text-transform: capitalize;
+            transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+            transform: scale(1.1);
+        }
+
+        /* زر القائمة (همبرغر) */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(0, 0, 0, 1);
+        }
+
+        .menu-toggle .bar {
+            width: 30px;
+            height: 3px;
+            background: #fff;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle.open .bar:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.open .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.open .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* قائمة التنقل */
+        .navbar-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-links li {
+            margin: 0 15px;
+        }
+
+        .navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: #FFD700;
+        }
+
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 0;
+            height: 2px;
+            background: #FFD700;
+            transition: width 0.3s ease;
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+
+        /* القائمة عند الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                padding: 20px;
+                border-radius: 5px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .navbar-links.active {
+                display: flex;
+            }
+        }
+
+        /* عنوان الصفحة */
+        .page-title {
+            text-align: center;
+            font-size: 36px;
+            color: #FFD700;
+            margin: 80px 0 20px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* الأقسام */
+        .section {
+            padding: 30px 20px;
+            text-align: center;
+            margin: 20px auto;
+            width: 90%;
+        }
+
+        .section-title {
+            font-size: 30px;
+            margin-bottom: 20px;
+            color: #FFD700;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* تصميم الوحدات */
+        .rectangles-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            direction: rtl;
+        }
+
+        .rectangle {
+            width: 120px;
+            height: 60px;
+            margin: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .rectangle:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* تحسين العرض على الشاشات الصغيرة */
+        @media (max-width: 480px) {
+            .rectangle {
+                width: 100px;
+                height: 50px;
+                font-size: 14px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .navbar-brand {
+                font-size: 28px;
+            }
+
+            .navbar-links a {
+                font-size: 16px;
+            }
+        }
+/* تحسين شامل لأيقونات واتساب ويوتيوب لتبدو أكثر فخامة مع تحسينات على الشاشات الصغيرة */
+.social-icons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    z-index: 100;
+}
+
+.social-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(255, 255, 255, 0.2) inset;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+    cursor: pointer;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.social-icon:hover::before {
+    opacity: 1;
+}
+
+.social-icon img {
+    width: 60%;
+    height: 60%;
+    transition: transform 0.4s ease;
+}
+
+.social-icon:hover img {
+    transform: scale(1.2);
+}
+
+.social-icon:hover {
+    transform: scale(1.15);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 6px 12px rgba(0, 0, 0, 0.15) inset;
+    background: linear-gradient(145deg, #f7f7f7, #cccccc);
+}
+
+/* تخصيص لكل أيقونة */
+.whatsapp {
+    background: linear-gradient(145deg, #25d366, #128c7e);
+    box-shadow: 0 10px 20px rgba(0, 128, 0, 0.25);
+    border: 2px solid #25d366;
+}
+
+.whatsapp:hover {
+    background: linear-gradient(145deg, #45e67d, #13a96c);
+    border-color: #13a96c;
+}
+
+.youtube {
+    background: linear-gradient(145deg, #ff0000, #cc0000);
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.25);
+    border: 2px solid #ff0000;
+}
+
+.youtube:hover {
+    background: linear-gradient(145deg, #ff4d4d, #d10000);
+    border-color: #d10000;
+}
+
+/* تكيف مع الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .social-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .social-icon img {
+        width: 55%;
+        height: 55%;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .social-icon img {
+        width: 50%;
+        height: 50%;
+    }
+
+    .social-icons {
+        bottom: 15px;
+        right: 15px;
+        gap: 15px;
+    }
+}
+
+        /* الفوتر */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 4px solid #FFD700;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+            margin-top: 40px;
+        }
+
+        .footer p {
+            margin: 0;
+            color: #FFD700;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="navbar-brand">Mr.Tarek</div>
+        <div class="menu-toggle" id="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="navbar-links" id="navbar-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="concepts.html">المفاهيم</a></li>
+            <li><a href="exams.html">الاختبارات</a></li>
+            <li><a href="help.html">المساعدة</a></li>
+        </ul>
+    </nav>
+
+    <!-- عنوان الصفحة -->
+    <div class="page-title">مراجعات و اختبارات</div>
+
+    <!-- القسم الأول: الجبر والهندسة الفراغية -->
+    <div class="section" id="algebra-section">
+        <h2 class="section-title">مراجعة ليلة الإمتحان</h2>
+        <div class="rectangles-container">
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math22/')">الهندسة الفراغية</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math23/')">التفاضل و التكامل الجزء الأول</div>
+            <div class="rectangle" onclick="openBook('مراجعة ليلة الامتحان في التفاضل و التكامل الجزء الثاني للعام 2022/index.html')">التفاضل و التكامل الجزء الثاني</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math3/')">الأستاتيكا</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math4/')">الديناميكا الجزء الأول</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math5/')">الديناميكا الجزء الثاني</div>
+        </div>
+    </div>
+
+    <!-- القسم الثاني: التفاضل و التكامل -->
+    <div class="section" id="calculus-section">
+        <h2 class="section-title">إمتحانات 2023</h2>
+        <div class="rectangles-container">
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math24/')">جبر والهندسة الفراغية </div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math25/')">تفاضل وتكامل </div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math6/')">استاتيكا </div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math7/')">ديناميكا </div>
+        </div>
+    </div>
+
+    <!-- القسم الثالث: امتحانات لحد 2020 -->
+    <div class="section" id="statics-section">
+        <h2 class="section-title">إمتحانات 2014:2020</h2>
+        <div class="rectangles-container">
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math19/')">استاتيكا 2014</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math29/')">ديناميكا 2015 دور الأول</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math8/')">ديناميكا 2015 دور الثاني</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math9/')">استاتيكا 2016</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math21/')">تفاضل و تكامل 2018</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math10/')">استاتيكا 2018</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math11/')">ديناميكا 2018</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math12/')">جبر والهندسة الفراغية 2019</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math13/')">تفاضل وتكامل 2019</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math14/')">استاتيكا 2019</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math15/')">ديناميكا 2019</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math16/')">جبر 2020</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math17/')">ديناميكا 2020</div>
+        </div>
+    </div>
+
+    <!-- القسم الرابع: امتحانات تجريبية -->
+    <div class="section" id="dynamics-section">
+        <h2 class="section-title">امتحانات تجريبية</h2>
+        <div class="rectangles-container">
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math26/')">جبر والهندسة الفراغية</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math27/')">تفاضل و تكامل</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math28/')">استاتيكا</div>
+            <div class="rectangle" onclick="openBook('https://ebrahemsobhyebrahem.github.io/math18/')">ديناميكا</div>
+        </div>
+    </div>
+<!-- أيقونات التواصل الاجتماعي الفاخرة والمحسنة -->
+<div class="social-icons">
+    <a href="https://wa.me/201062365570" target="_blank" class="social-icon whatsapp">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
+    <a href="https://youtube.com/@mrtarekmaths3931?si=-3z7Oy1X3s2lTsOa" target="_blank" class="social-icon youtube">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube">
+    </a>
+</div>
+
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <p>النجاح يأتي بالعمل الجاد والانضباط. كل جهد تبذله اليوم يقربك خطوة نحو تحقيق أحلامك. لا تستسلم، فالفشل مجرد درس نحو نجاح أكبر.</p>
+    </footer>
+
+    <script>
+
+        // وظائف فتح الكتاب
+        function openBook(url) {
+            window.open(url, '_self'); // فتح الرابط داخل نفس النافذة
+        }
+
+        // قائمة التنقل
+        const menuToggle = document.getElementById('menu-toggle');
+        const navbarLinks = document.getElementById('navbar-links');
+
+        menuToggle.addEventListener('click', () => {
+            navbarLinks.classList.toggle('active');
+            menuToggle.classList.toggle('open');
+        });
+    </script>
+</body>
+</html>

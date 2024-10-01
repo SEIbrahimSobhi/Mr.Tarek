@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المساعدة - التواصل</title>
+    <style>
+        /* إعدادات عامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            height: 100%;
+            background: url('https://img.freepik.com/free-vector/math-chalkboard-background_23-2148152440.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+
+        /* شريط التنقل */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+            text-transform: capitalize;
+            transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+            transform: scale(1.1);
+        }
+
+        /* زر القائمة (همبرغر) */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(0, 0, 0, 1);
+        }
+
+        .menu-toggle .bar {
+            width: 30px;
+            height: 3px;
+            background: #fff;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle.open .bar:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.open .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.open .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* قائمة التنقل */
+        .navbar-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-links li {
+            margin: 0 15px;
+        }
+
+        .navbar-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: #FFD700;
+        }
+
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 0;
+            height: 2px;
+            background: #FFD700;
+            transition: width 0.3s ease;
+        }
+
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+
+        /* القائمة عند الشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                padding: 20px;
+                border-radius: 5px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .navbar-links.active {
+                display: flex;
+            }
+        }
+
+        /* تصميم العنوان الرئيسي */
+        .page-title {
+            text-align: center;
+            font-size: 36px;
+            color: #FFD700;
+            margin: 120px 0 10px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        /* تصميم الأيقونات */
+        .contact-icons {
+            display: flex;
+            justify-content: center;
+            gap: 60px; /* زيادة المسافة بين الأيقونات */
+            margin-bottom: 30px;
+        }
+
+        .contact-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* توسيط العناصر */
+        }
+
+        .contact-icons a {
+            color: #FFD700;
+            font-size: 32px; /* حجم أكبر للأيقونات */
+            text-decoration: none;
+            transition: transform 0.3s ease, color 0.3s;
+        }
+
+        .contact-icons a:hover {
+            transform: scale(1.2);
+            color: #e6c200;
+        }
+
+        .contact-number {
+            font-size: 16px;
+            color: #fff; /* لون النص */
+            margin-top: 5px; /* مساحة بين الأيقونة والنص */
+            text-align: center;
+        }/* تصميم الحقول */
+.contact-form {
+    width: 80%;
+    max-width: 600px;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin: auto; /* توسيط النموذج */
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 48%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    transition: background-color 0.3s, border 0.3s;
+}
+
+.form-group input::placeholder {
+    color: #bbb;
+}
+
+.form-group input:focus {
+    outline: 2px solid #FFD700;
+    background-color: #444;
+}
+
+.form-group textarea {
+    width: 100%; /* جعل الحقل أوسع */
+    height: 150px; /* زيادة الارتفاع */
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    transition: background-color 0.3s, border 0.3s;
+}
+
+.form-group textarea::placeholder {
+    color: #bbb;
+}
+
+.form-group textarea:focus {
+    outline: 2px solid #FFD700;
+    background-color: #444;
+}
+/* تصميم زر الإرسال */
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #FFD700; /* اللون الأساسي */
+    color: #333; /* لون النص */
+    border: none; /* إزالة الحدود */
+    border-radius: 5px; /* زوايا مستديرة */
+    font-size: 18px; /* حجم الخط */
+    cursor: pointer; /* تغيير شكل المؤشر عند المرور فوق الزر */
+    transition: background-color 0.3s ease, transform 0.3s, box-shadow 0.3s; /* إضافة تأثيرات انتقالية */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* إضافة ظل خفيف */
+}
+
+.submit-btn:hover {
+    background-color: #e6c200; /* تغيير اللون عند التحويم */
+    transform: translateY(-2px); /* رفع الزر قليلاً */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* زيادة الظل عند التحويم */
+}
+
+.submit-btn:active {
+    transform: translateY(0); /* إعادة الزر لموقعه الأصلي عند الضغط */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* إعادة الظل الأصلي عند الضغط */
+}
+/* التصميم المتجاوب */
+@media (max-width: 600px) {
+    .form-group {
+        flex-direction: column; /* تغيير اتجاه العناصر في الحقل */
+        margin-bottom: 15px; /* تقليل المسافة بين الحقول */
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%; /* توسيع الحقول لتملأ العرض بالكامل */
+        margin-bottom: 10px; /* إضافة مساحة بين الحقول */
+    }
+
+    .contact-form {
+        padding: 15px; /* تقليل padding للنموذج */
+    }
+
+    .submit-btn {
+        font-size: 16px; /* تقليل حجم الخط في زر الإرسال */
+        padding: 10px; /* تقليل padding في زر الإرسال */
+    }
+}
+
+/* الفوتر */
+.footer {
+    width: 100%; /* جعل الفوتر بعرض كامل */
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.9);
+    border-top: 4px solid #FFD700;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+    margin-top: 40px; /* يمكنك تقليل أو إزالة هذا إذا كنت تريد قربه من المحتوى السابق */
+    box-sizing: border-box; /* لضمان احتساب الحشوة والحدود داخل العرض */
+}
+
+.footer p {
+    margin: 0;
+    color: #FFD700;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+    </style>
+    <!-- روابط لأيقونات التواصل الاجتماعي -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="navbar-brand">Mr.Tarek</div>
+        <div class="menu-toggle" id="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="navbar-links" id="navbar-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="concepts.html">المفاهيم</a></li>
+            <li><a href="exams.html">الاختبارات</a></li>
+            <li><a href="help.html">المساعدة</a></li>
+        </ul>
+    </nav>
+
+    <!-- عنوان الصفحة -->
+    <div class="page-title">المساعدة - التواصل</div>
+    <div class="subtitle">إذا حدثت مشكلة أو خطب ما في الموقع يرجى التواصل معنا</div>
+<!-- أيقونات التواصل -->
+<div class="contact-icons">
+    <div class="contact-icon">
+        <a href="https://wa.me/201062365570" title="التواصل مع أ/طارق على واتس آب"><i class="fab fa-whatsapp"></i></a>
+        <div class="contact-number">Mr.Tarek</div>
+    </div>
+    <div class="contact-icon">
+        <a href="mailto:seebrahemsobhy@gmail.com" title="التواصل عبر جيميل"><i class="fas fa-envelope"></i></a>
+        <div class="contact-number">seebrahemsobhy@gmail.com</div>
+    </div>
+    <div class="contact-icon">
+        <a href="https://wa.me/201128471221" title="التواصل عبر رقمي على واتس آب"><i class="fab fa-whatsapp"></i></a>
+        <div class="contact-number">Me</div>
+    </div>
+</div>
+
+<!-- نموذج التواصل -->
+<div class="contact-form">
+    <form action="https://formspree.io/f/xblrnqyr" method="POST">
+        <div class="form-group">
+            <input type="text" name="name" placeholder="الاسم" required>
+            <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+        </div>
+        <div class="form-group">
+            <textarea name="message" placeholder="الرسالة" rows="5" required></textarea>
+        </div>
+
+        <!-- الحماية من السبام (حقل غير مرئي للروبوتات) -->
+        <input type="text" name="_gotcha" style="display:none">
+
+        <button type="submit" class="submit-btn">إرسال</button>
+    </form>
+</div>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <p>عندما تُؤمن بنفسك، لا تحتاج إلى إقناع أي شخصٍ بمدى روعتك. فعندما تكون راضيًا عن نفسك، فأنت لست بحاجةٍ إلى مُوافقة أي شخصٍ آخر. وعندما تقبل نفسك، سيقبلك العالم.</p>
+    </footer>
+
+    <script>
+    // قائمة التنقل
+    const menuToggle = document.getElementById('menu-toggle');
+    const navbarLinks = document.getElementById('navbar-links');
+
+    menuToggle.addEventListener('click', () => {
+        navbarLinks.classList.toggle('active');
+        menuToggle.classList.toggle('open');
+    });
+    </script>
+</body>
+</html>
