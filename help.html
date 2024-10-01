@@ -318,21 +318,30 @@ body {
         font-size: 16px; /* تقليل حجم الخط في زر الإرسال */
         padding: 10px; /* تقليل padding في زر الإرسال */
     }
+}/* إعداد الصفحة */
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
+/* محتوى الصفحة */
+.main-content {
+    flex: 1; /* يأخذ المساحة المتبقية */
+    padding: 20px;
+    background-color: #f0f0f0; /* لون الخلفية للمحتوى */
+}
 
 /* الفوتر */
 .footer {
     text-align: center;
     padding: 20px;
     font-size: 16px;
-    position: sticky; /* تغيير من absolute إلى sticky */
-    bottom: 0; /* تأكيد وجوده في الأسفل */
-    left: 0;
-    right: 0;
     background: rgba(0, 0, 0, 0.9);
     border-top: 4px solid #FFD700;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+    width: 100%;
 }
 
 .footer p {
@@ -340,6 +349,31 @@ body {
     color: #FFD700;
     font-size: 18px;
     line-height: 1.5;
+}
+
+/* تحسين العرض على الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .footer {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .footer p {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .footer p {
+        font-size: 14px;
+        line-height: 1.3;
+    }
 }
 
 /* تحسين العرض على الشاشات الصغيرة */
