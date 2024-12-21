@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>تسجيل الدخول</h1>
+    <form id="login-form">
+  <input type="text" id="identifier" placeholder="اسم المستخدم أو رقم الهاتف أو الإيميل" required>
+  <input type="password" id="password" placeholder="كلمة المرور" required>
+  <button type="submit">تسجيل الدخول</button>
+</form>
+    <p><a href="reset-password.html">هل نسيت كلمة المرور؟</a></p>
+    <p>ليس لديك حساب؟ <a href="signup.html">إنشاء حساب</a></p>
+  </div>
+  <script type="module">
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const identifier = document.getElementById('identifier').value;
+  const password = document.getElementById('password').value;
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .or(`username.eq.${identifier},phone.eq.${identifier},email.eq.${identifier}`)
+    .eq('password', password);
+
+  if (error || data.length === 0) {
+    alert('الحساب غير موجود أو كلمة المرور غير صحيحة.');
+  } else {
+    alert('تم تسجيل الدخول بنجاح!');
+    localStorage.setItem('userId', data[0].id);
+    window.location.href = 'student-info.html';
+  }
+});
+  </script>
+</body>
+</html>

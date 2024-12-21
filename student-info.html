@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معلومات الطالب</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <div id="student-info">
+  <!-- سيتم ملء المعلومات ديناميكيًا -->
+</div>
+<button id="logout-btn">تسجيل الخروج</button>
+  <script type="module">
+document.addEventListener('DOMContentLoaded', async () => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const { data, error } = await supabase.from('users').select('*').eq('id', userId);
+
+  if (error || data.length === 0) {
+    alert('حدث خطأ. الرجاء تسجيل الدخول مرة أخرى.');
+    localStorage.removeItem('userId');
+    window.location.href = 'login.html';
+  } else {
+    const user = data[0];
+    document.getElementById('student-info').innerHTML = `
+      <p>اسم المستخدم: ${user.username}</p>
+      <p>اسم الطالب: ${user.student_name}</p>
+      <p>رقم الهاتف: ${user.phone}</p>
+      <p>الإيميل: ${user.email}</p>
+    `;
+  }
+});
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  const userId = localStorage.getItem('userId');
+  if (userId) {
+    const { error } = await supabase.from('users').delete().eq('id', userId);
+    if (error) {
+      alert('فشل تسجيل الخروج.');
+    } else {
+      alert('تم تسجيل الخروج بنجاح.');
+      localStorage.removeItem('userId');
+      window.location.href = 'index.html';
+    }
+  }
+});
+  </script>
+</body>
+</html>
