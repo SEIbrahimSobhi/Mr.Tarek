@@ -30,7 +30,7 @@ async function registerUser(username, studentName, phone, email, password) {
       alert(dbError.message);
     } else {
       alert('تم إنشاء الحساب بنجاح!');
-      window.location.href = 'index.html'; // إعادة توجيه إلى صفحة تسجيل الدخول
+      window.location.href = 'login.html'; // إعادة توجيه إلى صفحة تسجيل الدخول
     }
   }
 }
@@ -47,7 +47,7 @@ async function loginUser(identifier, password) {
     alert(error.message);
   } else {
     alert('تم تسجيل الدخول بنجاح!');
-    window.location.href = 'index.html'; // إعادة توجيه إلى الصفحة الرئيسية
+    window.location.href = 'dashboard.html'; // إعادة توجيه إلى الصفحة الرئيسية
   }
 }
 
