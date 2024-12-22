@@ -22,32 +22,26 @@
   </div>
 
   <script>
-    // التأكد من أن مكتبة Supabase محملة بالكامل
-    document.addEventListener("DOMContentLoaded", () => {
-      // تعريف العميل الخاص بـ Supabase
+    // التأكد من أن DOM جاهز
+    document.addEventListener('DOMContentLoaded', () => {
+      // تعريف Supabase
       const supabaseUrl = 'https://wrjkhrtccchhrnmudvkq.supabase.co';
       const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyamtocnRjY2NoaHJubXVkdmtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2NDE4MDQsImV4cCI6MjA1MDIxNzgwNH0.UFt-kMwuloLvmQW0sagwvCQ2buVSh6Ojf-gmLJ6Jd5s';
       const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-      // التعامل مع النموذج
+      // إضافة حدث submit إلى النموذج
       document.getElementById('register-form').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // استرجاع بيانات الإدخال
+        // استرجاع القيم المدخلة
         const username = document.getElementById('username').value.trim();
         const studentName = document.getElementById('student-name').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
 
-        // التحقق من البيانات قبل الإرسال (اختياري)
-        if (!username || !studentName || !phone || !email || !password) {
-          alert('يرجى ملء جميع الحقول.');
-          return;
-        }
-
         try {
-          // إدخال البيانات في قاعدة البيانات
+          // إدخال البيانات في جدول "users"
           const { data, error } = await supabase
             .from('users')
             .insert([{ username, student_name: studentName, phone, email, password }]);
