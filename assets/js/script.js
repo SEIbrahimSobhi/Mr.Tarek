@@ -1,4 +1,4 @@
-// تأكد من تهيئة Supabase بعد تحميل المكتبة
+// تهيئة Supabase بعد تحميل المكتبة
 const supabaseUrl = 'https://ovqgoulmckynhzrgrpmx.supabase.co';  // رابط المشروع في Supabase
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im92cWdvdWxtY2t5bmh6cmdycG14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ4OTc0OTQsImV4cCI6MjA1MDQ3MzQ5NH0.dHtKEeMzo0Ytm3-jo3yljRDebT1X6I6dirwlsF9W02w';   // المفتاح العام للمشروع
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
