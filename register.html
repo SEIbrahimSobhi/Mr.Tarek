@@ -21,19 +21,19 @@
     </form>
   </div>
 
+  <!-- الكود الخاص بـ Supabase -->
   <script>
-    // التأكد من أن DOM جاهز
     document.addEventListener('DOMContentLoaded', () => {
       // تعريف Supabase
       const supabaseUrl = 'https://wrjkhrtccchhrnmudvkq.supabase.co';
       const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyamtocnRjY2NoaHJubXVkdmtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2NDE4MDQsImV4cCI6MjA1MDIxNzgwNH0.UFt-kMwuloLvmQW0sagwvCQ2buVSh6Ojf-gmLJ6Jd5s';
       const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-      // إضافة حدث submit إلى النموذج
+      // معالج الحدث الخاص بالنموذج
       document.getElementById('register-form').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // استرجاع القيم المدخلة
+        // استرجاع البيانات من الحقول
         const username = document.getElementById('username').value.trim();
         const studentName = document.getElementById('student-name').value.trim();
         const phone = document.getElementById('phone').value.trim();
@@ -41,7 +41,7 @@
         const password = document.getElementById('password').value.trim();
 
         try {
-          // إدخال البيانات في جدول "users"
+          // إرسال البيانات إلى قاعدة البيانات
           const { data, error } = await supabase
             .from('users')
             .insert([{ username, student_name: studentName, phone, email, password }]);
