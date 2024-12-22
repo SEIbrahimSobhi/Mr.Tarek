@@ -7,26 +7,27 @@
   <link rel="stylesheet" href="assets/css/auth.css">
   <!-- تحميل مكتبة Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-</head>
-<body>
-  <div class="auth-container">
-    <h1>إنشاء حساب</h1>
-    <form id="register-form">
-  <input type="text" id="username" placeholder="اسم المستخدم" required>
-  <input type="text" id="student-name" placeholder="اسم الطالب" required>
-  <input type="tel" id="phone" placeholder="رقم الهاتف" required>
-  <input type="email" id="email" placeholder="الإيميل" required>
-  <input type="password" id="password" placeholder="كلمة المرور" required>
-  <button type="submit">إنشاء حساب</button>
-</form>
-  </div>
-  <!-- كود Supabase -->
   <script>
     // تعريف العميل الخاص بـ Supabase
     const supabaseUrl = 'https://wrjkhrtccchhrnmudvkq.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyamtocnRjY2NoaHJubXVkdmtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2NDE4MDQsImV4cCI6MjA1MDIxNzgwNH0.UFt-kMwuloLvmQW0sagwvCQ2buVSh6Ojf-gmLJ6Jd5s';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  </script>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>إنشاء حساب</h1>
+    <form id="register-form">
+      <input type="text" id="username" placeholder="اسم المستخدم" required>
+      <input type="text" id="student-name" placeholder="اسم الطالب" required>
+      <input type="tel" id="phone" placeholder="رقم الهاتف" required>
+      <input type="email" id="email" placeholder="الإيميل" required>
+      <input type="password" id="password" placeholder="كلمة المرور" required>
+      <button type="submit">إنشاء حساب</button>
+    </form>
+  </div>
 
+  <script>
     // التعامل مع حدث إرسال النموذج
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
