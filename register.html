@@ -7,12 +7,6 @@
   <link rel="stylesheet" href="assets/css/auth.css">
   <!-- تحميل مكتبة Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    // تعريف العميل الخاص بـ Supabase
-    const supabaseUrl = 'https://wrjkhrtccchhrnmudvkq.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyamtocnRjY2NoaHJubXVkdmtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2NDE4MDQsImV4cCI6MjA1MDIxNzgwNH0.UFt-kMwuloLvmQW0sagwvCQ2buVSh6Ojf-gmLJ6Jd5s';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-  </script>
 </head>
 <body>
   <div class="auth-container">
@@ -27,42 +21,31 @@
     </form>
   </div>
 
-  <script>
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+  <script src="script.js"></script>
+<script>
+  // استخدم `supabase` مباشرة هنا
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      // استرجاع بيانات الإدخال
-      const username = document.getElementById('username').value.trim();
-      const studentName = document.getElementById('student-name').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
+    const username = document.getElementById('username').value;
+    const studentName = document.getElementById('student-name').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-      // التحقق من البيانات قبل الإرسال (اختياري)
-      if (!username || !studentName || !phone || !email || !password) {
-        alert('يرجى ملء جميع الحقول.');
-        return;
-      }
+    const { data, error } = await supabase
+      .from('users')
+      .insert([{ username, student_name: studentName, phone, email, password }]);
 
-      try {
-        // إدخال البيانات في قاعدة البيانات
-        const { data, error } = await supabase
-          .from('users')
-          .insert([{ username, student_name: studentName, phone, email, password }]);
-
-        if (error) {
-          console.error('Error:', error.message);
-          alert('فشل إنشاء الحساب: ' + error.message);
-        } else {
-          console.log('User created:', data);
-          alert('تم إنشاء الحساب بنجاح!');
-          window.location.href = 'index.html';
-        }
-      } catch (err) {
-        console.error('Unexpected Error:', err);
-        alert('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');
-      }
-    });
-  </script>
+    if (error) {
+      console.error('Error:', error.message);
+      alert('فشل إنشاء الحساب: ' + error.message);
+    } else {
+      console.log('User created:', data);
+      alert('تم إنشاء الحساب بنجاح!');
+      window.location.href = 'index.html';
+    }
+  });
+</script>
 </body>
 </html>
