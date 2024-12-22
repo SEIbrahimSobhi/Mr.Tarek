@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إنشاء حساب</title>
-  <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/auth.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -25,21 +24,27 @@
   document.getElementById('register-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  // جمع البيانات
   const username = document.getElementById('username').value;
   const studentName = document.getElementById('student-name').value;
   const phone = document.getElementById('phone').value;
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
+  console.log({ username, studentName, phone, email, password }); // للتحقق من القيم
+
+  // إرسال البيانات إلى Supabase
   const { data, error } = await supabase.from('users').insert([
     { username, student_name: studentName, phone, email, password }
   ]);
 
   if (error) {
+    console.error('Error:', error.message);
     alert('فشل إنشاء الحساب: ' + error.message);
   } else {
+    console.log('User created:', data);
     alert('تم إنشاء الحساب بنجاح!');
-    window.location.href = 'index.html';
+    window.location.href = 'index.html'; // إعادة التوجيه للصفحة الرئيسية
   }
 });
   </script>
