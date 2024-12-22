@@ -30,7 +30,8 @@
       const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
       // معالج الحدث الخاص بالنموذج
-      document.getElementById('register-form').addEventListener('submit', async (e) => {
+      const form = document.getElementById('register-form');
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         // استرجاع البيانات من الحقول
