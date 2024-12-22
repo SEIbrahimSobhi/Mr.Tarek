@@ -5,48 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تسجيل الدخول</title>
   <link rel="stylesheet" href="assets/css/auth.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
   <div class="auth-container">
     <h1>تسجيل الدخول</h1>
     <form id="login-form">
-  <input type="text" id="identifier" placeholder="اسم المستخدم أو رقم الهاتف أو الإيميل" required>
-  <input type="password" id="password" placeholder="كلمة المرور" required>
-  <button type="submit">تسجيل الدخول</button>
-</form>
+      <input type="text" id="identifier" placeholder="اسم المستخدم أو رقم الهاتف أو الإيميل" required>
+      <input type="password" id="password" placeholder="كلمة المرور" required>
+      <button type="submit">تسجيل الدخول</button>
+    </form>
     <p>ليس لديك حساب؟ <a href="register.html">إنشاء حساب</a></p>
   </div>
-  <script type="module">
-  document.getElementById('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  // جمع البيانات
-  const identifier = document.getElementById('identifier').value;
-  const password = document.getElementById('password').value;
-
-  console.log({ identifier, password }); // للتحقق من القيم
-
-  // التحقق من الحساب
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .or(`username.eq.${identifier},phone.eq.${identifier},email.eq.${identifier}`)
-    .eq('password', password);
-
-  if (error) {
-    console.error('Error:', error.message);
-    alert('حدث خطأ: ' + error.message);
-  } else if (data.length === 0) {
-    alert('الحساب غير موجود أو كلمة المرور غير صحيحة.');
-  } else {
-    console.log('User found:', data[0]);
-    alert('تم تسجيل الدخول بنجاح!');
-    localStorage.setItem('userId', data[0].id); // تخزين بيانات المستخدم
-    window.location.href = 'student-info.html'; // إعادة التوجيه لصفحة معلومات الطالب
-  }
-});
-  </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
