@@ -21,31 +21,51 @@
     </form>
   </div>
 
-  <script src="assets/js/script.js"></script>
-<script>
-  // استخدم `supabase` مباشرة هنا
-  document.getElementById('register-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  <script>
+    // التأكد من أن مكتبة Supabase محملة بالكامل
+    document.addEventListener("DOMContentLoaded", () => {
+      // تعريف العميل الخاص بـ Supabase
+      const supabaseUrl = 'https://wrjkhrtccchhrnmudvkq.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyamtocnRjY2NoaHJubXVkdmtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2NDE4MDQsImV4cCI6MjA1MDIxNzgwNH0.UFt-kMwuloLvmQW0sagwvCQ2buVSh6Ojf-gmLJ6Jd5s';
+      const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    const username = document.getElementById('username').value;
-    const studentName = document.getElementById('student-name').value;
-    const phone = document.getElementById('phone').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+      // التعامل مع النموذج
+      document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    const { data, error } = await supabase
-      .from('users')
-      .insert([{ username, student_name: studentName, phone, email, password }]);
+        // استرجاع بيانات الإدخال
+        const username = document.getElementById('username').value.trim();
+        const studentName = document.getElementById('student-name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
 
-    if (error) {
-      console.error('Error:', error.message);
-      alert('فشل إنشاء الحساب: ' + error.message);
-    } else {
-      console.log('User created:', data);
-      alert('تم إنشاء الحساب بنجاح!');
-      window.location.href = 'index.html';
-    }
-  });
-</script>
+        // التحقق من البيانات قبل الإرسال (اختياري)
+        if (!username || !studentName || !phone || !email || !password) {
+          alert('يرجى ملء جميع الحقول.');
+          return;
+        }
+
+        try {
+          // إدخال البيانات في قاعدة البيانات
+          const { data, error } = await supabase
+            .from('users')
+            .insert([{ username, student_name: studentName, phone, email, password }]);
+
+          if (error) {
+            console.error('Error:', error.message);
+            alert('فشل إنشاء الحساب: ' + error.message);
+          } else {
+            console.log('User created:', data);
+            alert('تم إنشاء الحساب بنجاح!');
+            window.location.href = 'index.html';
+          }
+        } catch (err) {
+          console.error('Unexpected Error:', err);
+          alert('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
