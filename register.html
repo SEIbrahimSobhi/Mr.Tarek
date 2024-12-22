@@ -20,27 +20,21 @@
   <button type="submit">إنشاء حساب</button>
 </form>
   </div>
-  <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-  // إعداد Supabase
-  const supabaseUrl = 'https://wrjkhrtccchhrnmudvkq.supabase.co'; // استبدل بالـ URL الخاص بك
+  <script>
+  const supabaseUrl = 'https://wrjkhrtccchhrnmudvkq.supabase.co'; // URL الخاص بـ Supabase
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyamtocnRjY2NoaHJubXVkdmtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2NDE4MDQsImV4cCI6MjA1MDIxNzgwNH0.UFt-kMwuloLvmQW0sagwvCQ2buVSh6Ojf-gmLJ6Jd5s';
 
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // حدث التسجيل
   document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // جمع البيانات من الحقول
     const username = document.getElementById('username').value;
     const studentName = document.getElementById('student-name').value;
     const phone = document.getElementById('phone').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    // إرسال البيانات إلى Supabase
     const { data, error } = await supabase
       .from('users')
       .insert([{ username, student_name: studentName, phone, email, password }]);
@@ -51,7 +45,7 @@
     } else {
       console.log('User created:', data);
       alert('تم إنشاء الحساب بنجاح!');
-      window.location.href = 'index.html'; // إعادة التوجيه للصفحة الرئيسية
+      window.location.href = 'index.html';
     }
   });
 </script>
