@@ -41,7 +41,7 @@
         <h1 class="sitename">M R . T A R E K</h1>
       </a>
 
-      <nav id="navmenu" class="navmenu">
+<nav id="navmenu" class="navmenu">
   <ul>
     <li><a href="#hero" class="active">الرئيسية</a></li>
     <li><a href="#about">الفيديوهات</a></li>
@@ -55,7 +55,7 @@
         <a href="login.html" id="register-btn">سجل معانا</a>
       </div>
     </li>
-    <li><a href="student-info.html" id="student-info-btn" style="display: none;">معلومات الطالب</a></li>
+    <li><a href="student-info.html" id="student-info-btn" style="display: none;" class="main-red-button">معلومات الطالب</a></li>
   </ul>
   <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 </nav>
@@ -482,9 +482,10 @@
   <script src="assets/js/main.js"></script>
 
 
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
 // تهيئة Firebase
 const firebaseConfig = {
@@ -502,29 +503,19 @@ const auth = getAuth(app);
 // التحقق من حالة تسجيل الدخول
 onAuthStateChanged(auth, (user) => {
   const registerButton = document.getElementById("register-btn"); // زر سجل معانا
-  const startNowButton = document.getElementById("start-now-btn"); // زر ابدأ الآن
-  const studentInfoButton = document.getElementById("student-info-btn"); // زر معلومات الطالب
+  const startNowButton = document.getElementById("start-now-btn"); // زر ابدأ الآن في الصفحة الرئيسية
 
   if (user) {
     // إذا كان المستخدم مسجل الدخول
     registerButton.style.display = "none"; // إخفاء زر سجل معانا
-    startNowButton.style.display = "none"; // إخفاء زر ابدأ الآن في الصفحة الرئيسية
-
-    // عرض زر معلومات الطالب في القائمة
-    studentInfoButton.style.display = "inline-block";
-    
-    // استبدال زر ابدأ الآن في الصفحة الرئيسية بزر معلومات الطالب
-    const newStartButton = document.createElement("a");
-    newStartButton.textContent = "معلومات الطالب";
-    newStartButton.href = "student-info.html"; // التوجيه لصفحة معلومات الطالب
-    newStartButton.classList.add("btn-get-started");
-    startNowButton.parentNode.replaceChild(newStartButton, startNowButton);
-
+    startNowButton.textContent = "ابدأ الآن"; // تغيير النص لابدأ الآن
+    startNowButton.href = "#about"; // التوجيه لقسم الفيديوهات
   } else {
     // إذا لم يكن المستخدم مسجل الدخول
     registerButton.style.display = "inline-block"; // إظهار زر سجل معانا
-    startNowButton.style.display = "inline-block"; // إظهار زر ابدأ الآن في الصفحة الرئيسية
-    studentInfoButton.style.display = "none"; // إخفاء زر معلومات الطالب
+    startNowButton.style.display = "inline-block"; // إظهار زر سجل معانا أيضا
+    startNowButton.textContent = "سجل معانا"; // إعادة النص إلى سجل معانا
+    startNowButton.href = "login.html"; // التوجيه إلى صفحة التسجيل
   }
 });
 </script>
