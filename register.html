@@ -21,12 +21,12 @@
   
 <!-- قاعده البيانات -->
 <script type="module">
-  // Import the functions you need from the SDKs you need
+  // استيراد الوظائف التي تحتاجها من SDKs الخاصة بـ Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { getAuth } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
+  // إعداد Firebase الخاص بمشروعك
   const firebaseConfig = {
     apiKey: "AIzaSyDpRC4zqWJPtZw2CUvem131S92Kk05lzmA",
     authDomain: "mr-tarek-86f94.firebaseapp.com",
@@ -36,9 +36,16 @@
     appId: "1:505019693217:web:45b9a3ab460453553698e0"
   };
 
-  // Initialize Firebase
+  // تهيئة Firebase
   const app = initializeApp(firebaseConfig);
+  
+  // تهيئة Firebase Authentication
+  const auth = getAuth(app);
+
+  // تهيئة Firestore Database
+  const db = getFirestore(app);
 </script>
+  
 <!-- انشاء حساب -->
   <script>
     document.getElementById('register-form').addEventListener('submit', async (event) => {
