@@ -42,19 +42,23 @@
       </a>
 
       <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="#hero" class="active">الرئيسية</a></li>
-          <li><a href="#about">الفيديوهات</a></li>
-          <li><a href="#services">أوراق ملخصات</a></li>
-          <li><a href="#call-to-action">مشاركة الأسئلة</a></li>
-          <li><a href="#features">ملخصات مدرسية</a></li>
-          <li><a href="#featured-services">امتحانات مدرسية</a></li>
-          <li><a href="#contact">اتصل بنا</a></li>
-          <li class="scroll-to-section"><div class="main-red-button"><a href="login.html">سجل معانا</a></div></li>
-          <li><a href="student-info.html" id="student-info-btn" style="display: none;">معلومات الطالب</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
+  <ul>
+    <li><a href="#hero" class="active">الرئيسية</a></li>
+    <li><a href="#about">الفيديوهات</a></li>
+    <li><a href="#services">أوراق ملخصات</a></li>
+    <li><a href="#call-to-action">مشاركة الأسئلة</a></li>
+    <li><a href="#features">ملخصات مدرسية</a></li>
+    <li><a href="#featured-services">امتحانات مدرسية</a></li>
+    <li><a href="#contact">اتصل بنا</a></li>
+    <li class="scroll-to-section">
+      <div class="main-red-button">
+        <a href="login.html" id="register-btn">سجل معانا</a>
+      </div>
+    </li>
+    <li><a href="student-info.html" id="student-info-btn" style="display: none;">معلومات الطالب</a></li>
+  </ul>
+  <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+</nav>
 
     </div>
   </header>
@@ -71,8 +75,7 @@
           <div class="col-lg-8">
             <h2>!مرحبًا بكم في منصتنا</h2>
             <p>رحلة نحو التفوق مع الأستاذ طارق عبد الباري. تعلم بثقة، وحقق أهدافك في الرياضيات بخطوات ثابتة!</p>
-            <a href="login.html" class="btn-get-started">سجل معانا</a>
-            <li><a href="#about" id="btn-get-started" style="display: none;">ابدأ الأن</a></li>
+            <a href="login.html" class="btn-get-started" id="start-now-btn">سجل معانا</a>
           </div>
         </div>
       </div>
@@ -478,7 +481,8 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
-  <script type="module">
+
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
@@ -497,31 +501,33 @@ const auth = getAuth(app);
 
 // التحقق من حالة تسجيل الدخول
 onAuthStateChanged(auth, (user) => {
-  const registerButton = document.querySelectorAll('a[href="login.html"]'); // جميع أزرار سجل معانا
-  const studentInfoButton = document.getElementById("student-info-btn");
-  const startNowButton = document.createElement("a");
+  const registerButton = document.getElementById("register-btn"); // زر سجل معانا
+  const startNowButton = document.getElementById("start-now-btn"); // زر ابدأ الآن
+  const studentInfoButton = document.getElementById("student-info-btn"); // زر معلومات الطالب
 
   if (user) {
     // إذا كان المستخدم مسجل الدخول
-    registerButton.forEach((btn) => (btn.style.display = "none")); // إخفاء أزرار سجل معانا
+    registerButton.style.display = "none"; // إخفاء زر سجل معانا
+    startNowButton.style.display = "none"; // إخفاء زر ابدأ الآن في الصفحة الرئيسية
 
-    // عرض زر معلومات الطالب
+    // عرض زر معلومات الطالب في القائمة
     studentInfoButton.style.display = "inline-block";
+    
+    // استبدال زر ابدأ الآن في الصفحة الرئيسية بزر معلومات الطالب
+    const newStartButton = document.createElement("a");
+    newStartButton.textContent = "معلومات الطالب";
+    newStartButton.href = "student-info.html"; // التوجيه لصفحة معلومات الطالب
+    newStartButton.classList.add("btn-get-started");
+    startNowButton.parentNode.replaceChild(newStartButton, startNowButton);
 
-    // إضافة زر ابدأ الآن
-    startNowButton.textContent = "ابدأ الآن";
-    startNowButton.href = "#about"; // التوجيه لقسم الفيديوهات
-    startNowButton.classList.add("btn-get-started");
-    registerButton[0].parentNode.appendChild(startNowButton);
   } else {
     // إذا لم يكن المستخدم مسجل الدخول
-    registerButton.forEach((btn) => (btn.style.display = "inline-block"));
-    studentInfoButton.style.display = "none";
-    if (startNowButton) startNowButton.remove(); // إزالة زر ابدأ الآن إذا كان موجودًا
+    registerButton.style.display = "inline-block"; // إظهار زر سجل معانا
+    startNowButton.style.display = "inline-block"; // إظهار زر ابدأ الآن في الصفحة الرئيسية
+    studentInfoButton.style.display = "none"; // إخفاء زر معلومات الطالب
   }
 });
 </script>
-
 </body>
 
 </html>
