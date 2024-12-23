@@ -55,7 +55,7 @@
         <a href="login.html" id="register-btn">سجل معانا</a>
       </div>
     </li>
-    <li class="scroll-to-section"><a href="student-info.html" id="student-info-btn" style="display: none;" class="main-red-button">معلومات الطالب</a></li>
+    <li><a href="student-info.html" id="student-info-btn" style="display: none;" class="main-red-button">معلومات الطالب</a></li>
   </ul>
   <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 </nav>
@@ -481,6 +481,7 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -502,21 +503,20 @@ const auth = getAuth(app);
 onAuthStateChanged(auth, (user) => {
   const registerButton = document.getElementById("register-btn"); // زر سجل معانا
   const startNowButton = document.getElementById("start-now-btn"); // زر ابدأ الآن في الصفحة الرئيسية
-  const studentInfoButton = document.getElementById("student-info-btn"); // زر معلومات الطالب
+  const studentInfoButton = document.getElementById("student-info-btn"); // زر معلومات الطالب في القائمة
 
   if (user) {
     // إذا كان المستخدم مسجل الدخول
     registerButton.style.display = "none"; // إخفاء زر سجل معانا
-    startNowButton.textContent = "ابدأ الآن"; // تغيير النص إلى ابدأ الآن
-    startNowButton.href = "#about"; // التوجيه إلى قسم الفيديوهات
-    studentInfoButton.style.display = "inline-block"; // إظهار زر معلومات الطالب في القائمة
+    startNowButton.textContent = "ابدأ الآن"; // تغيير النص لابدأ الآن
+    startNowButton.href = "#about"; // التوجيه لقسم الفيديوهات
+    studentInfoButton.style.display = "inline-block"; // عرض زر معلومات الطالب في القائمة
   } else {
     // إذا لم يكن المستخدم مسجل الدخول
     registerButton.style.display = "inline-block"; // إظهار زر سجل معانا
-    startNowButton.style.display = "inline-block"; // إظهار زر سجل معانا في الصفحة الرئيسية
+    studentInfoButton.style.display = "none"; // إخفاء زر معلومات الطالب
     startNowButton.textContent = "سجل معانا"; // إعادة النص إلى سجل معانا
     startNowButton.href = "login.html"; // التوجيه إلى صفحة التسجيل
-    studentInfoButton.style.display = "none"; // إخفاء زر معلومات الطالب
   }
 });
 </script>
