@@ -17,7 +17,39 @@
     <p>ليس لديك حساب؟ <a href="register.html">إنشاء حساب</a></p>
   </div>
   
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.min.js"></script>
-  <script src="assets/js/script.js"></script>
+<!-- قاعده البيانات -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+// تهيئة Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+  authDomain: "mr-tarek-2e40f.firebaseapp.com",
+  projectId: "mr-tarek-2e40f",
+  storageBucket: "mr-tarek-2e40f.firebasestorage.app",
+  messagingSenderId: "807997869740",
+  appId: "1:807997869740:web:8eca7473d24693bf861909"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+document.getElementById('login-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const identifier = document.getElementById('identifier').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    // تسجيل الدخول بالبريد الإلكتروني
+    const userCredential = await auth.signInWithEmailAndPassword(identifier, password);
+    alert('تم تسجيل الدخول بنجاح!');
+    window.location.href = 'index.html';
+  } catch (error) {
+    alert(`خطأ أثناء تسجيل الدخول: ${error.message}`);
+  }
+});
+</script>
 </body>
 </html>
