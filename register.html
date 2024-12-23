@@ -22,6 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js"></script>
+<!-- قاعده البيانات -->
 <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
@@ -43,5 +44,35 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 </script>
+<!-- انشاء حساب -->
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const username = document.getElementById('username').value;
+  const studentName = document.getElementById('student-name').value;
+  const phone = document.getElementById('phone').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    const userId = userCredential.user.uid;
+
+    // إضافة بيانات المستخدم إلى Firestore
+    await db.collection('users').doc(userId).set({
+      username,
+      studentName,
+      phone,
+      email
+    });
+
+    alert('تم إنشاء الحساب بنجاح!');
+    window.location.href = 'index.html'; // توجيه للصفحة الرئيسية
+  } catch (error) {
+    alert(`خطأ أثناء إنشاء الحساب: ${error.message}`);
+  }
+});
+  </script>
 </body>
 </html>
