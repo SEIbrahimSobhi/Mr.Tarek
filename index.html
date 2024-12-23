@@ -477,6 +477,50 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+// تهيئة Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+  authDomain: "mr-tarek-2e40f.firebaseapp.com",
+  projectId: "mr-tarek-2e40f",
+  storageBucket: "mr-tarek-2e40f.appspot.com",
+  messagingSenderId: "807997869740",
+  appId: "1:807997869740:web:8eca7473d24693bf861909"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// التحقق من حالة تسجيل الدخول
+onAuthStateChanged(auth, (user) => {
+  const registerButton = document.querySelectorAll('a[href="login.html"]'); // جميع أزرار سجل معانا
+  const studentInfoButton = document.getElementById("student-info-btn");
+  const startNowButton = document.createElement("a");
+
+  if (user) {
+    // إذا كان المستخدم مسجل الدخول
+    registerButton.forEach((btn) => (btn.style.display = "none")); // إخفاء أزرار سجل معانا
+
+    // عرض زر معلومات الطالب
+    studentInfoButton.style.display = "inline-block";
+
+    // إضافة زر ابدأ الآن
+    startNowButton.textContent = "ابدأ الآن";
+    startNowButton.href = "#about"; // التوجيه لقسم الفيديوهات
+    startNowButton.classList.add("btn-get-started");
+    registerButton[0].parentNode.appendChild(startNowButton);
+  } else {
+    // إذا لم يكن المستخدم مسجل الدخول
+    registerButton.forEach((btn) => (btn.style.display = "inline-block"));
+    studentInfoButton.style.display = "none";
+    if (startNowButton) startNowButton.remove(); // إزالة زر ابدأ الآن إذا كان موجودًا
+  }
+});
+</script>
+
 </body>
 
 </html>
