@@ -41,32 +41,32 @@ const auth = getAuth(app);
 </script>
   
 <!-- انشاء حساب -->
-  <script>
-    document.getElementById('register-form').addEventListener('submit', async (event) => {
-  event.preventDefault();
+  <script type="module">
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
-  const username = document.getElementById('username').value;
-  const studentName = document.getElementById('student-name').value;
-  const phone = document.getElementById('phone').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+// استمع إلى حدث الضغط على زر "إنشاء حساب"
+document.querySelector("button[type='submit']").addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  // اجمع البيانات من الحقول
+  const username = document.getElementById("username").value;
+  const studentName = document.getElementById("student-name").value;
+  const phone = document.getElementById("phone").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   try {
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const userId = userCredential.user.uid;
+    // إنشاء الحساب في Firebase
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-    // إضافة بيانات المستخدم إلى Firestore
-    await db.collection('users').doc(userId).set({
-      username,
-      studentName,
-      phone,
-      email
-    });
+    console.log("تم إنشاء الحساب بنجاح:", user);
 
-    alert('تم إنشاء الحساب بنجاح!');
-    window.location.href = 'index.html'; // توجيه للصفحة الرئيسية
+    // إعادة توجيه المستخدم إلى الصفحة الرئيسية
+    window.location.href = "index.html"; // استبدل "index.html" برابط صفحتك الرئيسية
   } catch (error) {
-    alert(`خطأ أثناء إنشاء الحساب: ${error.message}`);
+    console.error("خطأ أثناء إنشاء الحساب:", error.message);
+    alert("فشل إنشاء الحساب: " + error.message);
   }
 });
   </script>
