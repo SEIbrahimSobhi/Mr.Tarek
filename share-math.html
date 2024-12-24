@@ -90,19 +90,27 @@
       </a>
 
       <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="#hero" class="active">الرئيسية</a></li>
-          <li><a href="#about">الفيديوهات</a></li>
-          <li><a href="#services">أوراق ملخصات</a></li>
-          <li><a href="#call-to-action">مشاركة الأسئلة</a></li>
-          <li><a href="#features">ملخصات مدرسية</a></li>
-          <li><a href="#featured-services">امتحانات مدرسية</a></li>
-          <li><a href="#contact">اتصل بنا</a></li>
-          <li class="scroll-to-section"><div class="main-red-button"><a href="login.html">سجل معانا</a></div></li>
-          <li><a href="student-info.html" id="student-info-btn" style="display: none;">معلومات الطالب</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
+  <ul>
+    <li><a href="#hero" class="active">الرئيسية</a></li>
+    <li><a href="#about">الفيديوهات</a></li>
+    <li><a href="#services">أوراق ملخصات</a></li>
+    <li><a href="#call-to-action">مشاركة الأسئلة</a></li>
+    <li><a href="#features">ملخصات مدرسية</a></li>
+    <li><a href="#featured-services">امتحانات مدرسية</a></li>
+    <li><a href="#contact">اتصل بنا</a></li>
+    <li class="scroll-to-section">
+      <div class="main-red-button">
+        <a href="login.html" id="register-btn">سجل معانا</a>
+      </div>
+    </li>
+<li class="scroll-to-section">
+      <div class="main-red-button">
+        <a href="student-info.html" id="student-info-btn" style="display: none;">معلومات الطالب</a>
+      </div>
+    </li>
+  </ul>
+  <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+</nav>
 
     </div>
   </header>
@@ -207,6 +215,41 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+// تهيئة Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+  authDomain: "mr-tarek-2e40f.firebaseapp.com",
+  projectId: "mr-tarek-2e40f",
+  storageBucket: "mr-tarek-2e40f.appspot.com",
+  messagingSenderId: "807997869740",
+  appId: "1:807997869740:web:8eca7473d24693bf861909"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// التحقق من حالة تسجيل الدخول
+onAuthStateChanged(auth, (user) => {
+  const registerButton = document.getElementById("register-btn"); // زر سجل معانا
+  const studentInfoButton = document.getElementById("student-info-btn"); // زر معلومات الطالب في القائمة
+
+  if (user) {
+    // إذا كان المستخدم مسجل الدخول
+    registerButton.style.display = "none"; // إخفاء زر سجل معانا
+    studentInfoButton.style.display = "inline-block"; // عرض زر معلومات الطالب في القائمة
+  } else {
+    // إذا لم يكن المستخدم مسجل الدخول
+    registerButton.style.display = "inline-block"; // إظهار زر سجل معانا
+    studentInfoButton.style.display = "none"; // إخفاء زر معلومات الطالب
+    startNowButton.textContent = "سجل معانا"; // إعادة النص إلى سجل معانا
+    startNowButton.href = "login.html"; // التوجيه إلى صفحة التسجيل
+  }
+});
+</script>
   
   <!-- جافا سكريبت -->
 <script type="module">
