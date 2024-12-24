@@ -206,10 +206,9 @@
   <script src="assets/js/main.js"></script>
   
   <!-- جافا سكريبت -->
-<script type="module">
-  // إعداد Firebase
+  <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-  import { getFirestore, collection, addDoc, query, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+  import { getFirestore, collection, addDoc, query, orderBy, getDocs, doc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
   const firebaseConfig = {
@@ -221,25 +220,19 @@
     appId: "1:807997869740:web:8eca7473d24693bf861909"
   };
 
-  // تهيئة Firebase
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);  // للحصول على قاعدة البيانات Firestore
-  const auth = getAuth(app);  // للحصول على خدمة المصادقة
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-  // استخدام Firebase بعد التهيئة
-  console.log('Firebase Initialized');
-  
   let username = "";
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      username = user.displayName || "مستخدم مجهول";  // في حال كان displayName فارغاً
-      console.log("اسم المستخدم:", username);
+      username = user.displayName || "مستخدم مجهول";
     } else {
       alert("الرجاء تسجيل الدخول أولاً");
     }
   });
 
-  // إرسال السؤال إلى Firestore
   const postQuestionBtn = document.getElementById("postQuestionBtn");
   postQuestionBtn.addEventListener("click", () => {
     const questionInput = document.getElementById("questionInput").value;
@@ -249,14 +242,13 @@
         return;
       }
 
-      // استخدام addDoc بدلاً من db.collection().add()
       addDoc(collection(db, "questions"), {
         username: username,
         question: questionInput,
-        timestamp: new Date() // Timestamp باستخدام JS بدلاً من Firebase FieldValue
+        timestamp: new Date()
       }).then(() => {
         alert("تم إرسال السؤال بنجاح!");
-        loadQuestions(); // إعادة تحميل الأسئلة بعد الإرسال
+        loadQuestions();
       }).catch((error) => {
         console.error("خطأ في إرسال السؤال: ", error);
       });
@@ -264,17 +256,10 @@
       alert("الرجاء إدخال سؤال.");
     }
   });
-  
-  // تعريف دالة toggleComments مرة واحدة فقط
-  function toggleComments(questionId) {
-    const commentsContainer = document.getElementById(`comments-${questionId}`);
-    commentsContainer.style.display = (commentsContainer.style.display === "none" || commentsContainer.style.display === "") ? "block" : "none";
-  }
 
-  // تابع تحميل الأسئلة
   function loadQuestions() {
     const questionsList = document.getElementById("questionsList");
-    questionsList.innerHTML = "";  // تفريغ الأسئلة الحالية
+    questionsList.innerHTML = "";
 
     const q = query(collection(db, "questions"), orderBy("timestamp", "desc"));
     getDocs(q).then((querySnapshot) => {
@@ -286,32 +271,56 @@
         questionElement.innerHTML = `
           <div class="question-container" style="background-color: #f8f8f8; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
             <p><strong style="color: #e43c5c;">${questionData.username}:</strong> ${questionData.question}</p>
-            <div class="comments-container" id="comments-${doc.id}" style="margin-top: 10px;">
-              <!-- التعليقات سيتم إضافتها هنا -->
-            </div>
-            <button class="show-comments-btn" onclick="toggleComments('${doc.id}')" style="background-color: #e43c5c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">عرض التعليقات</button>
+            <div class="comments-container" id="comments-${doc.id}" style="margin-top: 10px;"></div>
+            <textarea id="commentInput-${doc.id}" placeholder="اكتب تعليقك هنا..." style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+            <button class="add-comment-btn" onclick="addComment('${doc.id}')" style="background-color: #e43c5c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">إضافة تعليق</button>
+            <button class="show-comments-btn" onclick="toggleComments('${doc.id}')" style="background-color: #555; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">عرض التعليقات</button>
           </div>
         `;
 
         questionsList.appendChild(questionElement);
-
-        loadComments(doc.id);  // تحميل التعليقات
+        loadComments(doc.id);
       });
     }).catch((error) => {
       console.error("خطأ في تحميل الأسئلة: ", error);
     });
   }
 
-  // تحميل التعليقات من Firestore
+  window.addComment = (questionId) => {
+    const commentInput = document.getElementById(`commentInput-${questionId}`).value;
+    if (commentInput.trim() === "") {
+      alert("الرجاء إدخال تعليق.");
+      return;
+    }
+
+    if (!username) {
+      alert("الرجاء تسجيل الدخول أولاً.");
+      return;
+    }
+
+    addDoc(collection(db, "questions", questionId, "comments"), {
+      username: username,
+      comment: commentInput,
+      timestamp: new Date()
+    }).then(() => {
+      alert("تم إضافة التعليق بنجاح!");
+      document.getElementById(`commentInput-${questionId}`).value = "";
+      loadComments(questionId);
+    }).catch((error) => {
+      console.error("خطأ في إضافة التعليق: ", error);
+    });
+  };
+
   function loadComments(questionId) {
     const commentsContainer = document.getElementById(`comments-${questionId}`);
-    commentsContainer.innerHTML = "";  // تفريغ التعليقات القديمة
+    commentsContainer.innerHTML = "";
 
-    // استعلام للتعليقات داخل السؤال المحدد
-    getDocs(collection(db, "questions", questionId, "comments")).then((querySnapshot) => {
+    const q = query(collection(db, "questions", questionId, "comments"), orderBy("timestamp", "desc"));
+    getDocs(q).then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         const commentData = doc.data();
         const commentElement = document.createElement("div");
+        commentElement.style = "background-color: #f2f2f2; padding: 10px; border-radius: 5px; margin-bottom: 5px;";
         commentElement.innerHTML = `<p><strong style="color: #e43c5c;">${commentData.username}:</strong> ${commentData.comment}</p>`;
         commentsContainer.appendChild(commentElement);
       });
@@ -320,9 +329,12 @@
     });
   }
 
-  // تحميل الأسئلة عند تحميل الصفحة
+  window.toggleComments = (questionId) => {
+    const commentsContainer = document.getElementById(`comments-${questionId}`);
+    commentsContainer.style.display = (commentsContainer.style.display === "none" || commentsContainer.style.display === "") ? "block" : "none";
+  };
+
   window.onload = loadQuestions;
 </script>
-
 </body>
 </html>
