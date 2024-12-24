@@ -212,10 +212,10 @@
 <script type="module">
   // إعداد Firebase
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+  import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-  import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
-  // إعداد Firebase
+ // إعداد Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
     authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -233,15 +233,16 @@
   // استخدام Firebase بعد التهيئة
   console.log('Firebase Initialized');
   
-    // الحصول على بيانات المستخدم
-    let username = "";
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        username = user.displayName;  // استخدام اسم المستخدم
-      } else {
-        alert("الرجاء تسجيل الدخول أولاً");
-      }
-    });
+  // الحصول على بيانات المستخدم
+  let username = "";
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      username = user.displayName;  // استخدام اسم المستخدم
+      console.log("اسم المستخدم:", username);
+    } else {
+      alert("الرجاء تسجيل الدخول أولاً");
+    }
+  });
 
     // إرسال السؤال إلى Firestore
     const postQuestionBtn = document.getElementById("postQuestionBtn");
