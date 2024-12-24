@@ -211,79 +211,83 @@
 
   
   <!-- جافا سكريبت -->
-  <script>
-    // إعداد Firebase
-    // إعداد Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-  authDomain: "mr-tarek-2e40f.firebaseapp.com",
-  projectId: "mr-tarek-2e40f",
-  storageBucket: "mr-tarek-2e40f.appspot.com",
-  messagingSenderId: "807997869740",
-  appId: "1:807997869740:web:8eca7473d24693bf861909"
-};
+<script type="module">
+  // إعداد Firebase
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+  import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
-firebase.initializeApp(firebaseConfig);
+  // إعداد Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+    authDomain: "mr-tarek-2e40f.firebaseapp.com",
+    projectId: "mr-tarek-2e40f",
+    storageBucket: "mr-tarek-2e40f.appspot.com",
+    messagingSenderId: "807997869740",
+    appId: "1:807997869740:web:8eca7473d24693bf861909"
+  };
 
-// إعداد قاعدة بيانات Firebase
-const db = firebase.firestore();
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-// الحصول على بيانات المستخدم
-firebase.auth().onAuthStateChanged((user) => {
+  // الحصول على بيانات المستخدم
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-        const username = user.displayName;  // تأكد من أن اسم المستخدم موجود في معلومات المستخدم
+      const username = user.displayName;  // تأكد من أن اسم المستخدم موجود في معلومات المستخدم
     } else {
-        alert("الرجاء تسجيل الدخول أولاً");
+      alert("الرجاء تسجيل الدخول أولاً");
     }
-});
+  });
 
-// إرسال السؤال إلى Firestore
-const postQuestionBtn = document.getElementById("postQuestionBtn");
-postQuestionBtn.addEventListener("click", () => {
+  // إرسال السؤال إلى Firestore
+  const postQuestionBtn = document.getElementById("postQuestionBtn");
+  postQuestionBtn.addEventListener("click", () => {
     const questionInput = document.getElementById("questionInput").value;
     if (questionInput.trim() !== "") {
-        const username = firebase.auth().currentUser.displayName;
+      const username = auth.currentUser.displayName;
 
-        // إضافة السؤال إلى Firestore
-        db.collection("questions").add({
-            username: username,
-            question: questionInput,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            alert("تم إرسال السؤال بنجاح!");
-            loadQuestions(); // إعادة تحميل الأسئلة بعد الإرسال
-        }).catch((error) => {
-            console.error("خطأ في إرسال السؤال: ", error);
-        });
+      // إضافة السؤال إلى Firestore
+      addDoc(collection(db, "questions"), {
+        username: username,
+        question: questionInput,
+        timestamp: serverTimestamp()
+      }).then(() => {
+        alert("تم إرسال السؤال بنجاح!");
+        loadQuestions(); // إعادة تحميل الأسئلة بعد الإرسال
+      }).catch((error) => {
+        console.error("خطأ في إرسال السؤال: ", error);
+      });
     } else {
-        alert("الرجاء إدخال سؤال.");
+      alert("الرجاء إدخال سؤال.");
     }
-});
+  });
 
-// تحميل الأسئلة من Firestore
-function loadQuestions() {
+  // تحميل الأسئلة من Firestore
+  function loadQuestions() {
     const questionsList = document.getElementById("questionsList");
     questionsList.innerHTML = "";  // تفريغ الأسئلة الحالية
 
-    db.collection("questions").orderBy("timestamp", "desc").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            const questionData = doc.data();
-            const questionElement = document.createElement("div");
-            questionElement.classList.add("question");
+    const q = query(collection(db, "questions"), orderBy("timestamp", "desc"));
+    getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const questionData = doc.data();
+        const questionElement = document.createElement("div");
+        questionElement.classList.add("question");
 
-            questionElement.innerHTML = `
-                <p><strong>${questionData.username}:</strong> ${questionData.question}</p>
-            `;
+        questionElement.innerHTML = `
+          <p><strong>${questionData.username}:</strong> ${questionData.question}</p>
+        `;
 
-            questionsList.appendChild(questionElement);
-        });
+        questionsList.appendChild(questionElement);
+      });
     }).catch((error) => {
-        console.error("خطأ في تحميل الأسئلة: ", error);
+      console.error("خطأ في تحميل الأسئلة: ", error);
     });
-}
+  }
 
-// تحميل الأسئلة عند تحميل الصفحة
-window.onload = loadQuestions;
-  </script>
+  // تحميل الأسئلة عند تحميل الصفحة
+  window.onload = loadQuestions;
+</script>
 </body>
 </html>
