@@ -29,15 +29,14 @@
 
   <style>
 .forum-container {
-    width: 80%;
-    margin: 0 auto;
+    background-color: #f9f9f9;
     padding: 20px;
-    background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
 }
 
-h1 {
+.forum-container h1 {
     text-align: center;
     color: #333;
 }
@@ -53,6 +52,7 @@ h1 {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 #postQuestionBtn {
@@ -71,10 +71,11 @@ h1 {
 #questionsList .question {
     margin-bottom: 15px;
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: #f1f1f1;
     border-radius: 5px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
+
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
@@ -133,7 +134,8 @@ h1 {
         </div>
         <div id="questionsList"></div>
     </div>
-  </main>
+    
+</main>
 
   <footer id="footer" class="footer dark-background">
 
@@ -211,19 +213,21 @@ h1 {
   <!-- جافا سكريبت -->
   <script>
     // إعداد Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+    // إعداد Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+  authDomain: "mr-tarek-2e40f.firebaseapp.com",
+  projectId: "mr-tarek-2e40f",
+  storageBucket: "mr-tarek-2e40f.appspot.com",
+  messagingSenderId: "807997869740",
+  appId: "1:807997869740:web:8eca7473d24693bf861909"
+};
 
 firebase.initializeApp(firebaseConfig);
 
 // إعداد قاعدة بيانات Firebase
 const db = firebase.firestore();
+
 // الحصول على بيانات المستخدم
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
@@ -256,7 +260,7 @@ postQuestionBtn.addEventListener("click", () => {
     }
 });
 
-    // تحميل الأسئلة من Firestore
+// تحميل الأسئلة من Firestore
 function loadQuestions() {
     const questionsList = document.getElementById("questionsList");
     questionsList.innerHTML = "";  // تفريغ الأسئلة الحالية
@@ -280,7 +284,6 @@ function loadQuestions() {
 
 // تحميل الأسئلة عند تحميل الصفحة
 window.onload = loadQuestions;
-
   </script>
 </body>
 </html>
