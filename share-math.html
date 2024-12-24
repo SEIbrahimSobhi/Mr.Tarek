@@ -15,6 +15,7 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
@@ -28,96 +29,137 @@
   <link href="assets/css/main.css" rel="stylesheet">
 
   <style>
-  #questionsList {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 0 15px;
-  }
+/* تصميم منتدى الأفكار */
+.forum-container {
+  width: 80%;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fdfdfd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+}
 
-  .question {
-    background: linear-gradient(145deg, #ffffff, #eaeaea);
-    border-radius: 15px;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
+.forum-title {
+  color: #e43c5c;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: "Cairo", sans-serif;
+}
 
-  .question:hover {
-    transform: scale(1.02);
-    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
-  }
+.post-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
 
-  .question-container {
-    padding: 15px;
-    border-radius: 10px;
-  }
+.question-input {
+  width: 100%;
+  height: 100px;
+  padding: 15px;
+  font-size: 1rem;
+  border: 2px solid #e43c5c;
+  border-radius: 10px;
+  resize: none;
+  outline: none;
+  font-family: "Cairo", sans-serif;
+}
 
-  .question p {
-    font-size: 18px;
-    line-height: 1.6;
-    margin: 0;
-  }
+.post-question-btn {
+  background-color: #e43c5c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: "Cairo", sans-serif;
+}
 
-  .comments-container {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    padding: 10px;
-    margin-top: 15px;
-    display: none;
-    border: 2px dashed #e43c5c;
-  }
+.post-question-btn:hover {
+  background-color: #d0324f;
+  transform: scale(1.05);
+}
 
-  .comments-container p {
-    font-size: 16px;
-    margin: 10px 0;
-  }
+/* تصميم الأسئلة */
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-  .add-comment-btn,
-  .show-comments-btn {
-    background-color: #e43c5c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    margin-top: 10px;
-  }
+.question-container {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
 
-  .add-comment-btn:hover,
-  .show-comments-btn:hover {
-    background-color: #d12c4d;
-    box-shadow: 0px 5px 15px rgba(228, 60, 92, 0.3);
-  }
+.question-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
 
-  .add-comment-btn:active,
-  .show-comments-btn:active {
-    transform: scale(0.98);
-  }
+.question-container p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-family: "Cairo", sans-serif;
+}
 
-  textarea {
-    width: 100%;
-    padding: 15px;
-    margin-top: 10px;
-    border: 2px solid #e43c5c;
-    border-radius: 10px;
-    resize: none;
-    font-size: 16px;
-    box-shadow: inset 0px 3px 5px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
+.question-container p strong {
+  color: #e43c5c;
+}
 
-  textarea:focus {
-    border-color: #d12c4d;
-    box-shadow: inset 0px 5px 10px rgba(228, 60, 92, 0.2);
-    outline: none;
-  }
+/* تصميم التعليقات */
+textarea[id^="commentInput"] {
+  width: 100%;
+  height: 60px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  resize: none;
+  font-family: "Cairo", sans-serif;
+}
 
-  button {
-    font-family: inherit;
-    font-size: 16px;
-  }
+.add-comment-btn, .show-comments-btn {
+  background-color: #e43c5c;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "Cairo", sans-serif;
+  margin-top: 10px;
+  margin-right: 10px;
+  transition: 0.3s;
+}
+
+.add-comment-btn:hover, .show-comments-btn:hover {
+  background-color: #d0324f;
+}
+
+/* تصميم التعليقات المضافة */
+.comments-container {
+  display: none;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.comments-container p {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.comments-container p strong {
+  color: #e43c5c;
+}
   </style>
 </head>
 <body class="starter-page-page">
@@ -164,14 +206,16 @@
     </div><!-- End Page Title -->
     
    <div class="forum-container">
-      <h1 style="color: #e43c5c;">منتدى الأفكار والمناقشات</h1>
-      <div class="post-container">
-        <textarea id="questionInput" placeholder="أدخل سؤالك هنا..."></textarea>
-        <button id="postQuestionBtn" style="background-color: #e43c5c;">أرسل السؤال</button>
-      </div>
+  <h1 class="forum-title">منتدى الأفكار والمناقشات</h1>
+  <div class="post-container">
+    <textarea id="questionInput" class="question-input" placeholder="أدخل سؤالك هنا..."></textarea>
+    <button id="postQuestionBtn" class="post-question-btn">أرسل السؤال</button>
+  </div>
 
-      <div id="questionsList"></div>
-    </div>
+  <div id="questionsList" class="questions-list">
+    <!-- الأسئلة تظهر هنا -->
+  </div>
+</div>
     
 </main>
 
