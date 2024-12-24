@@ -310,38 +310,49 @@ textarea[id^="commentInput"] {
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  let username = "";
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      username = user.displayName || "مستخدم مجهول";
+ let username = "";
+
+// التحقق من المستخدم الحالي وجلب اسم المستخدم من Firestore
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userDocRef = doc(db, "users", user.uid); // افترض أن البيانات موجودة في مجموعة users
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      username = userDoc.data().username || "مستخدم مجهول";
     } else {
-      alert("الرجاء تسجيل الدخول أولاً");
+      console.error("لا يوجد بيانات للمستخدم في Firestore.");
+      username = "مستخدم مجهول";
     }
-  });
+  } else {
+    alert("الرجاء تسجيل الدخول أولاً");
+    window.location.href = "login.html"; // إعادة التوجيه إلى صفحة تسجيل الدخول
+  }
+});
 
   const postQuestionBtn = document.getElementById("postQuestionBtn");
   postQuestionBtn.addEventListener("click", () => {
-    const questionInput = document.getElementById("questionInput").value;
-    if (questionInput.trim() !== "") {
-      if (!username) {
-        alert("الرجاء تسجيل الدخول أولاً");
-        return;
-      }
-
-      addDoc(collection(db, "questions"), {
-        username: username,
-        question: questionInput,
-        timestamp: new Date()
-      }).then(() => {
-        alert("تم إرسال السؤال بنجاح!");
-        loadQuestions();
-      }).catch((error) => {
-        console.error("خطأ في إرسال السؤال: ", error);
-      });
-    } else {
-      alert("الرجاء إدخال سؤال.");
+  const questionInput = document.getElementById("questionInput").value;
+  if (questionInput.trim() !== "") {
+    if (!username) {
+      alert("الرجاء تسجيل الدخول أولاً");
+      return;
     }
-  });
+
+    addDoc(collection(db, "questions"), {
+      username: username,
+      question: questionInput,
+      timestamp: new Date()
+    }).then(() => {
+      alert("تم إرسال السؤال بنجاح!");
+      loadQuestions();
+    }).catch((error) => {
+      console.error("خطأ في إرسال السؤال: ", error);
+    });
+  } else {
+    alert("الرجاء إدخال سؤال.");
+  }
+});
 
   function loadQuestions() {
     const questionsList = document.getElementById("questionsList");
@@ -373,29 +384,29 @@ textarea[id^="commentInput"] {
   }
 
   window.addComment = (questionId) => {
-    const commentInput = document.getElementById(`commentInput-${questionId}`).value;
-    if (commentInput.trim() === "") {
-      alert("الرجاء إدخال تعليق.");
-      return;
-    }
+  const commentInput = document.getElementById(`commentInput-${questionId}`).value;
+  if (commentInput.trim() === "") {
+    alert("الرجاء إدخال تعليق.");
+    return;
+  }
 
-    if (!username) {
-      alert("الرجاء تسجيل الدخول أولاً.");
-      return;
-    }
+  if (!username) {
+    alert("الرجاء تسجيل الدخول أولاً.");
+    return;
+  }
 
-    addDoc(collection(db, "questions", questionId, "comments"), {
-      username: username,
-      comment: commentInput,
-      timestamp: new Date()
-    }).then(() => {
-      alert("تم إضافة التعليق بنجاح!");
-      document.getElementById(`commentInput-${questionId}`).value = "";
-      loadComments(questionId);
-    }).catch((error) => {
-      console.error("خطأ في إضافة التعليق: ", error);
-    });
-  };
+  addDoc(collection(db, "questions", questionId, "comments"), {
+    username: username,
+    comment: commentInput,
+    timestamp: new Date()
+  }).then(() => {
+    alert("تم إضافة التعليق بنجاح!");
+    document.getElementById(`commentInput-${questionId}`).value = "";
+    loadComments(questionId);
+  }).catch((error) => {
+    console.error("خطأ في إضافة التعليق: ", error);
+  });
+};
 
   function loadComments(questionId) {
     const commentsContainer = document.getElementById(`comments-${questionId}`);
