@@ -264,12 +264,14 @@ onAuthStateChanged(auth, (user) => {
       alert("الرجاء إدخال سؤال.");
     }
   });
+  
+// تعريف دالة toggleComments مرة واحدة فقط
 function toggleComments(questionId) {
   const commentsContainer = document.getElementById(`comments-${questionId}`);
   commentsContainer.style.display = (commentsContainer.style.display === "none" || commentsContainer.style.display === "") ? "block" : "none";
 }
 
-// كود تحميل الأسئلة
+// تابع تحميل الأسئلة
 function loadQuestions() {
   const questionsList = document.getElementById("questionsList");
   questionsList.innerHTML = "";  // تفريغ الأسئلة الحالية
