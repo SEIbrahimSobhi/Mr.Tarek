@@ -4,70 +4,110 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>معلومات الطالب</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f9fc;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      color: #333;
-    }
+ <style>
+ body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to bottom, #f0f0f0, #d9d9d9);
+  color: #333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    header {
-      background-color: #004080;
-      color: white;
-      padding: 20px 0;
-    }
+.student-info-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #444;
+}
 
-    main {
-      padding: 20px;
-    }
+.info-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-    .student-info {
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      padding: 20px;
-      text-align: right;
-    }
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    .student-info h2 {
-      margin-bottom: 20px;
-      color: #004080;
-    }
+.label {
+  font-weight: bold;
+  color: #666;
+}
 
-    .student-info p {
-      margin: 10px 0;
-      font-size: 18px;
-    }
+.value {
+  color: #333;
+}
 
-    .student-info strong {
-      color: #555;
-    }
+.logout-btn {
+  background: linear-gradient(135deg, #ff5a5f, #c81d25);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 20px;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #c81d25, #ff5a5f);
+}
+
+.logout-btn:active {
+  transform: scale(0.95);
+}
   </style>
 </head>
 <body>
-  <header>
+  <div class="student-info-container">
     <h1>معلومات الطالب</h1>
-  </header>
-  <main>
-    <div id="student-info" class="student-info">
-      <p>جاري تحميل البيانات...</p>
+    <div class="info-card">
+      <div class="info-item">
+        <span class="label">اسم المستخدم:</span>
+        <span class="value" id="username">-</span>
+      </div>
+      <div class="info-item">
+        <span class="label">اسم الطالب:</span>
+        <span class="value" id="student-name">-</span>
+      </div>
+      <div class="info-item">
+        <span class="label">رقم الهاتف:</span>
+        <span class="value" id="phone">-</span>
+      </div>
+      <div class="info-item">
+        <span class="label">الإيميل:</span>
+        <span class="value" id="email">-</span>
+      </div>
     </div>
-  </main>
+    <button class="logout-btn" id="logout-btn">تسجيل الخروج</button>
+  </div>
 
+  <!-- جافا سكريبت لتحميل البيانات وتسجيل الخروج -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
     // تهيئة Firebase
@@ -84,32 +124,30 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const studentInfoDiv = document.getElementById("student-info");
-
-    // التحقق من حالة تسجيل الدخول
+    // تحميل بيانات المستخدم
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // جلب معرف المستخدم
-        const userId = user.uid;
-
-        // جلب بيانات المستخدم من Firestore
-        const docRef = doc(db, "users", userId);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          // عرض البيانات
-          studentInfoDiv.innerHTML = `
-            <h2>مرحبًا، ${userData.username}</h2>
-            <p><strong>اسم الطالب:</strong> ${userData.fullName}</p>
-            <p><strong>رقم الهاتف:</strong> ${userData.phone}</p>
-            <p><strong>البريد الإلكتروني:</strong> ${user.email}</p>
-          `;
-        } else {
-          studentInfoDiv.innerHTML = `<p>لم يتم العثور على بيانات المستخدم.</p>`;
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          document.getElementById("username").textContent = data.username || "-";
+          document.getElementById("student-name").textContent = data.fullName || "-";
+          document.getElementById("phone").textContent = data.phone || "-";
+          document.getElementById("email").textContent = data.email || "-";
         }
       } else {
-        studentInfoDiv.innerHTML = `<p>يرجى تسجيل الدخول لعرض معلوماتك.</p>`;
+        window.location.href = "login.html";
+      }
+    });
+
+    // تسجيل الخروج
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        window.location.href = "login.html";
+      } catch (error) {
+        console.error("خطأ أثناء تسجيل الخروج:", error.message);
+        alert("حدث خطأ أثناء تسجيل الخروج.");
       }
     });
   </script>
