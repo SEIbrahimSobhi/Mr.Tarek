@@ -26,102 +26,65 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
-   <style>
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f4f4;
-  color: #333;
-}
 
-.forum-container {
-  width: 90%;
-  max-width: 800px;
-  margin: 20px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  color: #444;
-}
-
-.add-question {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-#question-input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
-}
-
-#add-question-btn {
-  background: #5cb85c;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#add-question-btn:hover {
-  background: #4cae4c;
-}
-
-.question {
-  margin-bottom: 20px;
-  padding: 10px;
-  background: #f9f9f9;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.question .username {
-  font-size: 14px;
-  color: #888;
-}
-
-.comments {
-  margin-top: 10px;
-  padding-left: 10px;
-  border-left: 2px solid #ddd;
-}
-
-.comment {
-  margin-bottom: 5px;
-}
-
-input[type="text"] {
-  width: calc(100% - 120px);
-  padding: 5px;
-  margin-right: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-button {
-  padding: 5px 10px;
-  background: #337ab7;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #286090;
-}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+    }
+    main {
+      padding: 20px;
+    }
+    .question-form, .question {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .question h3 {
+      margin: 0 0 10px 0;
+    }
+    .comments {
+      margin-top: 10px;
+      padding-left: 15px;
+      border-left: 3px solid #007bff;
+    }
+    .comment {
+      margin-bottom: 10px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
   </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
-
 <body class="starter-page-page">
 
   <header id="header" class="header d-flex align-items-center fixed-top">
@@ -167,21 +130,15 @@ button:hover {
       </div>
     </div><!-- End Page Title -->
     
-      <!-- Section Title -->
-        <div class="forum-container">
-    <h1>منتدى الأفكار والمناقشات</h1>
-
-    <!-- إضافة سؤال -->
-    <div class="add-question">
-      <textarea id="question-input" placeholder="اكتب سؤالك هنا..." rows="4"></textarea>
-      <button id="add-question-btn">إضافة السؤال</button>
-    </div>
-
-    <div id="questions-list">
-      <!-- قائمة الأسئلة والتعليقات ستظهر هنا -->
-    </div>
-  </div>
-
+    <section class="question-form">
+      <h2>أضف سؤالاً جديداً</h2>
+      <textarea id="question-input" placeholder="اكتب سؤالك هنا..." required></textarea>
+      <button id="post-question">إرسال السؤال</button>
+    </section>
+    <section id="questions-container">
+      <h2>الأسئلة</h2>
+      <!-- الأسئلة ستُعرض هنا -->
+    </section>
   </main>
 
   <footer id="footer" class="footer dark-background">
@@ -258,11 +215,7 @@ button:hover {
 
   
   <!-- جافا سكريبت -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-
+  <script>
     // إعداد Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
@@ -273,123 +226,83 @@ button:hover {
       appId: "1:807997869740:web:8eca7473d24693bf861909"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    let currentUser = null;
-
-    // التحقق من تسجيل الدخول
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentUser = user;
-        loadQuestions(user.uid);
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    // تحميل الأسئلة
-    async function loadQuestions(userId) {
-      const questionsList = document.getElementById("questions-list");
-      questionsList.innerHTML = "";
-
-      const q = query(collection(db, "questions"), where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((doc) => {
-        const questionData = doc.data();
-        const questionItem = createQuestionElement(doc.id, questionData);
-        questionsList.appendChild(questionItem);
-      });
-    }
-
-    // إنشاء عنصر سؤال
-    function createQuestionElement(id, data) {
-      const questionDiv = document.createElement("div");
-      questionDiv.className = "question";
-
-      const questionText = document.createElement("p");
-      questionText.textContent = data.question;
-      questionDiv.appendChild(questionText);
-
-      const usernameSpan = document.createElement("span");
-      usernameSpan.className = "username";
-      usernameSpan.textContent = `(${data.username})`;
-      questionDiv.appendChild(usernameSpan);
-
-      const commentsDiv = document.createElement("div");
-      commentsDiv.className = "comments";
-
-      data.comments.forEach((comment) => {
-        const commentDiv = document.createElement("div");
-        commentDiv.className = "comment";
-        commentDiv.textContent = `${comment.username}: ${comment.text}`;
-        commentsDiv.appendChild(commentDiv);
-      });
-
-      questionDiv.appendChild(commentsDiv);
-
-      // إضافة تعليق
-      const commentInput = document.createElement("input");
-      commentInput.type = "text";
-      commentInput.placeholder = "اكتب تعليقك...";
-      questionDiv.appendChild(commentInput);
-
-      const commentBtn = document.createElement("button");
-      commentBtn.textContent = "إضافة تعليق";
-      commentBtn.addEventListener("click", () => addComment(id, commentInput.value));
-      questionDiv.appendChild(commentBtn);
-
-      return questionDiv;
-    }
-
-    // إضافة سؤال جديد
-    document.getElementById("add-question-btn").addEventListener("click", async () => {
-      const questionInput = document.getElementById("question-input").value;
-
-      if (questionInput.trim() === "") {
-        alert("يرجى كتابة السؤال!");
-        return;
-      }
+    // تسجيل السؤال
+    document.getElementById('post-question').addEventListener('click', async () => {
+      const questionText = document.getElementById('question-input').value;
+      if (questionText.trim() === '') return alert('الرجاء إدخال السؤال.');
 
       try {
-        await addDoc(collection(db, "questions"), {
-          question: questionInput,
-          userId: currentUser.uid,
-          username: currentUser.email.split("@")[0], // استخدام الجزء الأول من الإيميل كاسم المستخدم
-          comments: []
+        await db.collection('questions').add({
+          text: questionText,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
-
-        document.getElementById("question-input").value = "";
-        loadQuestions(currentUser.uid);
+        document.getElementById('question-input').value = '';
+        alert('تم إرسال السؤال بنجاح!');
       } catch (error) {
-        console.error("خطأ أثناء إضافة السؤال:", error.message);
+        console.error('خطأ في إرسال السؤال:', error);
       }
     });
 
-    // إضافة تعليق
-    async function addComment(questionId, commentText) {
-      if (commentText.trim() === "") {
-        alert("يرجى كتابة التعليق!");
-        return;
-      }
+    // عرض الأسئلة
+    db.collection('questions').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+      const questionsContainer = document.getElementById('questions-container');
+      questionsContainer.innerHTML = '<h2>الأسئلة</h2>';
 
-      const questionRef = doc(db, "questions", questionId);
-      const questionDoc = await getDoc(questionRef);
+      snapshot.forEach((doc) => {
+        const question = doc.data();
+        const questionElement = document.createElement('div');
+        questionElement.className = 'question';
+        questionElement.innerHTML = `
+          <h3>${question.text}</h3>
+          <textarea placeholder="أضف تعليقًا..." data-id="${doc.id}"></textarea>
+          <button data-id="${doc.id}">إرسال التعليق</button>
+          <div class="comments" id="comments-${doc.id}"></div>
+        `;
+        questionsContainer.appendChild(questionElement);
 
-      if (questionDoc.exists()) {
-        const questionData = questionDoc.data();
-        questionData.comments.push({
-          username: currentUser.email.split("@")[0],
-          text: commentText
+        // عرض التعليقات
+        loadComments(doc.id);
+
+        // إرسال تعليق
+        questionElement.querySelector('button').addEventListener('click', async (e) => {
+          const questionId = e.target.dataset.id;
+          const commentInput = questionElement.querySelector(`textarea[data-id="${questionId}"]`);
+          const commentText = commentInput.value;
+
+          if (commentText.trim() === '') return alert('الرجاء إدخال التعليق.');
+
+          try {
+            await db.collection('questions').doc(questionId).collection('comments').add({
+              text: commentText,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            });
+            commentInput.value = '';
+            loadComments(questionId);
+          } catch (error) {
+            console.error('خطأ في إرسال التعليق:', error);
+          }
         });
+      });
+    });
 
-        await addDoc(questionRef, questionData);
-        loadQuestions(currentUser.uid);
-      }
+    // تحميل التعليقات
+    async function loadComments(questionId) {
+      const commentsContainer = document.getElementById(`comments-${questionId}`);
+      const commentsSnapshot = await db.collection('questions').doc(questionId).collection('comments').orderBy('createdAt', 'desc').get();
+
+      commentsContainer.innerHTML = '';
+      commentsSnapshot.forEach((doc) => {
+        const comment = doc.data();
+        const commentElement = document.createElement('div');
+        commentElement.className = 'comment';
+        commentElement.textContent = comment.text;
+        commentsContainer.appendChild(commentElement);
+      });
     }
   </script>
 </body>
-
 </html>
