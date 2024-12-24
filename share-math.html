@@ -229,15 +229,15 @@
   // استخدام Firebase بعد التهيئة
   console.log('Firebase Initialized');
   
-let username = "";
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    username = user.displayName || "مستخدم مجهول";  // في حال كان displayName فارغاً
-    console.log("اسم المستخدم:", username);
-  } else {
-    alert("الرجاء تسجيل الدخول أولاً");
-  }
-});
+  let username = "";
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      username = user.displayName || "مستخدم مجهول";  // في حال كان displayName فارغاً
+      console.log("اسم المستخدم:", username);
+    } else {
+      alert("الرجاء تسجيل الدخول أولاً");
+    }
+  });
 
   // إرسال السؤال إلى Firestore
   const postQuestionBtn = document.getElementById("postQuestionBtn");
@@ -265,42 +265,42 @@ onAuthStateChanged(auth, (user) => {
     }
   });
   
-// تعريف دالة toggleComments مرة واحدة فقط
-function toggleComments(questionId) {
-  const commentsContainer = document.getElementById(`comments-${questionId}`);
-  commentsContainer.style.display = (commentsContainer.style.display === "none" || commentsContainer.style.display === "") ? "block" : "none";
-}
+  // تعريف دالة toggleComments مرة واحدة فقط
+  function toggleComments(questionId) {
+    const commentsContainer = document.getElementById(`comments-${questionId}`);
+    commentsContainer.style.display = (commentsContainer.style.display === "none" || commentsContainer.style.display === "") ? "block" : "none";
+  }
 
-// تابع تحميل الأسئلة
-function loadQuestions() {
-  const questionsList = document.getElementById("questionsList");
-  questionsList.innerHTML = "";  // تفريغ الأسئلة الحالية
+  // تابع تحميل الأسئلة
+  function loadQuestions() {
+    const questionsList = document.getElementById("questionsList");
+    questionsList.innerHTML = "";  // تفريغ الأسئلة الحالية
 
-  const q = query(collection(db, "questions"), orderBy("timestamp", "desc"));
-  getDocs(q).then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      const questionData = doc.data();
-      const questionElement = document.createElement("div");
-      questionElement.classList.add("question");
+    const q = query(collection(db, "questions"), orderBy("timestamp", "desc"));
+    getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const questionData = doc.data();
+        const questionElement = document.createElement("div");
+        questionElement.classList.add("question");
 
-      questionElement.innerHTML = `
-        <div class="question-container" style="background-color: #f8f8f8; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
-          <p><strong style="color: #e43c5c;">${questionData.username}:</strong> ${questionData.question}</p>
-          <div class="comments-container" id="comments-${doc.id}" style="margin-top: 10px;">
-            <!-- التعليقات سيتم إضافتها هنا -->
+        questionElement.innerHTML = `
+          <div class="question-container" style="background-color: #f8f8f8; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+            <p><strong style="color: #e43c5c;">${questionData.username}:</strong> ${questionData.question}</p>
+            <div class="comments-container" id="comments-${doc.id}" style="margin-top: 10px;">
+              <!-- التعليقات سيتم إضافتها هنا -->
+            </div>
+            <button class="show-comments-btn" onclick="toggleComments('${doc.id}')" style="background-color: #e43c5c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">عرض التعليقات</button>
           </div>
-          <button class="show-comments-btn" onclick="toggleComments('${doc.id}')" style="background-color: #e43c5c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">عرض التعليقات</button>
-        </div>
-      `;
+        `;
 
-      questionsList.appendChild(questionElement);
+        questionsList.appendChild(questionElement);
 
-      loadComments(doc.id);  // تحميل التعليقات
+        loadComments(doc.id);  // تحميل التعليقات
+      });
+    }).catch((error) => {
+      console.error("خطأ في تحميل الأسئلة: ", error);
     });
-  }).catch((error) => {
-    console.error("خطأ في تحميل الأسئلة: ", error);
-  });
-}
+  }
 
   // تحميل التعليقات من Firestore
   function loadComments(questionId) {
@@ -320,14 +320,9 @@ function loadQuestions() {
     });
   }
 
-  // عرض أو إخفاء التعليقات
-  function toggleComments(questionId) {
-    const commentsContainer = document.getElementById(`comments-${questionId}`);
-    commentsContainer.style.display = (commentsContainer.style.display === "none" || commentsContainer.style.display === "") ? "block" : "none";
-  }
-
   // تحميل الأسئلة عند تحميل الصفحة
   window.onload = loadQuestions;
 </script>
+
 </body>
 </html>
