@@ -294,7 +294,7 @@ textarea[id^="commentInput"] {
   <!-- جافا سكريبت -->
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-  import { getFirestore, collection, addDoc, query, orderBy, getDocs, doc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+  import { getFirestore, collection, addDoc, query, orderBy, getDocs, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
   import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
   const firebaseConfig = {
@@ -310,56 +310,61 @@ textarea[id^="commentInput"] {
   const db = getFirestore(app);
   const auth = getAuth(app);
 
- let username = "";
+  let username = "";
 
-// التحقق من المستخدم الحالي وجلب اسم المستخدم من Firestore
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const userDocRef = doc(db, "users", user.uid); // افترض أن البيانات موجودة في مجموعة users
-    const userDoc = await getDoc(userDocRef);
-
-    if (userDoc.exists()) {
-      username = userDoc.data().username || "مستخدم مجهول";
+  // التحقق من المستخدم الحالي وجلب اسم المستخدم من Firestore
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userDocRef = doc(db, "users", user.uid); // افترض أن البيانات موجودة في مجموعة users
+      try {
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          username = userDoc.data().username || "مستخدم مجهول";
+        } else {
+          console.error("لا يوجد بيانات للمستخدم في Firestore.");
+          username = "مستخدم مجهول";
+        }
+      } catch (error) {
+        console.error("خطأ في جلب بيانات المستخدم:", error);
+      }
     } else {
-      console.error("لا يوجد بيانات للمستخدم في Firestore.");
-      username = "مستخدم مجهول";
+      alert("الرجاء تسجيل الدخول أولاً");
+      window.location.href = "login.html"; // إعادة التوجيه إلى صفحة تسجيل الدخول
     }
-  } else {
-    alert("الرجاء تسجيل الدخول أولاً");
-    window.location.href = "login.html"; // إعادة التوجيه إلى صفحة تسجيل الدخول
-  }
-});
+  });
 
   const postQuestionBtn = document.getElementById("postQuestionBtn");
-  postQuestionBtn.addEventListener("click", () => {
-  const questionInput = document.getElementById("questionInput").value;
-  if (questionInput.trim() !== "") {
-    if (!username) {
-      alert("الرجاء تسجيل الدخول أولاً");
-      return;
+  postQuestionBtn.addEventListener("click", async () => {
+    const questionInput = document.getElementById("questionInput").value;
+    if (questionInput.trim() !== "") {
+      if (!username) {
+        alert("الرجاء تسجيل الدخول أولاً");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "questions"), {
+          username: username,
+          question: questionInput,
+          timestamp: new Date()
+        });
+        alert("تم إرسال السؤال بنجاح!");
+        loadQuestions();
+      } catch (error) {
+        console.error("خطأ في إرسال السؤال: ", error);
+      }
+    } else {
+      alert("الرجاء إدخال سؤال.");
     }
+  });
 
-    addDoc(collection(db, "questions"), {
-      username: username,
-      question: questionInput,
-      timestamp: new Date()
-    }).then(() => {
-      alert("تم إرسال السؤال بنجاح!");
-      loadQuestions();
-    }).catch((error) => {
-      console.error("خطأ في إرسال السؤال: ", error);
-    });
-  } else {
-    alert("الرجاء إدخال سؤال.");
-  }
-});
-
-  function loadQuestions() {
+  async function loadQuestions() {
     const questionsList = document.getElementById("questionsList");
     questionsList.innerHTML = "";
 
     const q = query(collection(db, "questions"), orderBy("timestamp", "desc"));
-    getDocs(q).then((querySnapshot) => {
+    try {
+      const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         const questionData = doc.data();
         const questionElement = document.createElement("div");
@@ -378,42 +383,44 @@ onAuthStateChanged(auth, async (user) => {
         questionsList.appendChild(questionElement);
         loadComments(doc.id);
       });
-    }).catch((error) => {
+    } catch (error) {
       console.error("خطأ في تحميل الأسئلة: ", error);
-    });
+    }
   }
 
-  window.addComment = (questionId) => {
-  const commentInput = document.getElementById(`commentInput-${questionId}`).value;
-  if (commentInput.trim() === "") {
-    alert("الرجاء إدخال تعليق.");
-    return;
-  }
+  window.addComment = async (questionId) => {
+    const commentInput = document.getElementById(`commentInput-${questionId}`).value;
+    if (commentInput.trim() === "") {
+      alert("الرجاء إدخال تعليق.");
+      return;
+    }
 
-  if (!username) {
-    alert("الرجاء تسجيل الدخول أولاً.");
-    return;
-  }
+    if (!username) {
+      alert("الرجاء تسجيل الدخول أولاً.");
+      return;
+    }
 
-  addDoc(collection(db, "questions", questionId, "comments"), {
-    username: username,
-    comment: commentInput,
-    timestamp: new Date()
-  }).then(() => {
-    alert("تم إضافة التعليق بنجاح!");
-    document.getElementById(`commentInput-${questionId}`).value = "";
-    loadComments(questionId);
-  }).catch((error) => {
-    console.error("خطأ في إضافة التعليق: ", error);
-  });
-};
+    try {
+      await addDoc(collection(db, "questions", questionId, "comments"), {
+        username: username,
+        comment: commentInput,
+        timestamp: new Date()
+      });
+      alert("تم إضافة التعليق بنجاح!");
+      document.getElementById(`commentInput-${questionId}`).value = "";
+      loadComments(questionId);
+    } catch (error) {
+      console.error("خطأ في إضافة التعليق: ", error);
+    }
+  };
 
-  function loadComments(questionId) {
+  async function loadComments(questionId) {
     const commentsContainer = document.getElementById(`comments-${questionId}`);
     commentsContainer.innerHTML = "";
 
     const q = query(collection(db, "questions", questionId, "comments"), orderBy("timestamp", "desc"));
-    getDocs(q).then((querySnapshot) => {
+    try {
+      const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         const commentData = doc.data();
         const commentElement = document.createElement("div");
@@ -421,9 +428,9 @@ onAuthStateChanged(auth, async (user) => {
         commentElement.innerHTML = `<p><strong style="color: #e43c5c;">${commentData.username}:</strong> ${commentData.comment}</p>`;
         commentsContainer.appendChild(commentElement);
       });
-    }).catch((error) => {
+    } catch (error) {
       console.error("خطأ في تحميل التعليقات: ", error);
-    });
+    }
   }
 
   window.toggleComments = (questionId) => {
