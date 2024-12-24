@@ -28,58 +28,53 @@
   <link href="assets/css/main.css" rel="stylesheet">
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      color: #333;
-    }
-    header {
-      background-color: #007bff;
-      color: white;
-      padding: 10px 20px;
-      text-align: center;
-    }
-    main {
-      padding: 20px;
-    }
-    .question-form, .question {
-      margin-bottom: 20px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #fff;
-    }
-    .question {
-      margin-bottom: 15px;
-    }
-    .question h3 {
-      margin: 0 0 10px 0;
-    }
-    .comments {
-      margin-top: 10px;
-      padding-left: 15px;
-      border-left: 3px solid #007bff;
-    }
-    .comment {
-      margin-bottom: 10px;
-    }
-    input, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
+.forum-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.post-container {
+    margin-bottom: 20px;
+}
+
+#questionInput {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#postQuestionBtn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#postQuestionBtn:hover {
+    background-color: #45a049;
+}
+
+#questionsList .question {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
@@ -130,15 +125,14 @@
       </div>
     </div><!-- End Page Title -->
     
-    <section class="question-form">
-      <h2>أضف سؤالاً جديداً</h2>
-      <textarea id="question-input" placeholder="اكتب سؤالك هنا..." required></textarea>
-      <button id="post-question">إرسال السؤال</button>
-    </section>
-    <section id="questions-container">
-      <h2>الأسئلة</h2>
-      <!-- الأسئلة ستُعرض هنا -->
-    </section>
+    <div class="forum-container">
+        <h1>منتدى الأفكار والمناقشات</h1>
+        <div class="post-container">
+            <textarea id="questionInput" placeholder="أدخل سؤالك هنا..."></textarea>
+            <button id="postQuestionBtn">أرسل السؤال</button>
+        </div>
+        <div id="questionsList"></div>
+    </div>
   </main>
 
   <footer id="footer" class="footer dark-background">
@@ -226,83 +220,67 @@
       appId: "1:807997869740:web:8eca7473d24693bf861909"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
 
-    // تسجيل السؤال
-    document.getElementById('post-question').addEventListener('click', async () => {
-      const questionText = document.getElementById('question-input').value;
-      if (questionText.trim() === '') return alert('الرجاء إدخال السؤال.');
-
-      try {
-        await db.collection('questions').add({
-          text: questionText,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
-        document.getElementById('question-input').value = '';
-        alert('تم إرسال السؤال بنجاح!');
-      } catch (error) {
-        console.error('خطأ في إرسال السؤال:', error);
-      }
-    });
-
-    // عرض الأسئلة
-    db.collection('questions').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
-      const questionsContainer = document.getElementById('questions-container');
-      questionsContainer.innerHTML = '<h2>الأسئلة</h2>';
-
-      snapshot.forEach((doc) => {
-        const question = doc.data();
-        const questionElement = document.createElement('div');
-        questionElement.className = 'question';
-        questionElement.innerHTML = `
-          <h3>${question.text}</h3>
-          <textarea placeholder="أضف تعليقًا..." data-id="${doc.id}"></textarea>
-          <button data-id="${doc.id}">إرسال التعليق</button>
-          <div class="comments" id="comments-${doc.id}"></div>
-        `;
-        questionsContainer.appendChild(questionElement);
-
-        // عرض التعليقات
-        loadComments(doc.id);
-
-        // إرسال تعليق
-        questionElement.querySelector('button').addEventListener('click', async (e) => {
-          const questionId = e.target.dataset.id;
-          const commentInput = questionElement.querySelector(`textarea[data-id="${questionId}"]`);
-          const commentText = commentInput.value;
-
-          if (commentText.trim() === '') return alert('الرجاء إدخال التعليق.');
-
-          try {
-            await db.collection('questions').doc(questionId).collection('comments').add({
-              text: commentText,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            });
-            commentInput.value = '';
-            loadComments(questionId);
-          } catch (error) {
-            console.error('خطأ في إرسال التعليق:', error);
-          }
-        });
-      });
-    });
-
-    // تحميل التعليقات
-    async function loadComments(questionId) {
-      const commentsContainer = document.getElementById(`comments-${questionId}`);
-      const commentsSnapshot = await db.collection('questions').doc(questionId).collection('comments').orderBy('createdAt', 'desc').get();
-
-      commentsContainer.innerHTML = '';
-      commentsSnapshot.forEach((doc) => {
-        const comment = doc.data();
-        const commentElement = document.createElement('div');
-        commentElement.className = 'comment';
-        commentElement.textContent = comment.text;
-        commentsContainer.appendChild(commentElement);
-      });
+// إعداد قاعدة بيانات Firebase
+const db = firebase.firestore();
+// الحصول على بيانات المستخدم
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        const username = user.displayName;  // تأكد من أن اسم المستخدم موجود في معلومات المستخدم
+    } else {
+        alert("الرجاء تسجيل الدخول أولاً");
     }
+});
+
+// إرسال السؤال إلى Firestore
+const postQuestionBtn = document.getElementById("postQuestionBtn");
+postQuestionBtn.addEventListener("click", () => {
+    const questionInput = document.getElementById("questionInput").value;
+    if (questionInput.trim() !== "") {
+        const username = firebase.auth().currentUser.displayName;
+
+        // إضافة السؤال إلى Firestore
+        db.collection("questions").add({
+            username: username,
+            question: questionInput,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            alert("تم إرسال السؤال بنجاح!");
+            loadQuestions(); // إعادة تحميل الأسئلة بعد الإرسال
+        }).catch((error) => {
+            console.error("خطأ في إرسال السؤال: ", error);
+        });
+    } else {
+        alert("الرجاء إدخال سؤال.");
+    }
+});
+
+    // تحميل الأسئلة من Firestore
+function loadQuestions() {
+    const questionsList = document.getElementById("questionsList");
+    questionsList.innerHTML = "";  // تفريغ الأسئلة الحالية
+
+    db.collection("questions").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const questionData = doc.data();
+            const questionElement = document.createElement("div");
+            questionElement.classList.add("question");
+
+            questionElement.innerHTML = `
+                <p><strong>${questionData.username}:</strong> ${questionData.question}</p>
+            `;
+
+            questionsList.appendChild(questionElement);
+        });
+    }).catch((error) => {
+        console.error("خطأ في تحميل الأسئلة: ", error);
+    });
+}
+
+// تحميل الأسئلة عند تحميل الصفحة
+window.onload = loadQuestions;
+
   </script>
 </body>
 </html>
