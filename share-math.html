@@ -225,9 +225,14 @@
     appId: "1:807997869740:web:8eca7473d24693bf861909"
   };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  // تهيئة Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);  // للحصول على قاعدة البيانات Firestore
+  const auth = getAuth(app);  // للحصول على خدمة المصادقة
 
+  // استخدام Firebase بعد التهيئة
+  console.log('Firebase Initialized');
+  
     // الحصول على بيانات المستخدم
     let username = "";
     firebase.auth().onAuthStateChanged((user) => {
