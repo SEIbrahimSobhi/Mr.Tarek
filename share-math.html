@@ -74,23 +74,21 @@
         </nav>
       </div>
     </div><!-- End Page Title -->
-
-    <!-- Starter Section Section -->
-    <section id="starter-section" class="starter-section section">
-
+    
       <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>ملخصات الدرس</h2>
-        <p><span>اختر الملخص </span> <span class="description-title">المناسب<br></span></p>
-              <p><span class="description-title">قريباً<br></span></p>
+        <div class="forum-container">
+    <h1>منتدى الأفكار والمناقشات</h1>
 
-      </div><!-- End Section Title -->
+    <!-- إضافة سؤال -->
+    <div class="add-question">
+      <textarea id="question-input" placeholder="اكتب سؤالك هنا..." rows="4"></textarea>
+      <button id="add-question-btn">إضافة السؤال</button>
+    </div>
 
-      <div class="container" data-aos="fade-up">
-        <p>هذا القسم لم ينتهي بعد و سوف ينتهي قريبا.</p>
-      </div>
-
-    </section><!-- /Starter Section Section -->
+    <div id="questions-list">
+      <!-- قائمة الأسئلة والتعليقات ستظهر هنا -->
+    </div>
+  </div>
 
   </main>
 
@@ -166,6 +164,140 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
+  
+  <!-- جافا سكريبت -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+    // إعداد Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+
+    // التحقق من تسجيل الدخول
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        loadQuestions(user.uid);
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    // تحميل الأسئلة
+    async function loadQuestions(userId) {
+      const questionsList = document.getElementById("questions-list");
+      questionsList.innerHTML = "";
+
+      const q = query(collection(db, "questions"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        const questionData = doc.data();
+        const questionItem = createQuestionElement(doc.id, questionData);
+        questionsList.appendChild(questionItem);
+      });
+    }
+
+    // إنشاء عنصر سؤال
+    function createQuestionElement(id, data) {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+
+      const questionText = document.createElement("p");
+      questionText.textContent = data.question;
+      questionDiv.appendChild(questionText);
+
+      const usernameSpan = document.createElement("span");
+      usernameSpan.className = "username";
+      usernameSpan.textContent = `(${data.username})`;
+      questionDiv.appendChild(usernameSpan);
+
+      const commentsDiv = document.createElement("div");
+      commentsDiv.className = "comments";
+
+      data.comments.forEach((comment) => {
+        const commentDiv = document.createElement("div");
+        commentDiv.className = "comment";
+        commentDiv.textContent = `${comment.username}: ${comment.text}`;
+        commentsDiv.appendChild(commentDiv);
+      });
+
+      questionDiv.appendChild(commentsDiv);
+
+      // إضافة تعليق
+      const commentInput = document.createElement("input");
+      commentInput.type = "text";
+      commentInput.placeholder = "اكتب تعليقك...";
+      questionDiv.appendChild(commentInput);
+
+      const commentBtn = document.createElement("button");
+      commentBtn.textContent = "إضافة تعليق";
+      commentBtn.addEventListener("click", () => addComment(id, commentInput.value));
+      questionDiv.appendChild(commentBtn);
+
+      return questionDiv;
+    }
+
+    // إضافة سؤال جديد
+    document.getElementById("add-question-btn").addEventListener("click", async () => {
+      const questionInput = document.getElementById("question-input").value;
+
+      if (questionInput.trim() === "") {
+        alert("يرجى كتابة السؤال!");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "questions"), {
+          question: questionInput,
+          userId: currentUser.uid,
+          username: currentUser.email.split("@")[0], // استخدام الجزء الأول من الإيميل كاسم المستخدم
+          comments: []
+        });
+
+        document.getElementById("question-input").value = "";
+        loadQuestions(currentUser.uid);
+      } catch (error) {
+        console.error("خطأ أثناء إضافة السؤال:", error.message);
+      }
+    });
+
+    // إضافة تعليق
+    async function addComment(questionId, commentText) {
+      if (commentText.trim() === "") {
+        alert("يرجى كتابة التعليق!");
+        return;
+      }
+
+      const questionRef = doc(db, "questions", questionId);
+      const questionDoc = await getDoc(questionRef);
+
+      if (questionDoc.exists()) {
+        const questionData = questionDoc.data();
+        questionData.comments.push({
+          username: currentUser.email.split("@")[0],
+          text: commentText
+        });
+
+        await addDoc(questionRef, questionData);
+        loadQuestions(currentUser.uid);
+      }
+    }
+  </script>
 </body>
 
 </html>
