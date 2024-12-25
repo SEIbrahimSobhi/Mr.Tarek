@@ -25,6 +25,50 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // SendGrid API Key
+    const sendgridApiKey = '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'; // ضع مفتاح API هنا
+
+    // دالة إرسال البريد الإلكتروني باستخدام SendGrid
+    const sendVerificationEmail = async (email, verificationCode) => {
+      const emailData = {
+        personalizations: [
+          {
+            to: [{ email: email }],
+            subject: 'مرحبًا بك في منصة التعليم الخاصة بالأستاذ طارق',
+          },
+        ],
+        from: { email: 'your-email@example.com' }, // البريد الإلكتروني الذي سترسل منه الرسائل
+        content: [
+          {
+            type: 'text/plain',
+            value: `مرحبًا بك في منصة التعليم الخاصة بالأستاذ طارق! 
+
+لتفعيل حسابك، يرجى إدخال رمز التحقق التالي: ${verificationCode}
+
+شكرًا لاختيارك منصتنا التعليمية الرائدة. نحن هنا لندعمك في رحلتك الدراسية!
+
+فريق المنصة`,
+          },
+        ],
+      };
+
+      // إرسال الطلب إلى SendGrid API
+      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sendgridApiKey}`, // هنا يتم إضافة مفتاح الـ API
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (response.ok) {
+        console.log('تم إرسال البريد الإلكتروني بنجاح');
+      } else {
+        console.error('حدث خطأ أثناء إرسال البريد الإلكتروني');
+      }
+    };
+
     // Form submission
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("register-form").addEventListener("submit", async (e) => {
@@ -57,6 +101,9 @@
             verificationCode,
             emailVerified: false
           });
+
+          // إرسال البريد الإلكتروني
+          await sendVerificationEmail(email, verificationCode);
 
           alert("تم إنشاء الحساب بنجاح! تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
           document.getElementById("register-form").style.display = "none";
