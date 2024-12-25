@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إنشاء حساب</title>
   <link rel="stylesheet" href="assets/css/auth.css">
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init("Mr-Tarek_0yq8ofi"); // استبدل your_user_id بـ User ID الخاص بك من EmailJS
+  </script>
 </head>
 <body>
   <div class="auth-container">
@@ -28,84 +31,104 @@
     </div>
   </div>
 
-  <!-- قاعدة البيانات -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-  // تهيئة Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-    authDomain: "mr-tarek-2e40f.firebaseapp.com",
-    projectId: "mr-tarek-2e40f",
-    storageBucket: "mr-tarek-2e40f.appspot.com",
-    messagingSenderId: "807997869740",
-    appId: "1:807997869740:web:8eca7473d24693bf861909"
-  };
+    // تهيئة Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  // استمع إلى حدث الضغط على زر "إنشاء حساب"
-  document.getElementById("register-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    // استمع إلى حدث الضغط على زر "إنشاء حساب"
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    // اجمع البيانات من الحقول
-    const username = document.getElementById("username").value.trim();
-    const studentName = document.getElementById("student-name").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+      // اجمع البيانات من الحقول
+      const username = document.getElementById("username").value.trim();
+      const studentName = document.getElementById("student-name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-    // تحقق من الحقول الفارغة
-    if (!username || !studentName || !phone || !email || !password) {
-      alert("يرجى ملء جميع الحقول قبل المتابعة.");
-      return;
-    }
+      // تحقق من الحقول الفارغة
+      if (!username || !studentName || !phone || !email || !password) {
+        alert("يرجى ملء جميع الحقول قبل المتابعة.");
+        return;
+      }
 
-    try {
-      // إنشاء الحساب
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      try {
+        // إنشاء الحساب
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-      // إرسال بريد التحقق
-      await sendEmailVerification(user);
-      console.log("تم إرسال رمز التحقق إلى البريد الإلكتروني:", email);
+        // إنشاء رمز تحقق عشوائي
+        const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-      // إظهار قسم التحقق
-      document.getElementById("register-form").style.display = "none";
-      document.getElementById("verification-section").style.display = "block";
+        // حفظ البيانات في Firestore مع رمز التحقق
+        await setDoc(doc(db, "users", user.uid), {
+          username: username,
+          fullName: studentName,
+          phone: phone,
+          email: email,
+          verificationCode: verificationCode,
+          emailVerified: false,
+        });
 
-      // استمع إلى زر التحقق
-      document.getElementById("verify-code").addEventListener("click", async () => {
-        await user.reload(); // تحديث بيانات المستخدم للتحقق من حالة التحقق
-        if (user.emailVerified) {
-          // حفظ البيانات في Firestore
-          await setDoc(doc(db, "users", user.uid), {
-            username: username,
-            fullName: studentName,
-            phone: phone,
-            email: email
-          });
+        // إرسال رمز التحقق باستخدام EmailJS
+        emailjs.send("Mr-Tarek_0yq8ofi", "template_l3cewkc", {
+          to_email: email,
+          code: verificationCode,
+        }).then(() => {
+          alert("تم إرسال رمز التحقق إلى بريدك الإلكتروني!");
+          document.getElementById("register-form").style.display = "none";
+          document.getElementById("verification-section").style.display = "block";
+        }).catch((error) => {
+          console.error("خطأ أثناء إرسال رمز التحقق:", error);
+          alert("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+        });
 
-          console.log("تم حفظ بيانات المستخدم بنجاح!");
-          alert("تم إنشاء الحساب وتأكيد البريد بنجاح!");
+      } catch (error) {
+        if (error.code === "auth/email-already-in-use") {
+          alert("البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد إلكتروني آخر.");
+        } else {
+          console.error("خطأ أثناء إنشاء الحساب:", error.message);
+          alert("فشل إنشاء الحساب: " + error.message);
+        }
+      }
+    });
+
+    // التحقق من الرمز
+    document.getElementById("verify-code").addEventListener("click", async () => {
+      const enteredCode = document.getElementById("verification-code").value.trim();
+
+      try {
+        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists() && userDocSnap.data().verificationCode == enteredCode) {
+          // تحديث حالة التحقق
+          await setDoc(userDocRef, { emailVerified: true }, { merge: true });
+          alert("تم تأكيد البريد الإلكتروني بنجاح!");
           window.location.href = "index.html";
         } else {
-          alert("لم يتم التحقق من بريدك الإلكتروني بعد. يرجى المحاولة مرة أخرى.");
+          alert("رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.");
         }
-      });
-    } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        alert("البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد إلكتروني آخر.");
-      } else {
-        console.error("خطأ أثناء إنشاء الحساب:", error.message);
-        alert("فشل إنشاء الحساب: " + error.message);
+      } catch (error) {
+        console.error("خطأ أثناء التحقق:", error);
+        alert("حدث خطأ أثناء التحقق. حاول مرة أخرى.");
       }
-    }
-  });
-</script>
+    });
+  </script>
 </body>
 </html>
