@@ -17,12 +17,20 @@
       <input type="password" id="password" placeholder="كلمة المرور" required>
       <button type="submit">إنشاء حساب</button>
     </form>
+    
+    <!-- قسم التحقق -->
+    <div id="verification-section" style="display: none;">
+      <h2>تأكيد البريد الإلكتروني</h2>
+      <p>تم إرسال رمز التأكيد إلى بريدك الإلكتروني. أدخل الرمز أدناه:</p>
+      <input type="text" id="verification-code" placeholder="رمز التحقق" required>
+      <button id="verify-code">تحقق</button>
+    </div>
   </div>
   
-<!-- قاعده البيانات -->
+  <!-- قاعده البيانات -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 // تهيئة Firebase
@@ -54,19 +62,32 @@ document.querySelector("button[type='submit']").addEventListener("click", async 
     // إنشاء الحساب
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    console.log("تم إنشاء الحساب:", user);
 
-    // حفظ البيانات الإضافية في Firestore
-    await setDoc(doc(db, "users", user.uid), {
-      username: username,
-      fullName: studentName,
-      phone: phone,
-      email: email
+    // إرسال بريد التحقق
+    await sendEmailVerification(user);
+    console.log("تم إرسال رمز التحقق إلى البريد الإلكتروني:", email);
+
+    // إظهار قسم التحقق
+    document.getElementById("register-form").style.display = "none";
+    document.getElementById("verification-section").style.display = "block";
+
+    // استمع إلى التحقق من الرمز
+    document.getElementById("verify-code").addEventListener("click", async () => {
+      if (user.emailVerified) {
+        // تأكيد التحقق
+        await setDoc(doc(db, "users", user.uid), {
+          username: username,
+          fullName: studentName,
+          phone: phone,
+          email: email
+        });
+        console.log("تم حفظ بيانات المستخدم بنجاح!");
+        alert("تم إنشاء الحساب وتأكيد البريد بنجاح!");
+        window.location.href = "index.html";
+      } else {
+        alert("لم يتم التحقق من بريدك الإلكتروني. يرجى التحقق من بريدك.");
+      }
     });
-    console.log("تم حفظ بيانات المستخدم بنجاح!");
-
-    // إعادة توجيه المستخدم إلى الصفحة الرئيسية
-    window.location.href = "index.html";
   } catch (error) {
     console.error("خطأ أثناء إنشاء الحساب:", error.message);
     alert("فشل إنشاء الحساب: " + error.message);
