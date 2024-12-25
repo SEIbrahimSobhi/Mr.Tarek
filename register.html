@@ -5,9 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إنشاء حساب</title>
   <link rel="stylesheet" href="assets/css/auth.css">
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
-    emailjs.init("Mr-Tarek_0yq8ofi"); // استبدل your_user_id بـ User ID الخاص بك من EmailJS
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Form submission
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("register-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const studentName = document.getElementById("student-name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!username || !studentName || !phone || !email || !password) {
+          alert("يرجى ملء جميع الحقول.");
+          return;
+        }
+
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          // Generate a verification code
+          const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+          // Save user info in Firestore
+          await setDoc(doc(db, "users", user.uid), {
+            username,
+            studentName,
+            phone,
+            email,
+            verificationCode,
+            emailVerified: false
+          });
+
+          alert("تم إنشاء الحساب بنجاح! تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+          document.getElementById("register-form").style.display = "none";
+          document.getElementById("verification-section").style.display = "block";
+        } catch (error) {
+          console.error("Error creating account:", error);
+          alert(error.code === "auth/email-already-in-use" ? 
+            "البريد الإلكتروني مستخدم بالفعل." : "حدث خطأ أثناء إنشاء الحساب.");
+        }
+      });
+
+      document.getElementById("verify-code").addEventListener("click", async () => {
+        const enteredCode = document.getElementById("verification-code").value.trim();
+
+        try {
+          const userDocRef = doc(db, "users", auth.currentUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists() && userDocSnap.data().verificationCode == enteredCode) {
+            await setDoc(userDocRef, { emailVerified: true }, { merge: true });
+            alert("تم تأكيد البريد الإلكتروني بنجاح!");
+            window.location.href = "index.html";
+          } else {
+            alert("رمز التحقق غير صحيح.");
+          }
+        } catch (error) {
+          console.error("Error verifying code:", error);
+          alert("حدث خطأ أثناء التحقق.");
+        }
+      });
+    });
   </script>
 </head>
 <body>
@@ -22,113 +102,12 @@
       <button type="submit">إنشاء حساب</button>
     </form>
 
-    <!-- قسم التحقق -->
     <div id="verification-section" style="display: none;">
       <h2>تأكيد البريد الإلكتروني</h2>
-      <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز أدناه:</p>
+      <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
       <input type="text" id="verification-code" placeholder="رمز التحقق" required>
       <button id="verify-code">تحقق</button>
     </div>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-
-    // تهيئة Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // استمع إلى حدث الضغط على زر "إنشاء حساب"
-    document.getElementById("register-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      // اجمع البيانات من الحقول
-      const username = document.getElementById("username").value.trim();
-      const studentName = document.getElementById("student-name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-
-      // تحقق من الحقول الفارغة
-      if (!username || !studentName || !phone || !email || !password) {
-        alert("يرجى ملء جميع الحقول قبل المتابعة.");
-        return;
-      }
-
-      try {
-        // إنشاء الحساب
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // إنشاء رمز تحقق عشوائي
-        const verificationCode = Math.floor(100000 + Math.random() * 900000);
-
-        // حفظ البيانات في Firestore مع رمز التحقق
-        await setDoc(doc(db, "users", user.uid), {
-          username: username,
-          fullName: studentName,
-          phone: phone,
-          email: email,
-          verificationCode: verificationCode,
-          emailVerified: false,
-        });
-
-        // إرسال رمز التحقق باستخدام EmailJS
-        emailjs.send("Mr-Tarek_0yq8ofi", "template_l3cewkc", {
-          to_email: email,
-          code: verificationCode,
-        }).then(() => {
-          alert("تم إرسال رمز التحقق إلى بريدك الإلكتروني!");
-          document.getElementById("register-form").style.display = "none";
-          document.getElementById("verification-section").style.display = "block";
-        }).catch((error) => {
-          console.error("خطأ أثناء إرسال رمز التحقق:", error);
-          alert("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-        });
-
-      } catch (error) {
-        if (error.code === "auth/email-already-in-use") {
-          alert("البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد إلكتروني آخر.");
-        } else {
-          console.error("خطأ أثناء إنشاء الحساب:", error.message);
-          alert("فشل إنشاء الحساب: " + error.message);
-        }
-      }
-    });
-
-    // التحقق من الرمز
-    document.getElementById("verify-code").addEventListener("click", async () => {
-      const enteredCode = document.getElementById("verification-code").value.trim();
-
-      try {
-        const userDocRef = doc(db, "users", auth.currentUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-
-        if (userDocSnap.exists() && userDocSnap.data().verificationCode == enteredCode) {
-          // تحديث حالة التحقق
-          await setDoc(userDocRef, { emailVerified: true }, { merge: true });
-          alert("تم تأكيد البريد الإلكتروني بنجاح!");
-          window.location.href = "index.html";
-        } else {
-          alert("رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.");
-        }
-      } catch (error) {
-        console.error("خطأ أثناء التحقق:", error);
-        alert("حدث خطأ أثناء التحقق. حاول مرة أخرى.");
-      }
-    });
-  </script>
 </body>
 </html>
