@@ -9,6 +9,8 @@
 <body>
   <div class="auth-container">
     <h1>إنشاء حساب</h1>
+
+    <!-- نموذج إنشاء الحساب -->
     <form id="register-form">
       <input type="text" id="username" placeholder="اسم المستخدم" required>
       <input type="text" id="student-name" placeholder="اسم الطالب" required>
@@ -27,80 +29,80 @@
     </div>
   </div>
 
-  <!-- قاعده البيانات -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  <!-- كود JavaScript للتعامل مع Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-// تهيئة Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-  authDomain: "mr-tarek-2e40f.firebaseapp.com",
-  projectId: "mr-tarek-2e40f",
-  storageBucket: "mr-tarek-2e40f.appspot.com",
-  messagingSenderId: "807997869740",
-  appId: "1:807997869740:web:8eca7473d24693bf861909"
-};
+    // تهيئة Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-// استمع إلى حدث الضغط على زر "إنشاء حساب"
-document.getElementById("register-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+    // الاستماع إلى نموذج التسجيل
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  // اجمع البيانات من الحقول
-  const username = document.getElementById("username").value.trim();
-  const studentName = document.getElementById("student-name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+      // جمع البيانات من الحقول
+      const username = document.getElementById("username").value.trim();
+      const studentName = document.getElementById("student-name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-  // تحقق من الحقول الفارغة
-  if (!username || !studentName || !phone || !email || !password) {
-    alert("يرجى ملء جميع الحقول قبل المتابعة.");
-    return;
-  }
+      // التحقق من صحة البيانات
+      if (!username || !studentName || !phone || !email || !password) {
+        alert("يرجى ملء جميع الحقول قبل المتابعة.");
+        return;
+      }
 
-  try {
-    // إنشاء الحساب
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+      try {
+        // إنشاء حساب جديد
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-    // إرسال بريد التحقق
-    await sendEmailVerification(user);
-    console.log("تم إرسال رمز التحقق إلى البريد الإلكتروني:", email);
+        // إرسال بريد التحقق
+        await sendEmailVerification(user);
+        console.log("تم إرسال بريد التحقق إلى:", email);
 
-    // إظهار قسم التحقق
-    document.getElementById("register-form").style.display = "none";
-    document.getElementById("verification-section").style.display = "block";
+        // إظهار قسم التحقق
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("verification-section").style.display = "block";
 
-    // استمع إلى زر التحقق
-    document.getElementById("verify-code").addEventListener("click", async () => {
-      await user.reload(); // تحديث بيانات المستخدم للتحقق من حالة التحقق
-      if (user.emailVerified) {
-        // حفظ البيانات في Firestore
-        await setDoc(doc(db, "users", user.uid), {
-          username: username,
-          fullName: studentName,
-          phone: phone,
-          email: email
+        // التحقق من رمز البريد الإلكتروني
+        document.getElementById("verify-code").addEventListener("click", async () => {
+          await user.reload(); // تحديث بيانات المستخدم
+          if (user.emailVerified) {
+            // حفظ بيانات المستخدم في Firestore
+            await setDoc(doc(db, "users", user.uid), {
+              username: username,
+              fullName: studentName,
+              phone: phone,
+              email: email
+            });
+
+            console.log("تم حفظ البيانات بنجاح!");
+            alert("تم إنشاء الحساب وتأكيد البريد الإلكتروني بنجاح!");
+            window.location.href = "index.html"; // إعادة التوجيه إلى الصفحة الرئيسية
+          } else {
+            alert("لم يتم التحقق من بريدك الإلكتروني بعد. يرجى المحاولة مرة أخرى.");
+          }
         });
-
-        console.log("تم حفظ بيانات المستخدم بنجاح!");
-        alert("تم إنشاء الحساب وتأكيد البريد بنجاح!");
-        window.location.href = "index.html";
-      } else {
-        alert("لم يتم التحقق من بريدك الإلكتروني بعد. يرجى المحاولة مرة أخرى.");
+      } catch (error) {
+        console.error("حدث خطأ أثناء إنشاء الحساب:", error.message);
+        alert("فشل إنشاء الحساب: " + error.message);
       }
     });
-  } catch (error) {
-    console.error("خطأ أثناء إنشاء الحساب:", error.message);
-    alert("فشل إنشاء الحساب: " + error.message);
-  }
-});
-</script>
+  </script>
 </body>
 </html>
