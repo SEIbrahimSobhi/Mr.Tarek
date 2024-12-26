@@ -2,14 +2,14 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: 'poppins', sans-serif;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 section {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    width: 100%;
     background: url('/assets/img/hero-bg.jpg') no-repeat;
     background-position: center;
     background-size: cover;
@@ -17,24 +17,27 @@ section {
 .form-box {
     position: relative;
     width: 400px;
-    height: 550px;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
     backdrop-filter: blur(15px);
+    padding: 20px;
+}
+.form-value {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
 }
 h2 {
-    font-size: 2em;
     color: #fff;
+    margin-bottom: 20px;
+    font-size: 2rem;
     text-align: center;
 }
 .inputbox {
     position: relative;
-    margin: 20px 0;
-    width: 310px;
+    width: 100%;
+    margin-bottom: 20px;
     border-bottom: 2px solid #fff;
 }
 .inputbox label {
@@ -43,53 +46,44 @@ h2 {
     left: 5px;
     transform: translateY(-50%);
     color: #fff;
-    font-size: 1em;
+    font-size: 1rem;
     pointer-events: none;
-    transition: .5s;
-}
-input:focus ~ label,
-input:valid ~ label {
-    top: -5px;
+    transition: 0.5s;
 }
 .inputbox input {
     width: 100%;
-    height: 50px;
+    height: 40px;
     background: transparent;
     border: none;
     outline: none;
-    font-size: 1em;
     padding: 0 35px 0 5px;
+    font-size: 1rem;
     color: #fff;
 }
 .inputbox ion-icon {
     position: absolute;
-    right: 8px;
+    right: 10px;
+    top: 10px;
     color: #fff;
-    font-size: 1.2em;
-    top: 20px;
+}
+.inputbox input:focus ~ label,
+.inputbox input:valid ~ label {
+    top: -10px;
+    font-size: 0.8rem;
+    color: #fff;
 }
 button {
     width: 100%;
-    height: 40px;
-    border-radius: 40px;
+    padding: 10px;
     background: #fff;
     border: none;
-    outline: none;
+    border-radius: 25px;
     cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    transition: background 0.3s;
 }
-.register {
-    font-size: .9em;
-    color: #fff;
-    text-align: center;
-    margin: 25px 0 10px;
-}
-.register p a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: 600;
-}
-.register p a:hover {
-    text-decoration: underline;
+button:hover {
+    background: #ddd;
 }
