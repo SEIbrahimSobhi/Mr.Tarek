@@ -78,13 +78,14 @@
 
           // حفظ بيانات المستخدم في Firestore
           await setDoc(doc(db, "users", user.uid), {
-            username,
-            studentName,
-            phone,
-            email,
-            verificationCode,
-            emailVerified: false
-          });
+          username,
+          studentName, // هنا يتم تخزين الاسم في حقل studentName
+          phone,
+          email,
+          verificationCode,
+          emailVerified: false
+        });
+
 
           // إرسال البريد الإلكتروني
           await sendVerificationEmail(email, verificationCode);
