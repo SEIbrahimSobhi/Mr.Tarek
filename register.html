@@ -34,10 +34,10 @@
     // دالة إرسال البريد الإلكتروني باستخدام EmailJS
     const sendVerificationEmail = async (email, verificationCode) => {
   try {
-    await emailjs.send("service_4de4l3i", "template_isa7q7h", {
-      to_email: email,
-      verification_code: verificationCode
-    });
+    await emailjs.send("service_4de4l3i", "template_gqjxtul", {
+  to_email: email,
+  verification_code: verificationCode
+});
     console.log("تم إرسال البريد الإلكتروني بنجاح");
   } catch (error) {
     console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
