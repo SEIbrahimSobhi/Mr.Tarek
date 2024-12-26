@@ -33,17 +33,17 @@
 
     // دالة إرسال البريد الإلكتروني باستخدام EmailJS
     const sendVerificationEmail = async (email, verificationCode) => {
-      try {
-        await send("service_4de4l3i", "template_isa7q7h", {
-          to_email: email,
-          verification_code: verificationCode
-        });
-        console.log("تم إرسال البريد الإلكتروني بنجاح");
-      } catch (error) {
-        console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
-        throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
-      }
-    };
+  try {
+    await emailjs.send("service_4de4l3i", "template_isa7q7h", {
+      to_email: email,
+      verification_code: verificationCode
+    });
+    console.log("تم إرسال البريد الإلكتروني بنجاح");
+  } catch (error) {
+    console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
+    throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
+  }
+};
 
     // Form submission
     document.addEventListener("DOMContentLoaded", () => {
@@ -85,11 +85,14 @@
           document.getElementById("register-form").style.display = "none";
           document.getElementById("verification-section").style.display = "block";
         } catch (error) {
-          console.error("Error creating account:", error);
-          alert(error.code === "auth/email-already-in-use" ? 
-            "البريد الإلكتروني مستخدم بالفعل." : "حدث خطأ أثناء إنشاء الحساب.");
-        }
-      });
+  console.error("Error creating account:", error);
+  if (error.code === "auth/email-already-in-use") {
+    alert("البريد الإلكتروني مستخدم بالفعل.");
+  } else {
+    alert("حدث خطأ أثناء إنشاء الحساب. تأكد من صحة بياناتك وحاول مرة أخرى.");
+  }
+}
+
 
       document.getElementById("verify-code").addEventListener("click", async () => {
         const enteredCode = document.getElementById("verification-code").value.trim();
