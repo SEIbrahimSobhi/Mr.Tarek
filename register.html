@@ -6,21 +6,22 @@
   <title>إنشاء حساب</title>
   <link rel="stylesheet" href="assets/css/auth.css">
 
-<script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-</script>
-<script type="text/javascript">
-   (function(){
-      emailjs.init("K0gXc0-X0CONTIkX_"); // تم التأكد من public key في هذه السطر
-   })();
-</script>
+  <!-- تحميل مكتبة EmailJS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <!-- تهيئة EmailJS باستخدام المفتاح العام -->
+  <script type="text/javascript">
+    (function(){
+      emailjs.init("K0gXc0-X0CONTIkX_");
+    })();
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // Firebase Configuration
+    // تكوين Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -30,7 +31,7 @@
       appId: "1:807997869740:web:8eca7473d24693bf861909"
     };
 
-    // Initialize Firebase
+    // تهيئة Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -38,9 +39,8 @@
     // دالة إرسال البريد الإلكتروني باستخدام EmailJS
     const sendVerificationEmail = async (email, verificationCode) => {
       try {
-        // إرسال البريد الإلكتروني إلى البريد المدخل من قبل المستخدم
         await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-          to_email: email,  // تأكد من استخدام البريد الإلكتروني المدخل من قبل المستخدم هنا
+          to_email: email,  // استخدام البريد الإلكتروني المدخل من قبل المستخدم
           verification_code: verificationCode
         });
         console.log("تم إرسال البريد الإلكتروني بنجاح");
@@ -50,7 +50,7 @@
       }
     };
 
-    // Form submission
+    // ارسال النموذج والتسجيل
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("register-form").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -67,13 +67,15 @@
         }
 
         try {
+          // محاولة إنشاء المستخدم
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
+          console.log("تم إنشاء الحساب بنجاح");
 
-          // Generate a verification code
+          // توليد رمز التحقق
           const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-          // Save user info in Firestore
+          // حفظ بيانات المستخدم في Firestore
           await setDoc(doc(db, "users", user.uid), {
             username,
             studentName,
@@ -90,7 +92,7 @@
           document.getElementById("register-form").style.display = "none";
           document.getElementById("verification-section").style.display = "block";
         } catch (error) {
-          console.error("Error creating account:", error);
+          console.error("خطأ أثناء إنشاء الحساب:", error);
           if (error.code === "auth/email-already-in-use") {
             alert("البريد الإلكتروني مستخدم بالفعل.");
           } else {
@@ -99,6 +101,7 @@
         }
       });
 
+      // دالة التحقق من الرمز
       document.getElementById("verify-code").addEventListener("click", async () => {
         const enteredCode = document.getElementById("verification-code").value.trim();
 
@@ -114,7 +117,7 @@
             alert("رمز التحقق غير صحيح.");
           }
         } catch (error) {
-          console.error("Error verifying code:", error);
+          console.error("خطأ أثناء التحقق من الرمز:", error);
           alert("حدث خطأ أثناء التحقق.");
         }
       });
