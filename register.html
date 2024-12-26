@@ -11,12 +11,11 @@
 
   <!-- تهيئة EmailJS باستخدام المفتاح العام -->
   <script type="text/javascript">
-    (function() {
-      emailjs.init("K0gXc0-X0CONTIkX_");
+    (function () {
+      emailjs.init("K0gXc0-X0CONTIkX_"); // مفتاح EmailJS العام
     })();
   </script>
 
-  <!-- مكتبات Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -37,6 +36,29 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    let countdownInterval;
+
+    // دالة لبدء العداد
+    const startCountdown = (duration) => {
+      const countdownElement = document.getElementById("countdown");
+      let remainingTime = duration;
+
+      countdownInterval = setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+
+        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+        
+        if (remainingTime <= 0) {
+          clearInterval(countdownInterval);
+          alert("انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
+          countdownElement.textContent = "انتهت صلاحية الرمز.";
+        }
+
+        remainingTime--;
+      }, 1000);
+    };
+
     // دالة إرسال البريد الإلكتروني باستخدام EmailJS
     const sendVerificationEmail = async (email, verificationCode) => {
       try {
@@ -51,120 +73,92 @@
       }
     };
 
+    // ارسال النموذج والتسجيل
     document.addEventListener("DOMContentLoaded", () => {
-      let generatedCode = null;
-      let emailForVerification = null;
-      let lastSentTime = null; // وقت آخر إرسال للكود
-      let timerInterval = null;
+  document.getElementById("register-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      // تحديث العداد
-      const startTimer = (duration) => {
-        const countdownElement = document.getElementById("countdown");
-        let remainingTime = duration;
+    const username = document.getElementById("username").value.trim();
+    const studentName = document.getElementById("student-name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-        countdownElement.textContent = `رمز التحقق صالح لمدة ${remainingTime} ثانية`;
+    if (!username || !studentName || !phone || !email || !password) {
+      alert("يرجى ملء جميع الحقول.");
+      return;
+    }
 
-        timerInterval = setInterval(() => {
-          remainingTime--;
-          countdownElement.textContent = `رمز التحقق صالح لمدة ${remainingTime} ثانية`;
+    try {
+      // إنشاء المستخدم في Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("تم إنشاء الحساب بنجاح");
 
-          if (remainingTime <= 0) {
-            clearInterval(timerInterval);
-            document.getElementById("resend-code").disabled = false;
-            countdownElement.textContent = "انتهت صلاحية رمز التحقق. يمكنك طلب رمز جديد.";
-          }
-        }, 1000);
-      };
+      // توليد رمز التحقق
+      const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-      // إرسال رمز التحقق
-      const sendCode = async (email) => {
-        generatedCode = Math.floor(100000 + Math.random() * 900000); // توليد رمز عشوائي
-        lastSentTime = new Date().getTime();
-
-        try {
-          await setDoc(doc(db, "email_verifications", email), {
-            verificationCode: generatedCode,
-            createdAt: new Date().toISOString()
-          });
-
-          await sendVerificationEmail(email, generatedCode);
-          alert("تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-          document.getElementById("resend-code").disabled = true;
-          startTimer(300); // بدء العداد (300 ثانية = 5 دقائق)
-        } catch (error) {
-          console.error("خطأ أثناء إرسال رمز التحقق:", error);
-          alert("حدث خطأ أثناء إرسال رمز التحقق.");
-        }
-      };
-
-      // عند إنشاء الحساب
-      document.getElementById("register-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const username = document.getElementById("username").value.trim();
-        const studentName = document.getElementById("student-name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-
-        if (!username || !studentName || !phone || !email || !password) {
-          alert("يرجى ملء جميع الحقول.");
-          return;
-        }
-
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-
-          await setDoc(doc(db, "users", user.uid), {
-            username,
-            studentName,
-            phone,
-            email,
-            emailVerified: false
-          });
-
-          emailForVerification = email;
-          await sendCode(email);
-
-          document.getElementById("register-form").style.display = "none";
-          document.getElementById("verification-section").style.display = "block";
-        } catch (error) {
-          console.error("خطأ أثناء إنشاء الحساب:", error);
-          alert("حدث خطأ أثناء إنشاء الحساب.");
-        }
+      // حفظ بيانات المستخدم في Firestore مع حالة التحقق
+      await setDoc(doc(db, "users", user.uid), {
+        username,
+        studentName,
+        phone,
+        email,
+        verificationCode,
+        emailVerified: false, // يتم تعيين الحقل إلى "غير محقق"
       });
 
-      // زر إعادة إرسال الكود
-      document.getElementById("resend-code").addEventListener("click", async () => {
-        if (document.getElementById("resend-code").disabled) {
-          alert("لا يمكنك إعادة الإرسال الآن. يرجى الانتظار حتى انتهاء العداد.");
-          return;
-        }
+      // إرسال البريد الإلكتروني مع رمز التحقق
+      await sendVerificationEmail(email, verificationCode);
 
-        await sendCode(emailForVerification);
-      });
+      // تسجيل خروج المستخدم مباشرة بعد إنشاء الحساب
+      await auth.signOut();
 
-      // التحقق من الرمز
-      document.getElementById("verify-code").addEventListener("click", async () => {
-        const enteredCode = document.getElementById("verification-code").value.trim();
+      // عرض قسم التحقق
+      alert("تم إنشاء الحساب بنجاح! تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+      document.getElementById("register-form").style.display = "none";
+      document.getElementById("verification-section").style.display = "block";
 
-        try {
-          const userDocRef = doc(db, "email_verifications", emailForVerification);
-          const userDocSnap = await getDoc(userDocRef);
+      // بدء العداد
+      startCountdown(300);
+    } catch (error) {
+      console.error("خطأ أثناء إنشاء الحساب:", error);
+      if (error.code === "auth/email-already-in-use") {
+        alert("البريد الإلكتروني مستخدم بالفعل.");
+      } else {
+        alert("حدث خطأ أثناء إنشاء الحساب. تأكد من صحة بياناتك وحاول مرة أخرى.");
+      }
+    }
+  });
 
-          if (userDocSnap.exists() && userDocSnap.data().verificationCode == enteredCode) {
-            alert("تم تأكيد البريد الإلكتروني بنجاح!");
-            window.location.href = "index.html";
-          } else {
-            alert("رمز التحقق غير صحيح أو انتهت صلاحيته.");
-          }
-        } catch (error) {
-          console.error("خطأ أثناء التحقق:", error);
-          alert("حدث خطأ أثناء التحقق.");
-        }
-      });
-    });
+  // دالة التحقق من الرمز
+  document.getElementById("verify-code").addEventListener("click", async () => {
+    const enteredCode = document.getElementById("verification-code").value.trim();
+
+    try {
+      const user = auth.currentUser;
+
+      if (!user) {
+        alert("يرجى تسجيل الدخول أولاً لإتمام التحقق.");
+        return;
+      }
+
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists() && userDocSnap.data().verificationCode == enteredCode) {
+        await setDoc(userDocRef, { emailVerified: true }, { merge: true });
+        alert("تم تأكيد البريد الإلكتروني بنجاح!");
+        window.location.href = "index.html";
+      } else {
+        alert("رمز التحقق غير صحيح.");
+      }
+    } catch (error) {
+      console.error("خطأ أثناء التحقق من الرمز:", error);
+      alert("حدث خطأ أثناء التحقق.");
+    }
+  });
+});
   </script>
 </head>
 <body>
@@ -181,10 +175,10 @@
 
     <div id="verification-section" style="display: none;">
       <h2>تأكيد البريد الإلكتروني</h2>
-      <p id="countdown">رمز التحقق صالح لمدة 5 دقائق</p>
+      <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
       <input type="text" id="verification-code" placeholder="رمز التحقق" required>
       <button id="verify-code">تحقق</button>
-      <button id="resend-code" disabled>إعادة إرسال رمز التحقق</button>
+      <p id="countdown">صلاحية الرمز: 5:00</p>
     </div>
   </div>
 </body>
