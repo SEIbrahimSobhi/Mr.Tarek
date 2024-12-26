@@ -12,7 +12,7 @@
   <!-- تهيئة EmailJS باستخدام المفتاح العام -->
   <script type="text/javascript">
     (function(){
-      emailjs.init("K0gXc0-X0CONTIkX_");
+      emailjs.init("K0gXc0-X0CONTIkX_"); // مفتاح EmailJS العام
     })();
   </script>
 
@@ -39,8 +39,9 @@
     // دالة إرسال البريد الإلكتروني باستخدام EmailJS
     const sendVerificationEmail = async (email, verificationCode) => {
       try {
+        // إرسال البريد الإلكتروني إلى البريد المدخل من قبل المستخدم
         await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-          email: email,  // استخدام البريد الإلكتروني المدخل من قبل المستخدم
+          email: email,  // البريد الإلكتروني الذي أدخله المستخدم
           verification_code: verificationCode
         });
         console.log("تم إرسال البريد الإلكتروني بنجاح");
