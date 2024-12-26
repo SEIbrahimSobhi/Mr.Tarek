@@ -47,73 +47,73 @@
 
     // Form submission
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("register-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
+  document.getElementById("register-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        const username = document.getElementById("username").value.trim();
-        const studentName = document.getElementById("student-name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+    const username = document.getElementById("username").value.trim();
+    const studentName = document.getElementById("student-name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-        if (!username || !studentName || !phone || !email || !password) {
-          alert("يرجى ملء جميع الحقول.");
-          return;
-        }
+    if (!username || !studentName || !phone || !email || !password) {
+      alert("يرجى ملء جميع الحقول.");
+      return;
+    }
 
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-          // Generate a verification code
-          const verificationCode = Math.floor(100000 + Math.random() * 900000);
+      // Generate a verification code
+      const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-          // Save user info in Firestore
-          await setDoc(doc(db, "users", user.uid), {
-            username,
-            studentName,
-            phone,
-            email,
-            verificationCode,
-            emailVerified: false
-          });
-
-          // إرسال البريد الإلكتروني
-          await sendVerificationEmail(email, verificationCode);
-
-          alert("تم إنشاء الحساب بنجاح! تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-          document.getElementById("register-form").style.display = "none";
-          document.getElementById("verification-section").style.display = "block";
-        } catch (error) {
-  console.error("Error creating account:", error);
-  if (error.code === "auth/email-already-in-use") {
-    alert("البريد الإلكتروني مستخدم بالفعل.");
-  } else {
-    alert("حدث خطأ أثناء إنشاء الحساب. تأكد من صحة بياناتك وحاول مرة أخرى.");
-  }
-}
-
-
-      document.getElementById("verify-code").addEventListener("click", async () => {
-        const enteredCode = document.getElementById("verification-code").value.trim();
-
-        try {
-          const userDocRef = doc(db, "users", auth.currentUser.uid);
-          const userDocSnap = await getDoc(userDocRef);
-
-          if (userDocSnap.exists() && userDocSnap.data().verificationCode == enteredCode) {
-            await setDoc(userDocRef, { emailVerified: true }, { merge: true });
-            alert("تم تأكيد البريد الإلكتروني بنجاح!");
-            window.location.href = "index.html";
-          } else {
-            alert("رمز التحقق غير صحيح.");
-          }
-        } catch (error) {
-          console.error("Error verifying code:", error);
-          alert("حدث خطأ أثناء التحقق.");
-        }
+      // Save user info in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        username,
+        studentName,
+        phone,
+        email,
+        verificationCode,
+        emailVerified: false
       });
-    });
+
+      // إرسال البريد الإلكتروني
+      await sendVerificationEmail(email, verificationCode);
+
+      alert("تم إنشاء الحساب بنجاح! تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+      document.getElementById("register-form").style.display = "none";
+      document.getElementById("verification-section").style.display = "block";
+    } catch (error) {
+      console.error("Error creating account:", error);
+      if (error.code === "auth/email-already-in-use") {
+        alert("البريد الإلكتروني مستخدم بالفعل.");
+      } else {
+        alert("حدث خطأ أثناء إنشاء الحساب. تأكد من صحة بياناتك وحاول مرة أخرى.");
+      }
+    }
+  });
+
+  document.getElementById("verify-code").addEventListener("click", async () => {
+    const enteredCode = document.getElementById("verification-code").value.trim();
+
+    try {
+      const userDocRef = doc(db, "users", auth.currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists() && userDocSnap.data().verificationCode == enteredCode) {
+        await setDoc(userDocRef, { emailVerified: true }, { merge: true });
+        alert("تم تأكيد البريد الإلكتروني بنجاح!");
+        window.location.href = "index.html";
+      } else {
+        alert("رمز التحقق غير صحيح.");
+      }
+    } catch (error) {
+      console.error("Error verifying code:", error);
+      alert("حدث خطأ أثناء التحقق.");
+    }
+  });
+});
   </script>
 </head>
 <body>
