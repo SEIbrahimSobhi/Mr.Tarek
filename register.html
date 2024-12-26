@@ -25,47 +25,21 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // SendGrid API Key
-    const sendgridApiKey = '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'; // ضع مفتاح API هنا
+    // Initialize EmailJS
+    import { init, send } from "https://cdn.emailjs.com/dist/email.min.js";
+    init("K0gXc0-X0CONTIkX_"); // استبدل YOUR_USER_ID بمعرف المستخدم الخاص بك في EmailJS
 
-    // دالة إرسال البريد الإلكتروني باستخدام SendGrid
+    // دالة إرسال البريد الإلكتروني باستخدام EmailJS
     const sendVerificationEmail = async (email, verificationCode) => {
-      const emailData = {
-        personalizations: [
-          {
-            to: [{ email: email }],
-            subject: 'مرحبًا بك في منصة التعليم الخاصة بالأستاذ طارق',
-          },
-        ],
-        from: { email: 'your-email@example.com' }, // البريد الإلكتروني الذي سترسل منه الرسائل
-        content: [
-          {
-            type: 'text/plain',
-            value: `مرحبًا بك في منصة التعليم الخاصة بالأستاذ طارق! 
-
-لتفعيل حسابك، يرجى إدخال رمز التحقق التالي: ${verificationCode}
-
-شكرًا لاختيارك منصتنا التعليمية الرائدة. نحن هنا لندعمك في رحلتك الدراسية!
-
-فريق المنصة`,
-          },
-        ],
-      };
-
-      // إرسال الطلب إلى SendGrid API
-      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sendgridApiKey}`, // هنا يتم إضافة مفتاح الـ API
-        },
-        body: JSON.stringify(emailData),
-      });
-
-      if (response.ok) {
-        console.log('تم إرسال البريد الإلكتروني بنجاح');
-      } else {
-        console.error('حدث خطأ أثناء إرسال البريد الإلكتروني');
+      try {
+        await send("service_4de4l3i", "template_isa7q7h", {
+          to_email: email,
+          verification_code: verificationCode
+        });
+        console.log("تم إرسال البريد الإلكتروني بنجاح");
+      } catch (error) {
+        console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
+        throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
       }
     };
 
