@@ -41,15 +41,16 @@
     const sendVerificationEmail = async (email, verificationCode) => {
   try {
     await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-  to_email: email,
-  verification_code: verificationCode
-});
+      to_email: email,  // تأكد من استخدام البريد الإلكتروني المدخل من قبل المستخدم هنا
+      verification_code: verificationCode
+    });
     console.log("تم إرسال البريد الإلكتروني بنجاح");
   } catch (error) {
     console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
     throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
   }
 };
+
 
     // Form submission
     document.addEventListener("DOMContentLoaded", () => {
