@@ -33,21 +33,20 @@ const db = getFirestore(app);
 let countdownInterval;
 // دالة لبدء العداد
 const startCountdown = (duration) => {
-const countdownElement = document.getElementById("countdown");
-let remainingTime = duration;
- countdownInterval = setInterval(() => {
-const minutes = Math.floor(remainingTime / 60);
-const seconds = remainingTime % 60;
- countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-if (remainingTime <= 0) {
-clearInterval(countdownInterval);
-alert("انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
- countdownElement.textContent = "انتهت صلاحية الرمز.";
- document.getElementById("resend-code").style.display = "block";
-}
- remainingTime--;
+const countdownElement = document.getElementById('countdown');
+let countdownTime = 180; // 3 دقائق
+const countdownInterval = setInterval(() => {
+    const minutes = Math.floor(countdownTime / 60);
+    const seconds = countdownTime % 60;
+    countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    countdownTime--;
+
+    if (countdownTime < 0) {
+        clearInterval(countdownInterval);
+        countdownElement.textContent = 'انتهت صلاحية الرمز.';
+        document.getElementById('resend-code').style.display = 'block';
+    }
 }, 1000);
-};
 // دالة إرسال البريد الإلكتروني باستخدام EmailJS
 const sendVerificationEmail = async (email, verificationCode) => {
 try {
