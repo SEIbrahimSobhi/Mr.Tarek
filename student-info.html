@@ -131,7 +131,7 @@ h1 {
         if (userDoc.exists()) {
           const data = userDoc.data();
           document.getElementById("username").textContent = data.username || "-";
-          document.getElementById("student-name").textContent = data.fullName || "-";
+          document.getElementById("student-name").textContent = data.studentName || "-";
           document.getElementById("phone").textContent = data.phone || "-";
           document.getElementById("email").textContent = data.email || "-";
         }
