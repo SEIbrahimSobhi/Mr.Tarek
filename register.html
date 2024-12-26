@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إنشاء حساب</title>
   <link rel="stylesheet" href="assets/css/auth.css">
+
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  emailjs.init("K0gXc0-X0CONTIkX_"); // استبدل بـ YOUR_USER_ID
+</script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -24,10 +30,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
-    // Initialize EmailJS
-    import { init, send } from "https://cdn.emailjs.com/dist/email.min.js";
-    init("K0gXc0-X0CONTIkX_"); // استبدل YOUR_USER_ID بمعرف المستخدم الخاص بك في EmailJS
 
     // دالة إرسال البريد الإلكتروني باستخدام EmailJS
     const sendVerificationEmail = async (email, verificationCode) => {
