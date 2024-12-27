@@ -35,18 +35,16 @@ h2 {
 .inputbox {
   position: relative;
   margin-bottom: 20px;
-  text-align: left;
 }
 
 .inputbox input {
   width: 100%;
-  padding: 10px 15px; /* تعديل padding لتجنب التداخل مع الأيقونة */
-  margin: 0;
+  padding: 10px 40px 10px 15px; /* مساحة إضافية للأيقونة */
   border: none;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 1rem;
   outline: none;
 }
 
@@ -68,20 +66,19 @@ h2 {
   color: #fff;
 }
 
-.inputbox .toggle-password {
+.toggle-password {
   position: absolute;
-  right: 15px; /* تموضع الأيقونة في أقصى اليمين */
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
-  cursor: pointer;
   color: #fff;
   font-size: 1.2rem;
-  z-index: 2; /* يجعل الأيقونة فوق الحقل */
+  cursor: pointer;
 }
 
-.inputbox .toggle-password:focus {
+.toggle-password:focus {
   outline: none;
 }
 
