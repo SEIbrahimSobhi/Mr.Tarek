@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إنشاء حساب</title>
   <link rel="stylesheet" href="assets/css/auth.css">
-
-    <!-- تحميل مكتبة EmailJS -->
+      <!-- تحميل مكتبة EmailJS -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <!-- تهيئة EmailJS باستخدام المفتاح العام -->
 <script type="text/javascript">
@@ -62,7 +61,6 @@ verification_code: verificationCode
  </script>
 </head>
 <body>
-
   <section>
     <div class="form-box">
       <div class="form-value">
@@ -71,36 +69,36 @@ verification_code: verificationCode
           
           <!-- اسم المستخدم -->
           <div class="inputbox">
-            <ion-icon name="person-outline"></ion-icon>
             <input type="text" id="username" required>
+            <ion-icon name="person-outline" class="icon"></ion-icon>
             <label for="username">اسم المستخدم</label>
           </div>
 
           <!-- اسم الطالب -->
           <div class="inputbox">
-            <ion-icon name="person-outline"></ion-icon>
             <input type="text" id="student-name" required>
+            <ion-icon name="person-outline" class="icon"></ion-icon>
             <label for="student-name">اسم الطالب</label>
           </div>
 
           <!-- رقم الهاتف -->
           <div class="inputbox">
-            <ion-icon name="call-outline"></ion-icon>
             <input type="tel" id="phone" required>
+            <ion-icon name="call-outline" class="icon"></ion-icon>
             <label for="phone">رقم الهاتف</label>
           </div>
 
           <!-- البريد الإلكتروني -->
           <div class="inputbox">
-            <ion-icon name="mail-outline"></ion-icon>
             <input type="email" id="email" required>
+            <ion-icon name="mail-outline" class="icon"></ion-icon>
             <label for="email">الإيميل</label>
           </div>
 
           <!-- كلمة المرور -->
           <div class="inputbox">
-            <ion-icon name="lock-closed-outline"></ion-icon>
             <input type="password" id="password" required>
+            <ion-icon name="lock-closed-outline" class="icon"></ion-icon>
             <label for="password">كلمة المرور</label>
             <button type="button" id="toggle-password" class="toggle-password">
               <ion-icon name="eye-outline"></ion-icon>
@@ -128,11 +126,8 @@ verification_code: verificationCode
     </div>
   </section>
 
-  <!-- إضافة مكتبة أيقونات Ionicons -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
-  <!-- سكربت لإظهار وإخفاء كلمة المرور -->
   <script>
     const togglePassword = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('password');
