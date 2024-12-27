@@ -38,6 +38,18 @@ h2 {
   text-align: left;
 }
 
+.inputbox input {
+  width: 100%;
+  padding: 10px 15px; /* تعديل padding لتجنب التداخل مع الأيقونة */
+  margin: 0;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
 .inputbox label {
   position: absolute;
   top: 50%;
@@ -49,28 +61,16 @@ h2 {
   transition: 0.3s ease;
 }
 
-.inputbox input {
-  width: 100%;
-  padding: 10px 40px 10px 15px; /* مساحة لأيقونة العين */
-  margin: 0;
-  border: none;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-size: 0.9rem;
-  outline: none;
-}
-
 .inputbox input:focus ~ label,
 .inputbox input:valid ~ label {
-  top: -10px; /* رفع النص عند التفاعل */
+  top: -10px;
   font-size: 0.75rem;
   color: #fff;
 }
 
 .inputbox .toggle-password {
   position: absolute;
-  right: 10px; /* مكان أيقونة العين */
+  right: 15px; /* تموضع الأيقونة في أقصى اليمين */
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -78,14 +78,11 @@ h2 {
   cursor: pointer;
   color: #fff;
   font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1; /* فوق الحقل */
+  z-index: 2; /* يجعل الأيقونة فوق الحقل */
 }
 
 .inputbox .toggle-password:focus {
-  outline: none; /* إزالة الحدود عند التركيز */
+  outline: none;
 }
 
 button {
@@ -115,11 +112,73 @@ button:hover {
   text-decoration: underline;
 }
 
+#verification-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.6); /* خلفية شفافة */
+  padding: 20px;
+}
+
 .verification-box {
-  background: rgba(0, 0, 0, 0.5);
-  padding: 15px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  width: 300px;
+  text-align: center;
+}
+
+.verification-box h2 {
   color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.verification-box p {
+  color: #ddd;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.inputbox input {
+  width: calc(100% - 30px);
+  padding: 10px 15px;
+  margin: 0;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+#verify-code,
+#resend-code {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+}
+
+#verify-code:hover,
+#resend-code:hover {
+  background: #ddd;
+}
+
+#countdown {
+  color: #fff;
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
 
 /* تحسين التصميم على الشاشات الصغيرة */
