@@ -64,7 +64,7 @@ h2 {
 
 .inputbox input:focus ~ label,
 .inputbox input:valid ~ label {
-  top: -8px; /* رفع النص */
+  top: -6px; /* رفع النص */
   font-size: 0.75rem;
   color: #fff;
 }
