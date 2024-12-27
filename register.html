@@ -5,11 +5,155 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إنشاء حساب</title>
   <link rel="stylesheet" href="assets/css/auth.css">
+
+  <!-- تحميل مكتبة EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <!-- تهيئة EmailJS باستخدام المفتاح العام -->
   <script type="text/javascript">
     (function () {
       emailjs.init("K0gXc0-X0CONTIkX_"); // مفتاح EmailJS العام
     })();
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+    // تكوين Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
+
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let countdownInterval;
+
+    // دالة لبدء العداد
+    const startCountdown = (duration) => {
+      const countdownElement = document.getElementById("countdown");
+      let remainingTime = duration;
+
+      countdownInterval = setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+
+        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+
+        if (remainingTime <= 0) {
+          clearInterval(countdownInterval);
+          alert("انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
+          countdownElement.textContent = "انتهت صلاحية الرمز.";
+          document.getElementById("resend-code").style.display = "block";
+        }
+
+        remainingTime--;
+      }, 1000);
+    };
+
+    // دالة إرسال البريد الإلكتروني باستخدام EmailJS
+    const sendVerificationEmail = async (email, verificationCode) => {
+      try {
+        await emailjs.send("service_4de4l3i", "template_gqjxtul", {
+          email: email,
+          verification_code: verificationCode
+        });
+        console.log("تم إرسال البريد الإلكتروني بنجاح");
+      } catch (error) {
+        console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
+        throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
+      }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      let verificationCode;
+      let userInfo;
+
+      document.getElementById("register-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const studentName = document.getElementById("student-name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!username || !studentName || !phone || !email || !password) {
+          alert("يرجى ملء جميع الحقول.");
+          return;
+        }
+
+        try {
+          // توليد رمز التحقق
+          verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+          // تخزين البيانات مؤقتًا
+          userInfo = { username, studentName, phone, email, password };
+
+          // إرسال البريد الإلكتروني مع رمز التحقق
+          await sendVerificationEmail(email, verificationCode);
+
+          // عرض قسم التحقق
+          alert("تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+          document.getElementById("register-form").style.display = "none";
+          document.getElementById("verification-section").style.display = "block";
+
+          // بدء العداد
+          startCountdown(180);
+        } catch (error) {
+          console.error("خطأ أثناء إنشاء الحساب:", error);
+          alert("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+        }
+      });
+
+      document.getElementById("verify-code").addEventListener("click", async () => {
+        const enteredCode = document.getElementById("verification-code").value.trim();
+
+        if (parseInt(enteredCode, 10) === verificationCode) {
+          try {
+            // إنشاء المستخدم في Firebase
+            const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
+            const user = userCredential.user;
+
+            // حفظ بيانات المستخدم في Firestore
+            await setDoc(doc(db, "users", user.uid), {
+              ...userInfo,
+              emailVerified: true,
+            });
+
+            alert("تم تأكيد البريد الإلكتروني وإنشاء الحساب بنجاح!");
+            window.location.href = "index.html";
+          } catch (error) {
+            console.error("خطأ أثناء إنشاء الحساب:", error);
+            alert("حدث خطأ أثناء إنشاء الحساب.");
+          }
+        } else {
+          alert("رمز التحقق غير صحيح.");
+        }
+      });
+
+      document.getElementById("resend-code").addEventListener("click", async () => {
+        try {
+          verificationCode = Math.floor(100000 + Math.random() * 900000);
+          await sendVerificationEmail(userInfo.email, verificationCode);
+          alert("تم إرسال رمز تحقق جديد.");
+          document.getElementById("resend-code").style.display = "none";
+          startCountdown(180);
+        } catch (error) {
+          console.error("خطأ أثناء إعادة إرسال الرمز:", error);
+          alert("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+        }
+      });
+    });
   </script>
 </head>
 <body>
@@ -18,52 +162,40 @@
       <div class="form-value">
         <form id="register-form">
           <h2>إنشاء حساب</h2>
-          
-          <!-- اسم المستخدم -->
           <div class="inputbox">
+            <ion-icon name="person-outline"></ion-icon>
             <input type="text" id="username" required>
-            <ion-icon name="person-outline" class="icon"></ion-icon>
             <label for="username">اسم المستخدم</label>
           </div>
-
-          <!-- اسم الطالب -->
           <div class="inputbox">
+            <ion-icon name="person-outline"></ion-icon>
             <input type="text" id="student-name" required>
-            <ion-icon name="person-outline" class="icon"></ion-icon>
             <label for="student-name">اسم الطالب</label>
           </div>
-
-          <!-- رقم الهاتف -->
           <div class="inputbox">
+            <ion-icon name="call-outline"></ion-icon>
             <input type="tel" id="phone" required>
-            <ion-icon name="call-outline" class="icon"></ion-icon>
             <label for="phone">رقم الهاتف</label>
           </div>
-
-          <!-- البريد الإلكتروني -->
           <div class="inputbox">
+            <ion-icon name="mail-outline"></ion-icon>
             <input type="email" id="email" required>
-            <ion-icon name="mail-outline" class="icon"></ion-icon>
             <label for="email">الإيميل</label>
           </div>
-
-          <!-- كلمة المرور -->
           <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
             <input type="password" id="password" required>
-            <ion-icon name="lock-closed-outline" class="icon"></ion-icon>
             <label for="password">كلمة المرور</label>
             <button type="button" id="toggle-password" class="toggle-password">
               <ion-icon name="eye-outline"></ion-icon>
             </button>
           </div>
-
           <button type="submit">إنشاء حساب</button>
           <a href="login.html" class="switch-link">لديك حساب؟ تسجيل الدخول</a>
         </form>
       </div>
     </div>
 
-    <!-- قسم التحقق من البريد الإلكتروني -->
     <div id="verification-section" style="display: none;">
       <div class="verification-box">
         <h2>تأكيد البريد الإلكتروني</h2>
