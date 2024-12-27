@@ -19,7 +19,7 @@ section {
 }
 
 .form-box {
-  width: 360px;
+  width: 360px; /* تقليل العرض قليلاً */
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 20px;
@@ -30,69 +30,70 @@ section {
 
 h2 {
   color: #fff;
-  font-size: 1.8rem;
+  font-size: 1.6rem; /* تصغير النص قليلاً */
   margin-bottom: 20px;
 }
 
 .inputbox {
   position: relative;
-  margin-bottom: 15px;
+  margin-bottom: 15px; /* تقليل المسافات بين الحقول */
   text-align: left;
 }
 
 .inputbox label {
   position: absolute;
   top: 50%;
-  left: 15px;
+  left: 12px; /* ضبط المسافة من اليسار */
   transform: translateY(-50%);
   color: #ddd;
-  font-size: 0.9rem;
+  font-size: 0.9rem; /* تصغير النص قليلاً */
   pointer-events: none;
   transition: 0.3s;
 }
 
 .inputbox input {
   width: 100%;
-  padding: 8px 35px 8px 15px;
+  padding: 8px 35px 8px 12px; /* تخصيص المسافات للعين */
   margin: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.9rem; /* تقليل الخط */
 }
 
 .inputbox input:focus ~ label,
 .inputbox input:valid ~ label {
-  top: -10px;
+  top: -8px; /* رفع النص */
   font-size: 0.75rem;
   color: #fff;
 }
 
 .inputbox .toggle-password {
   position: absolute;
-  right: 10px;
+  right: 12px; /* تثبيت العين في مكان مناسب */
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
 }
 
 button {
   width: 100%;
-  padding: 10px;
+  padding: 8px; /* تصغير الزر */
   background: #fff;
   border: none;
   border-radius: 25px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.9rem; /* تصغير النص */
   font-weight: bold;
   color: #333;
   margin-bottom: 15px;
-  transition: background 0.3s;
 }
 
 button:hover {
@@ -102,7 +103,7 @@ button:hover {
 .switch-link {
   color: #fff;
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.85rem; /* تصغير النص */
 }
 
 .switch-link:hover {
@@ -111,23 +112,25 @@ button:hover {
 
 .verification-box {
   background: rgba(0, 0, 0, 0.5);
-  padding: 20px;
+  padding: 15px; /* تصغير الحقل */
   border-radius: 10px;
   color: #fff;
 }
 
-/* تحسين على جميع الشاشات */
+/* تحسين التصميم على الشاشات الصغيرة */
 @media (max-width: 768px) {
   .form-box {
-    width: 90%;
+    width: 90%; /* جعل العرض ديناميكيًا */
   }
+
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
+
   .inputbox input {
     font-size: 0.85rem;
-    padding: 8px 30px 8px 12px;
   }
+
   button {
     font-size: 0.85rem;
   }
