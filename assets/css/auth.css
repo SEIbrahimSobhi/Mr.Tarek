@@ -10,7 +10,7 @@ section {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url('../assets/img/hero-bg.jpg') no-repeat;
+  background: url('hero-bg.jpg') no-repeat;
   background-position: center;
   background-size: cover;
   padding: 20px;
