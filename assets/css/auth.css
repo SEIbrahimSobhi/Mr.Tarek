@@ -75,25 +75,17 @@ h2 {
   color: #ddd;
 }
 
-/* تصميم مربع الاختيار */
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
+.forget{
+    margin: -15px 0 15px ;
+    font-size: .9em;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;  
 }
 
-.checkbox-container input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: #fff; /* لون المربع عند التحديد */
-  cursor: pointer;
-}
-
-.checkbox-container label {
-  font-size: 0.9rem;
-  color: #fff;
-  cursor: pointer;
+.forget label input{
+    margin-right: 3px;
+    
 }
 
 button {
