@@ -1,198 +1,178 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: url('hero-bg.jpg') no-repeat center/cover;
-  padding: 20px;
-}
+    body {
+      background: url('hero-bg.jpg') no-repeat center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-.form-box {
-  width: 360px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  border-radius: 20px;
-  backdrop-filter: blur(15px);
-  padding: 20px;
-  text-align: center;
-}
+    .form-box {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      padding: 20px;
+      text-align: center;
+    }
 
-h2 {
-  color: #fff;
-  font-size: 1.6rem;
-  margin-bottom: 20px;
-}
+    h2 {
+      color: #fff;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
 
-.inputbox {
-  position: relative;
-  margin-bottom: 20px;
-}
+    .inputbox {
+      position: relative;
+      margin-bottom: 20px;
+    }
 
-.inputbox input {
-  width: 100%;
-  padding: 10px 40px 10px 15px; /* مساحة إضافية للأيقونة */
-  border: none;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-size: 1rem;
-  outline: none;
-}
+    .inputbox input {
+      width: 100%;
+      padding: 10px 40px 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
 
-.inputbox label {
-  position: absolute;
-  top: 50%;
-  left: 15px;
-  transform: translateY(-50%);
-  color: #ddd;
-  font-size: 0.9rem;
-  pointer-events: none;
-  transition: 0.3s ease;
-}
+    .inputbox label {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: #ddd;
+      font-size: 0.9rem;
+      pointer-events: none;
+      transition: 0.3s ease;
+    }
 
-.inputbox input:focus ~ label,
-.inputbox input:valid ~ label {
-  top: -10px;
-  font-size: 0.75rem;
-  color: #fff;
-}
+    .inputbox input:focus ~ label,
+    .inputbox input:valid ~ label {
+      top: -10px;
+      font-size: 0.75rem;
+      color: #fff;
+    }
 
-.toggle-password {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
+    .inputbox ion-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 1.2rem;
+    }
 
-.toggle-password:focus {
-  outline: none;
-}
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background: #fff;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 15px;
-}
+    .toggle-password:focus {
+      outline: none;
+    }
 
-button:hover {
-  background: #ddd;
-}
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #fff;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      transition: background 0.3s;
+    }
 
-.switch-link {
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.85rem;
-}
+    button:hover {
+      background: #ddd;
+    }
 
-.switch-link:hover {
-  text-decoration: underline;
-}
+    .switch-link {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
 
-#verification-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: rgba(0, 0, 0, 0.6); /* خلفية شفافة */
-  padding: 20px;
-}
+    .switch-link:hover {
+      text-decoration: underline;
+    }
 
-.verification-box {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  padding: 30px;
-  width: 300px;
-  text-align: center;
-}
+    #verification-section {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+    }
 
-.verification-box h2 {
-  color: #fff;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
+    .verification-box {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+    }
 
-.verification-box p {
-  color: #ddd;
-  font-size: 0.9rem;
-  margin-bottom: 20px;
-}
+    .verification-box h2 {
+      color: #fff;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
 
-.inputbox input {
-  width: calc(100% - 30px);
-  padding: 10px 15px;
-  margin: 0;
-  border: none;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-size: 0.9rem;
-  outline: none;
-}
+    .verification-box p {
+      color: #ddd;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
 
-#verify-code,
-#resend-code {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background: #fff;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #333;
-}
+    #countdown {
+      color: #fff;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
 
-#verify-code:hover,
-#resend-code:hover {
-  background: #ddd;
-}
+    @media (max-width: 768px) {
+      .form-box {
+        width: 90%;
+      }
 
-#countdown {
-  color: #fff;
-  font-size: 0.9rem;
-  margin-top: 10px;
-}
+      h2 {
+        font-size: 1.4rem;
+      }
 
-/* تحسين التصميم على الشاشات الصغيرة */
-@media (max-width: 768px) {
-  .form-box {
-    width: 90%;
-  }
+      .inputbox input {
+        font-size: 0.85rem;
+      }
 
-  h2 {
-    font-size: 1.4rem;
-  }
-
-  .inputbox input {
-    font-size: 0.85rem;
-  }
-
-  button {
-    font-size: 0.85rem;
-  }
-}
+      button {
+        font-size: 0.85rem;
+      }
+    }
