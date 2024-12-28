@@ -181,11 +181,24 @@
           <div class="inputbox">
             <ion-icon name="lock-closed-outline"></ion-icon>
             <input class="form-input" type="password" id="password" placeholder="كلمة المرور" required>
-            <i class="fa fa-eye" aria-hidden="true" id="eye"></i>
+            <i class="fa fa-eye" id="eye" aria-hidden="true"></i>
           </div>
           <button type="submit">إنشاء حساب</button>
           <a href="login.html" class="switch-link">لديك حساب؟ تسجيل الدخول</a>
         </form>
+      </div>
+    </div>
+
+    <div id="verification-section" style="display: none;">
+      <div class="verification-box">
+        <h2>تأكيد البريد الإلكتروني</h2>
+        <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
+        <div class="inputbox">
+          <input type="text" id="verification-code" placeholder="رمز التحقق" required>
+        </div>
+        <button id="verify-code">تحقق</button>
+        <p id="countdown">صلاحية الرمز: 3:00</p>
+        <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
       </div>
     </div>
   </section>
