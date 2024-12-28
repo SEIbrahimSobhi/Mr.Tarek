@@ -186,9 +186,9 @@
             <ion-icon name="lock-closed-outline"></ion-icon>
             <input id="password" type="password" required />
             <label for="password">كلمة المرور</label>
-          </div>
-          <div class="show-password-box">
-            <button id="toggle-password" type="button">إظهار كلمة المرور</button>
+						<span id="toggle-password" class="toggle-password">
+							<i name="eye-outline"></i>
+						</span>
           </div>
           <button type="submit">إنشاء حساب</button>
           <a href="login.html" class="switch-link">لديك حساب؟ تسجيل الدخول</a>
@@ -196,7 +196,7 @@
       </div>
     </div>
 
-    <div id="verification-section" style="display: none;">
+        <div id="verification-section" style="display: none;">
       <div class="verification-box">
         <h2>تأكيد البريد الإلكتروني</h2>
         <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
@@ -209,19 +209,15 @@
       </div>
     </div>
   </section>
-  
+
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script>
-    const togglePasswordButton = document.querySelector("#toggle-password");
+    const togglePasswordCheckbox = document.querySelector("#toggle-password");
     const passwordInput = document.querySelector("#password");
 
-    togglePasswordButton.addEventListener("click", () => {
-      const type = passwordInput.type === "password" ? "text" : "password";
-      passwordInput.type = type;
-
-      // تغيير النص الموجود على الزر
-      togglePasswordButton.textContent = type === "password" ? "إظهار كلمة المرور" : "إخفاء كلمة المرور";
+    togglePasswordCheckbox.addEventListener("change", () => {
+      passwordInput.type = togglePasswordCheckbox.checked ? "text" : "password";
     });
   </script>
 </body>
