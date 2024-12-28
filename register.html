@@ -157,7 +157,7 @@
   </script>
 </head>
 <body>
-  <section>
+ <section>
   <div class="form-box">
     <div class="form-value">
       <form id="register-form">
@@ -201,9 +201,22 @@
           </div>
         </div>
       </form>
+      <div id="verification-section" style="display: none;">
+        <div class="verification-box">
+          <h2>تأكيد البريد الإلكتروني</h2>
+          <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
+          <div class="inputbox">
+            <input type="text" id="verification-code" placeholder="رمز التحقق" required>
+          </div>
+          <button id="verify-code">تحقق</button>
+          <p id="countdown">صلاحية الرمز: 3:00</p>
+          <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
 
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
