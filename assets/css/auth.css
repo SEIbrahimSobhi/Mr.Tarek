@@ -75,55 +75,25 @@ h2 {
   color: #ddd;
 }
 
-/* تصميم الحاوية */
+/* تصميم مربع الاختيار */
 .checkbox-container {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
   display: flex;
   align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #fff; /* لون المربع عند التحديد */
   cursor: pointer;
 }
 
-/* إخفاء مربع الاختيار الافتراضي */
-.checkbox-container input[type="checkbox"] {
-  display: none;
-}
-
-/* تصميم المربع */
 .checkbox-container label {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ddd;
-  border-radius: 3px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  transition: all 0.3s ease;
-}
-
-/* عند التحديد */
-.checkbox-container input[type="checkbox"]:checked + label {
-  background-color: #fff;
-  border-color: #fff;
-}
-
-.checkbox-container input[type="checkbox"]:checked + label::after {
-  content: '✔';
-  color: #000;
-  font-size: 16px;
-}
-
-/* أيقونة القفل */
-.inputbox ion-icon {
-  position: absolute;
-  top: 50%;
-  left: 15px;
-  transform: translateY(-50%);
-  color: #ddd;
-  font-size: 18px;
+  font-size: 0.9rem;
+  color: #fff;
+  cursor: pointer;
 }
 
 button {
