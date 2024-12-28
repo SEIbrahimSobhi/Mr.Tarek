@@ -1,4 +1,4 @@
-   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
     * {
       margin: 0;
@@ -39,7 +39,7 @@
 
     .inputbox input {
       width: 100%;
-      padding: 10px 40px 10px 15px; /* مساحة إضافية للأيقونة */
+      padding: 10px 15px;
       border: none;
       border-radius: 5px;
       background: rgba(255, 255, 255, 0.2);
@@ -66,24 +66,25 @@
       color: #fff;
     }
 
-    .show-password-box {
-      margin-bottom: 20px;
-      text-align: center;
+    .show-password {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: -10px;
+      margin-bottom: 15px;
     }
 
-    .show-password-box button {
-      padding: 10px 15px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 2px solid #fff;
-      border-radius: 5px;
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-label {
       color: #fff;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .show-password-box button:hover {
-      background: rgba(255, 255, 255, 0.4);
     }
 
     button {
@@ -111,63 +112,6 @@
 
     .switch-link:hover {
       text-decoration: underline;
-    }
-
-    #verification-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background: rgba(0, 0, 0, 0.6); /* خلفية شفافة */
-      padding: 20px;
-    }
-
-    .verification-box {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      padding: 30px;
-      width: 300px;
-      text-align: center;
-    }
-
-    .verification-box h2 {
-      color: #fff;
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    .verification-box p {
-      color: #ddd;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
-    }
-
-    #verify-code,
-    #resend-code {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      background: #fff;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: #333;
-    }
-
-    #verify-code:hover,
-    #resend-code:hover {
-      background: #ddd;
-    }
-
-    #countdown {
-      color: #fff;
-      font-size: 0.9rem;
-      margin-top: 10px;
     }
 
     /* تحسين التصميم على الشاشات الصغيرة */
