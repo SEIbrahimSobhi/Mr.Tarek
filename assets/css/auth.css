@@ -88,7 +88,7 @@ h2 {
   justify-content: flex-end; /* يبقي المحتوى على اليمين */
   align-items: center;
   gap: 10px;
-  flex-direction: row; /* ترتيب العناصر بشكل أفقي من اليسار لليمين */
+  flex-direction: row-reverse; /* ترتيب العناصر بشكل عكسي بحيث تكون الأيقونة على اليمين ثم label على اليسار */
 }
 
 .forget ion-icon {
