@@ -16,7 +16,7 @@ body {
   padding: 20px;
 }
 
-.form-box {
+.form-box, .verification-box {
   width: 360px;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.5);
@@ -39,7 +39,7 @@ h2 {
 
 .inputbox input {
   width: 100%;
-  padding: 10px 40px;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.2);
@@ -51,18 +51,18 @@ h2 {
 .inputbox ion-icon {
   position: absolute;
   top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  color: #fff;
-}
-
-.inputbox #eye {
-  position: absolute;
-  top: 50%;
   right: 10px;
   transform: translateY(-50%);
+  color: #ddd;
+}
+
+#eye {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
   cursor: pointer;
-  color: #fff;
+  color: #ddd;
 }
 
 button {
@@ -93,10 +93,10 @@ button:hover {
   text-decoration: underline;
 }
 
-/* تحسين التصميم على الشاشات الصغيرة */
 @media (max-width: 768px) {
   .form-box {
     width: 90%;
+    padding: 15px;
   }
 
   h2 {
@@ -104,15 +104,10 @@ button:hover {
   }
 
   .inputbox input {
-    font-size: 0.85rem;
-    padding: 10px 35px;
+    font-size: 0.9rem;
   }
 
   button {
     font-size: 0.85rem;
-  }
-
-  .inputbox ion-icon, .inputbox #eye {
-    font-size: 1.2rem;
   }
 }
