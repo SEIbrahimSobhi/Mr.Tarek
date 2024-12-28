@@ -8,46 +8,36 @@
 }
 
 body {
-  background: linear-gradient(to bottom, #1e3c72, #2a5298), url('hero-bg.jpg') no-repeat center/cover;
+  background: url('hero-bg.jpg') no-repeat center/cover;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  color: #fff;
 }
 
 .form-box {
-  width: 400px;
+  width: 360px;
   background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 20px;
-  backdrop-filter: blur(10px);
-  padding: 25px;
+  backdrop-filter: blur(15px);
+  padding: 20px;
+  text-align: center;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
-.title-box,
-.button-box {
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  margin-bottom: 15px;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
 h2 {
-  font-size: 2rem;
-  margin-bottom: 10px;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
   font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .inputbox {
   position: relative;
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .inputbox input {
@@ -94,8 +84,16 @@ h2 {
 }
 
 .forget {
-  margin-top: -10px;
-  text-align: left;
+  margin: 10px 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+.forget ion-icon {
+  color: #ddd;
+  font-size: 1rem;
 }
 
 .forget label {
@@ -125,10 +123,14 @@ button:hover {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
+.register {
+  margin-top: 20px;
+}
+
 .register p {
-  margin-top: 10px;
-  text-align: center;
   font-size: 0.9rem;
+  margin: 10px 0;
+  text-align: center;
 }
 
 .register p a {
