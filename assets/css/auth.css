@@ -16,7 +16,7 @@ body {
   padding: 20px;
 }
 
-.form-box, .verification-box {
+.form-box {
   width: 360px;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.5);
@@ -39,7 +39,7 @@ h2 {
 
 .inputbox input {
   width: 100%;
-  padding: 10px 15px;
+  padding: 10px 15px 10px 40px;
   border: none;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.2);
@@ -48,10 +48,29 @@ h2 {
   outline: none;
 }
 
+.inputbox label {
+  position: absolute;
+  top: 50%;
+  right: 45px;
+  transform: translateY(-50%);
+  color: #ddd;
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+
+.inputbox input:focus ~ label,
+.inputbox input:valid ~ label {
+  right: 15px;
+  top: -10px;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
 .inputbox ion-icon {
   position: absolute;
   top: 50%;
-  right: 10px;
+  left: 10px;
   transform: translateY(-50%);
   color: #ddd;
 }
@@ -59,7 +78,7 @@ h2 {
 #eye {
   position: absolute;
   top: 50%;
-  left: 10px;
+  right: 10px;
   transform: translateY(-50%);
   cursor: pointer;
   color: #ddd;
