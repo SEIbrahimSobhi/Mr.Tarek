@@ -80,6 +80,8 @@ h2 {
   top: 50%;
   right: 10px;
   transform: translateY(-50%);
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 
@@ -92,18 +94,22 @@ h2 {
   height: 20px;
   border: 2px solid #ddd;
   border-radius: 3px;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
+  background-color: transparent;
+}
+
+.checkbox-container input[type="checkbox"]:checked + label {
+  background-color: #fff;
+  border-color: #fff;
 }
 
 .checkbox-container input[type="checkbox"]:checked + label::after {
   content: '✔';
-  color: #fff;
+  color: #000;
   font-size: 16px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 button {
