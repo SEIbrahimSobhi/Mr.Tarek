@@ -213,12 +213,27 @@
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script>
-    const togglePasswordCheckbox = document.querySelector("#toggle-password");
-    const passwordInput = document.querySelector("#password");
+    function show() {
+    var p = document.getElementById('pwd');
+    p.setAttribute('type', 'text');
+}
 
-    togglePasswordCheckbox.addEventListener("change", () => {
-      passwordInput.type = togglePasswordCheckbox.checked ? "text" : "password";
-    });
+function hide() {
+    var p = document.getElementById('pwd');
+    p.setAttribute('type', 'password');
+}
+
+var pwShown = 0;
+
+document.getElementById("eye").addEventListener("click", function () {
+    if (pwShown == 0) {
+        pwShown = 1;
+        show();
+    } else {
+        pwShown = 0;
+        hide();
+    }
+}, false);
   </script>
 </body>
 </html>
