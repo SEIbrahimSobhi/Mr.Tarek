@@ -75,20 +75,23 @@ h2 {
   color: #ddd;
 }
 
+/* تصميم الحاوية */
 .checkbox-container {
   position: absolute;
   top: 50%;
   right: 10px;
   transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 
+/* إخفاء مربع الاختيار الافتراضي */
 .checkbox-container input[type="checkbox"] {
   display: none;
 }
 
+/* تصميم المربع */
 .checkbox-container label {
   width: 20px;
   height: 20px;
@@ -98,16 +101,29 @@ h2 {
   justify-content: center;
   align-items: center;
   background-color: transparent;
+  transition: all 0.3s ease;
 }
 
+/* عند التحديد */
 .checkbox-container input[type="checkbox"]:checked + label {
   background-color: #fff;
+  border-color: #fff;
 }
 
 .checkbox-container input[type="checkbox"]:checked + label::after {
   content: '✔';
-  font-size: 14px;
-  color: #333;
+  color: #000;
+  font-size: 16px;
+}
+
+/* أيقونة القفل */
+.inputbox ion-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #ddd;
+  font-size: 18px;
 }
 
 button {
