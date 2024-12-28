@@ -163,49 +163,29 @@
         <form id="register-form">
           <h2>إنشاء حساب</h2>
           <div class="inputbox">
-            <ion-icon name="person-outline"></ion-icon>
             <input type="text" id="username" required>
             <label for="username">اسم المستخدم</label>
           </div>
           <div class="inputbox">
-            <ion-icon name="person-outline"></ion-icon>
             <input type="text" id="student-name" required>
             <label for="student-name">اسم الطالب</label>
           </div>
           <div class="inputbox">
-            <ion-icon name="call-outline"></ion-icon>
             <input type="tel" id="phone" required>
             <label for="phone">رقم الهاتف</label>
           </div>
           <div class="inputbox">
-            <ion-icon name="mail-outline"></ion-icon>
             <input type="email" id="email" required>
             <label for="email">الإيميل</label>
           </div>
-          <div class="inputbox">
-            <ion-icon name="lock-closed-outline"></ion-icon>
-            <input class="form-input" type="password" id="password" required>
+          <div class="inputbox password-box">
+            <input type="password" id="password" required>
             <label for="password">كلمة المرور</label>
-            <span id="eye-toggle">
-              <i class="fa fa-eye" aria-hidden="true"></i>
-            </span>
+            <i class="fa fa-eye" id="eye"></i>
           </div>
           <button type="submit">إنشاء حساب</button>
           <a href="login.html" class="switch-link">لديك حساب؟ تسجيل الدخول</a>
         </form>
-      </div>
-    </div>
-
-    <div id="verification-section" style="display: none;">
-      <div class="verification-box">
-        <h2>تأكيد البريد الإلكتروني</h2>
-        <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
-        <div class="inputbox">
-          <input type="text" id="verification-code" placeholder="رمز التحقق" required>
-        </div>
-        <button id="verify-code">تحقق</button>
-        <p id="countdown">صلاحية الرمز: 3:00</p>
-        <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
       </div>
     </div>
   </section>
@@ -213,19 +193,21 @@
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script>
-    const eyeIcon = document.getElementById('eye');
-const passwordInput = document.getElementById('password');
+ document.addEventListener('DOMContentLoaded', () => {
+  const eyeIcon = document.getElementById('eye');
+  const passwordInput = document.getElementById('password');
 
-eyeIcon.addEventListener('click', () => {
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    eyeIcon.classList.add('fa-eye-slash');
-    eyeIcon.classList.remove('fa-eye');
-  } else {
-    passwordInput.type = 'password';
-    eyeIcon.classList.add('fa-eye');
-    eyeIcon.classList.remove('fa-eye-slash');
-  }
+  eyeIcon.addEventListener('click', () => {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      eyeIcon.classList.add('fa-eye-slash');
+      eyeIcon.classList.remove('fa-eye');
+    } else {
+      passwordInput.type = 'password';
+      eyeIcon.classList.add('fa-eye');
+      eyeIcon.classList.remove('fa-eye-slash');
+    }
+  });
 });
   </script>
 </body>
