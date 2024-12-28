@@ -85,9 +85,10 @@ h2 {
 .forget {
   margin: 10px 0;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end; /* لتموضع المحتوى على اليمين */
   align-items: center;
   gap: 10px;
+  flex-direction: row-reverse; /* لتبديل ترتيب العناصر */
 }
 
 .forget ion-icon {
