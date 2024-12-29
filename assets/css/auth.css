@@ -239,18 +239,19 @@ button#verify-code {
 }
 
 .notification .icon {
-  margin-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .circle {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  font-size: 30px;
+  font-size: 35px;
   color: white;
   animation: pop 0.6s ease-in-out forwards;
 }
@@ -297,7 +298,7 @@ button#verify-code {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
   }
 }
 
