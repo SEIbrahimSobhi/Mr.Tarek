@@ -109,7 +109,7 @@
           await sendVerificationEmail(email, verificationCode);
 
           // عرض قسم التحقق
-          showNotification("تم إرسال رمز التحقق إلى بريدك الإلكتروني.", "success");
+          showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
           document.getElementById("register-form").style.display = "none";
           document.getElementById("verification-section").style.display = "block";
 
