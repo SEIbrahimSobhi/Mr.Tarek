@@ -9,6 +9,8 @@
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
   
   <!-- تحميل مكتبة EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -134,7 +136,7 @@
               emailVerified: true,
             });
 
-            showNotification("رمز التحقق غير صحيح.", "error");
+            showNotification("تم انشاء حساب.", "success");
             window.location.href = "index.html";
           } catch (error) {
             console.error("خطأ أثناء إنشاء الحساب:", error);
@@ -242,18 +244,30 @@
 </script>
 
   <script>
-  const showNotification = (message, type = "success", duration = 3000) => {
+const showNotification = (message, type = "success", duration = 3000) => {
   const notificationContainer = document.getElementById("notification-container");
   const notificationMessage = document.getElementById("notification-message");
   const notificationIcon = document.getElementById("notification-icon");
 
-  // تغيير النص وعلامة الرسالة بناءً على النوع
+  // تغيير النص بناءً على الرسالة
   notificationMessage.textContent = message;
-  if (type === "success") {
-    notificationIcon.className = "notification-icon success";
-  } else if (type === "error") {
-    notificationIcon.className = "notification-icon error";
-  }
+
+  // تنظيف الرسوم المتحركة السابقة
+  notificationIcon.innerHTML = "";
+
+  // اختيار الرسوم المتحركة بناءً على النوع
+  const animationData = type === "success"
+    ? "https://assets2.lottiefiles.com/private_files/lf30_jmgekfqg.json" // علامة صح
+    : "https://assets2.lottiefiles.com/private_files/lf30_q77jpumk.json"; // علامة خطأ
+
+  // تحميل الرسوم المتحركة
+  const animation = lottie.loadAnimation({
+    container: notificationIcon,
+    renderer: "svg",
+    loop: false,
+    autoplay: true,
+    path: animationData
+  });
 
   // عرض الرسالة
   notificationContainer.classList.remove("hidden");
