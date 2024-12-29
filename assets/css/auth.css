@@ -224,15 +224,18 @@ button#verify-code {
   transition: opacity 0.3s, transform 0.3s;
   opacity: 0;
   z-index: 1000;
+  visibility: hidden;
 }
 
 .notification.show {
   opacity: 1;
+  visibility: visible;
   transform: translate(-50%, -50%) scale(1);
 }
 
 .notification.hidden {
   transform: translate(-50%, -50%) scale(0.8);
+  visibility: hidden;
 }
 
 .notification .icon {
@@ -309,4 +312,3 @@ button#verify-code {
     transform: translateX(5px);
   }
 }
-
