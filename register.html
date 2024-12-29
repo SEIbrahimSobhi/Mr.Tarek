@@ -57,7 +57,7 @@
 
         if (remainingTime <= 0) {
           clearInterval(countdownInterval);
-          showNotification("انتهت صلاحية الرمز. يرجى طلب رمز جديد.", "error");
+          showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
           countdownElement.textContent = "انتهت صلاحية الرمز.";
           document.getElementById("resend-code").style.display = "block";
         }
@@ -94,7 +94,7 @@
         const password = document.getElementById("password").value;
 
         if (!username || !studentName || !phone || !email || !password) {
-          showNotification("يرجى ملء جميع الحقول.", "error");
+          showNotification("error", "يرجى ملء جميع البيانات.");
           return;
         }
 
@@ -117,7 +117,7 @@
           startCountdown(180);
         } catch (error) {
           console.error("خطأ أثناء إنشاء الحساب:", error);
-          showNotification("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.", "error");
+          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
         }
       });
 
@@ -136,14 +136,14 @@
               emailVerified: true,
             });
 
-            showNotification("تم انشاء حساب.", "success");
+            showNotification("success", "تم انشاء حساب.");
             window.location.href = "index.html";
           } catch (error) {
             console.error("خطأ أثناء إنشاء الحساب:", error);
-            showNotification("حدث خطأ أثناء إنشاء الحساب.", "error");
+            showNotification("error", "حدث خطأ أثناء إنشاء الحساب.");
           }
         } else {
-          showNotification("رمز التحقق غير صحيح.", "error");
+          showNotification("error", "رمز التحقق غير صحيح.");
         }
       });
 
@@ -151,12 +151,12 @@
         try {
           verificationCode = Math.floor(100000 + Math.random() * 900000);
           await sendVerificationEmail(userInfo.email, verificationCode);
-          showNotification("تم إرسال رمز تحقق جديد.", "success");
+          showNotification("success", "تم إرسال رمز تحقق جديد.");
           document.getElementById("resend-code").style.display = "none";
           startCountdown(180);
         } catch (error) {
           console.error("خطأ أثناء إعادة إرسال الرمز:", error);
-          showNotification("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.", "error");
+          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
         }
       });
     });
