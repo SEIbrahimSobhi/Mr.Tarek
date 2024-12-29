@@ -14,11 +14,12 @@ body {
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  overflow-x: hidden;
+  margin: 0;
 }
 
 .form-box {
   width: 360px;
+  max-width: 100%;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 20px;
@@ -26,6 +27,7 @@ body {
   padding: 20px;
   text-align: center;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
   transition: all 0.3s ease;
 }
 
@@ -195,8 +197,8 @@ button#verify-code {
 
   .form-box {
     width: 100%;
-    padding: 15px;
-    margin: 0 10px;
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   h2 {
@@ -205,37 +207,5 @@ button#verify-code {
 
   button {
     font-size: 0.9rem;
-  }
-
-  .inputbox input {
-    padding: 10px;
-  }
-
-  .inputbox label {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .form-box {
-    padding: 10px;
-    border-radius: 15px;
-  }
-
-  h2 {
-    font-size: 1.4rem;
-  }
-
-  button {
-    font-size: 0.8rem;
-    padding: 8px;
-  }
-
-  .inputbox input {
-    padding: 8px;
-  }
-
-  .inputbox label {
-    font-size: 0.75rem;
   }
 }
