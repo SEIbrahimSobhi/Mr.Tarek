@@ -252,22 +252,9 @@ const showNotification = (message, type = "success", duration = 3000) => {
   // تغيير النص بناءً على الرسالة
   notificationMessage.textContent = message;
 
-  // تنظيف الرسوم المتحركة السابقة
-  notificationIcon.innerHTML = "";
-
-  // اختيار الرسوم المتحركة بناءً على النوع
-  const animationData = type === "success"
-    ? "https://assets2.lottiefiles.com/private_files/lf30_jmgekfqg.json" // علامة صح
-    : "https://assets2.lottiefiles.com/private_files/lf30_q77jpumk.json"; // علامة خطأ
-
-  // تحميل الرسوم المتحركة
-  const animation = lottie.loadAnimation({
-    container: notificationIcon,
-    renderer: "svg",
-    loop: false,
-    autoplay: true,
-    path: animationData
-  });
+  // تعيين الأيقونة بناءً على النوع
+  notificationIcon.className = `icon ${type}`;
+  notificationIcon.innerHTML = type === "success" ? "✔️" : "❌";
 
   // عرض الرسالة
   notificationContainer.classList.remove("hidden");
