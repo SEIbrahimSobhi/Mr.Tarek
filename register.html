@@ -204,6 +204,10 @@
           </div>
         </div>
       </form>
+      <div id="notification-container" class="notification hidden">
+        <div class="notification-icon" id="notification-icon"></div>
+        <p id="notification-message"></p>
+    </div>
       <div id="verification-section" style="display: none;">
         <div class="verification-box">
           <h2>تأكيد البريد الإلكتروني</h2>
@@ -235,6 +239,32 @@
       passwordInput.type = 'password';
     }
   });
+</script>
+
+  <script>
+  const showNotification = (message, type = "success", duration = 3000) => {
+  const notificationContainer = document.getElementById("notification-container");
+  const notificationMessage = document.getElementById("notification-message");
+  const notificationIcon = document.getElementById("notification-icon");
+
+  // تغيير النص وعلامة الرسالة بناءً على النوع
+  notificationMessage.textContent = message;
+  if (type === "success") {
+    notificationIcon.className = "notification-icon success";
+  } else if (type === "error") {
+    notificationIcon.className = "notification-icon error";
+  }
+
+  // عرض الرسالة
+  notificationContainer.classList.remove("hidden");
+  notificationContainer.classList.add("show");
+
+  // إخفاء الرسالة بعد مدة
+  setTimeout(() => {
+    notificationContainer.classList.remove("show");
+    notificationContainer.classList.add("hidden");
+  }, duration);
+};
 </script>
 </body>
 </html>
