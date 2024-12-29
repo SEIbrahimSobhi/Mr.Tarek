@@ -9,6 +9,8 @@
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 <!--   ملف css  -->
   <link rel="stylesheet" href="assets/css/auth.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
 </head>
 <body>
   <section>
@@ -30,6 +32,10 @@
       <label>
         <input type="checkbox" id="show-password">  show password</label>
       </div>
+      <div id="notification-container" class="notification hidden">
+  <p id="notification-message"></p>
+  <div id="notification-icon" class="lottie-container"></div>
+</div>
         <div class="button-box">
           <button type="submit">تسجيل دخول</button>
           <div class="register">
@@ -79,7 +85,7 @@ const firebaseConfig = {
           const querySnapshot = await getDoc(q);
 
           if (querySnapshot.empty) {
-            alert("اسم المستخدم غير موجود. تأكد من المدخلات.");
+            showNotification("اسم المستخدم غير موجود.", "error");
             return;
           }
 
@@ -91,12 +97,64 @@ const firebaseConfig = {
 
         // تسجيل الدخول باستخدام البريد الإلكتروني
         await signInWithEmailAndPassword(auth, email, password);
-        alert('تم تسجيل الدخول بنجاح!');
+        showNotification("تم تسجيل الدخول بنجاح!", "success");
         window.location.href = 'index.html';
       } catch (error) {
-        alert(`خطأ أثناء تسجيل الدخول: ${error.message}`);
+        showNotification("خطأ أثناء تسجيل الدخول: ${error.message}", "error");
       }
     });
   </script>
+
+<script>
+  // Show/Hide password functionality
+  const showPasswordCheckbox = document.getElementById('show-password');
+  const passwordInput = document.getElementById('password');
+
+  showPasswordCheckbox.addEventListener('change', () => {
+    if (showPasswordCheckbox.checked) {
+      passwordInput.type = 'text';
+    } else {
+      passwordInput.type = 'password';
+    }
+  });
+</script>
+
+    <script>
+const showNotification = (message, type = "success", duration = 3000) => {
+  const notificationContainer = document.getElementById("notification-container");
+  const notificationMessage = document.getElementById("notification-message");
+  const notificationIcon = document.getElementById("notification-icon");
+
+  // تغيير النص بناءً على الرسالة
+  notificationMessage.textContent = message;
+
+  // تنظيف الرسوم المتحركة السابقة
+  notificationIcon.innerHTML = "";
+
+  // اختيار الرسوم المتحركة بناءً على النوع
+  const animationData = type === "success"
+    ? "https://assets2.lottiefiles.com/private_files/lf30_jmgekfqg.json" // علامة صح
+    : "https://assets2.lottiefiles.com/private_files/lf30_q77jpumk.json"; // علامة خطأ
+
+  // تحميل الرسوم المتحركة
+  const animation = lottie.loadAnimation({
+    container: notificationIcon,
+    renderer: "svg",
+    loop: false,
+    autoplay: true,
+    path: animationData
+  });
+
+  // عرض الرسالة
+  notificationContainer.classList.remove("hidden");
+  notificationContainer.classList.add("show");
+
+  // إخفاء الرسالة بعد مدة
+  setTimeout(() => {
+    notificationContainer.classList.remove("show");
+    notificationContainer.classList.add("hidden");
+  }, duration);
+};
+</script>
 </body>
 </html>
