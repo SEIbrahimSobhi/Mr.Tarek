@@ -16,7 +16,7 @@
   <section>
         <div class="form-box">
             <div class="form-value">
-                <form action="">
+                <form action="" id="login-form">
                 <h2>تسجيل الدخول</h2>
              <div class="inputbox">
                <ion-icon name="mail-outline"></ion-icon>
@@ -32,10 +32,6 @@
       <label>
         <input type="checkbox" id="show-password">  show password</label>
       </div>
-      <div id="notification-container" class="notification hidden">
-  <p id="notification-message"></p>
-  <div id="notification-icon" class="lottie-container"></div>
-</div>
         <div class="button-box">
           <button type="submit">تسجيل دخول</button>
           <div class="register">
@@ -43,6 +39,17 @@
           </div>
         </div>
       </form>
+  <div id="notification" class="notification hidden">
+  <p id="notification-message"></p>
+  <div class="icon">
+    <div id="success-icon" class="circle hidden">
+      <span>✔</span>
+    </div>
+    <div id="error-icon" class="circle hidden">
+      <span>❌</span>
+    </div>
+  </div>
+</div>
      </div>
    </div>
   </section>
