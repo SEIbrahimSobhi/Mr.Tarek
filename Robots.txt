@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /index.html
+Disallow: /any-other-page-or-directory/
+
+Sitemap: https://mr-tarek-maths.vercel.app/sitemap.xml
