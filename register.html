@@ -55,7 +55,7 @@
 
         if (remainingTime <= 0) {
           clearInterval(countdownInterval);
-          alert("انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
+          showNotification("انتهت صلاحية الرمز. يرجى طلب رمز جديد.", "error");
           countdownElement.textContent = "انتهت صلاحية الرمز.";
           document.getElementById("resend-code").style.display = "block";
         }
@@ -92,7 +92,7 @@
         const password = document.getElementById("password").value;
 
         if (!username || !studentName || !phone || !email || !password) {
-          alert("يرجى ملء جميع الحقول.");
+          showNotification("يرجى ملء جميع الحقول.", "error");
           return;
         }
 
@@ -107,7 +107,7 @@
           await sendVerificationEmail(email, verificationCode);
 
           // عرض قسم التحقق
-          alert("تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+          showNotification("تم إرسال رمز التحقق إلى بريدك الإلكتروني.", "success");
           document.getElementById("register-form").style.display = "none";
           document.getElementById("verification-section").style.display = "block";
 
@@ -115,7 +115,7 @@
           startCountdown(180);
         } catch (error) {
           console.error("خطأ أثناء إنشاء الحساب:", error);
-          alert("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+          showNotification("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.", "error");
         }
       });
 
@@ -134,14 +134,14 @@
               emailVerified: true,
             });
 
-            alert("تم تأكيد البريد الإلكتروني وإنشاء الحساب بنجاح!");
+            showNotification("رمز التحقق غير صحيح.", "error");
             window.location.href = "index.html";
           } catch (error) {
             console.error("خطأ أثناء إنشاء الحساب:", error);
-            alert("حدث خطأ أثناء إنشاء الحساب.");
+            showNotification("حدث خطأ أثناء إنشاء الحساب.", "error");
           }
         } else {
-          alert("رمز التحقق غير صحيح.");
+          showNotification("رمز التحقق غير صحيح.", "error");
         }
       });
 
@@ -149,12 +149,12 @@
         try {
           verificationCode = Math.floor(100000 + Math.random() * 900000);
           await sendVerificationEmail(userInfo.email, verificationCode);
-          alert("تم إرسال رمز تحقق جديد.");
+          showNotification("تم إرسال رمز تحقق جديد.", "success");
           document.getElementById("resend-code").style.display = "none";
           startCountdown(180);
         } catch (error) {
           console.error("خطأ أثناء إعادة إرسال الرمز:", error);
-          alert("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+          showNotification("حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.", "error");
         }
       });
     });
