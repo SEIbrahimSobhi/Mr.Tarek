@@ -212,21 +212,18 @@ button#verify-code {
 
 .notification {
   position: fixed;
-  top: 20%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #ffffff;
-  color: #333;
+  background: #fff;
+  border-radius: 10px;
   padding: 20px;
-  width: 300px;
-  border-radius: 15px;
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  font-size: 1.2rem;
-  font-weight: bold;
-  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ccc;
+  transition: opacity 0.3s, transform 0.3s;
   opacity: 0;
-  transition: all 0.3s ease-in-out;
+  z-index: 1000;
 }
 
 .notification.show {
@@ -235,35 +232,81 @@ button#verify-code {
 }
 
 .notification.hidden {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
-  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.8);
 }
 
 .notification .icon {
-  margin-top: 10px;
-  font-size: 50px;
-  animation: pop 0.6s ease-in-out;
+  margin-bottom: 15px;
 }
 
-.icon.success {
-  color: #4caf50; /* لون علامة الصح */
+.circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 30px;
+  color: white;
+  animation: pop 0.6s ease-in-out forwards;
 }
 
-.icon.error {
-  color: #f44336; /* لون علامة الخطأ */
+#success-icon {
+  background-color: #4caf50;
+}
+
+#error-icon {
+  background-color: #f44336;
+}
+
+.hidden {
+  display: none;
+}
+
+.notification.success {
+  border-color: #4caf50;
+}
+
+.notification.error {
+  border-color: #f44336;
+}
+
+.notification.success #success-icon {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.notification.error #error-icon {
+  animation: shake 0.5s ease-in-out infinite;
 }
 
 @keyframes pop {
   0% {
     transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
   }
   100% {
     transform: scale(1);
   }
 }
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
