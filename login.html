@@ -4,163 +4,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr.Tarek-تسجيل الدخول</title>
-<!-- Favicons -->
+  <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-<!--   ملف css  -->
+  <!-- ملف CSS -->
   <link rel="stylesheet" href="assets/css/auth.css">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
 </head>
 <body>
   <section>
-        <div class="form-box">
-            <div class="form-value">
-                <form action="" id="login-form">
-                <h2>تسجيل الدخول</h2>
-             <div class="inputbox">
+    <div class="form-box">
+      <div class="form-value">
+        <form id="login-form">
+          <h2>تسجيل الدخول</h2>
+          <div class="inputbox">
             <ion-icon name="mail-outline"></ion-icon>
-            <input type="email" id="email" required>
-            <label for="email">الإيميل</label>
-           </div>
-           <div class="inputbox">
-          <ion-icon name="lock-closed-outline"></ion-icon>
-          <input type="password" id="password" required>
-          <label for="password">كلمة المرور</label>
-        </div>
-        <div class="forget">
-      <label>
-        <input type="checkbox" id="show-password">  show password</label>
-      </div>
-        <div class="button-box">
-          <button type="submit">تسجيل دخول</button>
-          <div class="register">
-            <p>ليس لديك حساب؟ <a href="register.html" class="switch-link">انشاء حساب</a></p>
+            <input type="text" id="identifier" required>
+            <label for="identifier">الإيميل أو اسم المستخدم</label>
           </div>
+          <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="password" required>
+            <label for="password">كلمة المرور</label>
+          </div>
+          <div class="forget">
+            <label>
+              <input type="checkbox" id="show-password"> عرض كلمة المرور
+            </label>
+          </div>
+          <div class="button-box">
+            <button type="submit">تسجيل دخول</button>
+            <div class="register">
+              <p>ليس لديك حساب؟ <a href="register.html" class="switch-link">إنشاء حساب</a></p>
+            </div>
+          </div>
+        </form>
+        <div id="notification" class="notification hidden">
+          <p id="notification-message"></p>
+          <div class="icon" id="notification-icon"></div>
         </div>
-      </form>
-  <div id="notification" class="notification hidden">
-  <p id="notification-message"></p>
-  <div class="icon">
-    <div id="success-icon" class="circle hidden">
-      <span>✔</span>
+      </div>
     </div>
-    <div id="error-icon" class="circle hidden">
-      <span>❌</span>
-    </div>
-  </div>
-</div>
-     </div>
-   </div>
   </section>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, query, collection, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
     // تهيئة Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-  authDomain: "mr-tarek-2e40f.firebaseapp.com",
-  projectId: "mr-tarek-2e40f",
-  storageBucket: "mr-tarek-2e40f.firebasestorage.app",
-  messagingSenderId: "807997869740",
-  appId: "1:807997869740:web:8eca7473d24693bf861909"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     document.getElementById('login-form').addEventListener('submit', async (event) => {
-  event.preventDefault();
+      event.preventDefault();
 
-  const identifier = document.getElementById('email').value; // إذا أردت دعم اسم المستخدم، غيّر `email` إلى `identifier`
-  const password = document.getElementById('password').value;
-  let email = identifier;
+      const identifier = document.getElementById('identifier').value.trim();
+      const password = document.getElementById('password').value;
 
-  try {
-    // البحث عن البريد الإلكتروني إذا كان الإدخال ليس بريدًا إلكترونيًا
-    if (!identifier.includes('@')) {
-      const usersRef = collection(db, "users"); // تأكد من أن مجموعة المستخدمين هي "users"
-      const q = query(usersRef, where("username", "==", identifier));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        showNotification("اسم المستخدم غير موجود.", "error");
+      if (!identifier || !password) {
+        showNotification("يرجى إدخال الإيميل/اسم المستخدم وكلمة المرور.", "error");
         return;
       }
 
-      // جلب البريد الإلكتروني للمستخدم
-      querySnapshot.forEach((doc) => {
-        email = doc.data().email;
-      });
-    }
+      let email = identifier;
 
-    // تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
-    await signInWithEmailAndPassword(auth, email, password);
-    showNotification("تم تسجيل الدخول بنجاح!", "success");
-    window.location.href = 'index.html';
-  } catch (error) {
-    showNotification(`خطأ أثناء تسجيل الدخول: ${error.message}`, "error");
-  }
-});
+      try {
+        // إذا لم يكن الإدخال بريدًا إلكترونيًا، ابحث عن الإيميل باستخدام اسم المستخدم
+        if (!identifier.includes('@')) {
+          const usersRef = collection(db, "users");
+          const q = query(usersRef, where("username", "==", identifier));
+          const querySnapshot = await getDocs(q);
+
+          if (querySnapshot.empty) {
+            showNotification("اسم المستخدم غير موجود.", "error");
+            return;
+          }
+
+          querySnapshot.forEach((doc) => {
+            email = doc.data().email;
+          });
+        }
+
+        // تسجيل الدخول
+        await signInWithEmailAndPassword(auth, email, password);
+        showNotification("تم تسجيل الدخول بنجاح!", "success");
+        window.location.href = 'index.html';
+      } catch (error) {
+        showNotification(`خطأ أثناء تسجيل الدخول: ${error.message}`, "error");
+      }
+    });
   </script>
 
-<script>
-  // Show/Hide password functionality
-  const showPasswordCheckbox = document.getElementById('show-password');
-  const passwordInput = document.getElementById('password');
+  <script>
+    // عرض/إخفاء كلمة المرور
+    const showPasswordCheckbox = document.getElementById('show-password');
+    const passwordInput = document.getElementById('password');
 
-  showPasswordCheckbox.addEventListener('change', () => {
-    if (showPasswordCheckbox.checked) {
-      passwordInput.type = 'text';
-    } else {
-      passwordInput.type = 'password';
-    }
-  });
-</script>
+    showPasswordCheckbox.addEventListener('change', () => {
+      passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
+    });
+  </script>
 
-    <script>
-const showNotification = (message, type = "success", duration = 3000) => {
-  const notificationContainer = document.getElementById("notification-container");
-  const notificationMessage = document.getElementById("notification-message");
-  const notificationIcon = document.getElementById("notification-icon");
+  <script>
+    const showNotification = (message, type = "success", duration = 3000) => {
+      const notificationContainer = document.getElementById("notification");
+      const notificationMessage = document.getElementById("notification-message");
+      const notificationIcon = document.getElementById("notification-icon");
 
-  // تغيير النص بناءً على الرسالة
-  notificationMessage.textContent = message;
+      notificationMessage.textContent = message;
 
-  // تنظيف الرسوم المتحركة السابقة
-  notificationIcon.innerHTML = "";
+      // تنظيف أي محتوى سابق
+      notificationIcon.innerHTML = "";
 
-  // اختيار الرسوم المتحركة بناءً على النوع
-  const animationData = type === "success"
-    ? "https://assets2.lottiefiles.com/private_files/lf30_jmgekfqg.json" // علامة صح
-    : "https://assets2.lottiefiles.com/private_files/lf30_q77jpumk.json"; // علامة خطأ
+      // اختيار الرسوم المتحركة
+      const animationData = type === "success"
+        ? "https://assets2.lottiefiles.com/private_files/lf30_jmgekfqg.json"
+        : "https://assets2.lottiefiles.com/private_files/lf30_q77jpumk.json";
 
-  // تحميل الرسوم المتحركة
-  const animation = lottie.loadAnimation({
-    container: notificationIcon,
-    renderer: "svg",
-    loop: false,
-    autoplay: true,
-    path: animationData
-  });
+      lottie.loadAnimation({
+        container: notificationIcon,
+        renderer: "svg",
+        loop: false,
+        autoplay: true,
+        path: animationData
+      });
 
-  // عرض الرسالة
-  notificationContainer.classList.remove("hidden");
-  notificationContainer.classList.add("show");
+      notificationContainer.classList.remove("hidden");
 
-  // إخفاء الرسالة بعد مدة
-  setTimeout(() => {
-    notificationContainer.classList.remove("show");
-    notificationContainer.classList.add("hidden");
-  }, duration);
-};
-</script>
+      setTimeout(() => {
+        notificationContainer.classList.add("hidden");
+      }, duration);
+    };
+  </script>
 </body>
 </html>
