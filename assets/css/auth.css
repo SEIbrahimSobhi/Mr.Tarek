@@ -85,10 +85,10 @@ h2 {
 .forget {
   margin: 10px 0;
   display: flex;
-  justify-content: flex-end; /* يبقي المحتوى على اليمين */
+    justify-content: space-between;  
   align-items: center;
   gap: 10px;
-  flex-direction: row-reverse; /* ترتيب العناصر بشكل عكسي بحيث تكون الأيقونة على اليمين ثم label على اليسار */
+  flex-direction: row; /* وضع العناصر في الاتجاه الطبيعي */
 }
 
 .forget ion-icon {
