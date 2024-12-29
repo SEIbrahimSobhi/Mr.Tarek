@@ -207,6 +207,7 @@
         </div>
       </form>
       <div id="notification" class="notification hidden">
+  <p id="notification-message"></p>
   <div class="icon">
     <div id="success-icon" class="circle hidden">
       <span>✔</span>
@@ -215,7 +216,6 @@
       <span>❌</span>
     </div>
   </div>
-  <p id="notification-message"></p>
 </div>
       <div id="verification-section" style="display: none;">
         <div class="verification-box">
@@ -251,7 +251,7 @@
 </script>
 
   <script>
-function showNotification(type, message) {
+    function showNotification(type, message) {
   const notification = document.getElementById("notification");
   const successIcon = document.getElementById("success-icon");
   const errorIcon = document.getElementById("error-icon");
@@ -281,15 +281,13 @@ function showNotification(type, message) {
   }, 3000);
 }
 
-// Example Usage
+// Example Usage on specific events like account creation or verification code sent
 document.addEventListener("DOMContentLoaded", () => {
-  // Test success notification
-  showNotification("success", "تم إرسال الرمز بنجاح!");
+  // Call this function when a verification code is sent
+  // showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
 
-  // Test error notification
-  setTimeout(() => {
-    showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
-  }, 4000);
+  // Call this function when an error occurs
+  // showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
 });
 </script>
 </body>
