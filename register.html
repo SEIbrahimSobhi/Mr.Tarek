@@ -258,7 +258,7 @@ function showNotification(type, message) {
   const notificationMessage = document.getElementById("notification-message");
 
   // Reset state
-  notification.className = "notification hidden";
+  notification.classList.remove("show", "hidden");
   successIcon.classList.add("hidden");
   errorIcon.classList.add("hidden");
 
@@ -285,7 +285,7 @@ function showNotification(type, message) {
 document.addEventListener("DOMContentLoaded", () => {
   // Test success notification
   showNotification("success", "تم إرسال الرمز بنجاح!");
-  
+
   // Test error notification
   setTimeout(() => {
     showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
