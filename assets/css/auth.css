@@ -209,3 +209,78 @@ button#verify-code {
     font-size: 0.9rem;
   }
 }
+
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  color: #333;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  font-weight: bold;
+  z-index: 1000;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.3s ease-in-out;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.notification.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px);
+  pointer-events: none;
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.notification-icon.success {
+  background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"%3E%3Ccircle cx="26" cy="26" r="25" fill="%23a5d6a7" /%3E%3Cpath fill="none" stroke="%23ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M16 26l7 7 13-13"/%3E%3C/svg%3E') no-repeat center/contain;
+}
+
+.notification-icon.error {
+  background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"%3E%3Ccircle cx="26" cy="26" r="25" fill="%23ef9a9a" /%3E%3Cpath fill="none" stroke="%23ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M16 16l20 20m0-20L16 36"/%3E%3C/svg%3E') no-repeat center/contain;
+}
+
+.notification.show {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.notification.hidden {
+  animation: fadeOut 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
