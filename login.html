@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mr.Tarek-تسجيل الدخول</title>
+  <title>Mr.Tarek - إنشاء حساب</title>
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -16,8 +16,13 @@
   <section>
     <div class="form-box">
       <div class="form-value">
-        <form id="login-form">
-          <h2>تسجيل الدخول</h2>
+        <form id="register-form">
+          <h2>إنشاء حساب</h2>
+          <div class="inputbox">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" id="username" required>
+            <label for="username">اسم المستخدم</label>
+          </div>
           <div class="inputbox">
             <ion-icon name="mail-outline"></ion-icon>
             <input type="email" id="email" required>
@@ -28,15 +33,15 @@
             <input type="password" id="password" required>
             <label for="password">كلمة المرور</label>
           </div>
-          <div class="forget">
-            <label>
-              <input type="checkbox" id="show-password"> إظهار كلمة المرور
-            </label>
+          <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="confirm-password" required>
+            <label for="confirm-password">تأكيد كلمة المرور</label>
           </div>
           <div class="button-box">
-            <button type="submit">تسجيل دخول</button>
+            <button type="submit">إنشاء حساب</button>
             <div class="register">
-              <p>ليس لديك حساب؟ <a href="register.html" class="switch-link">إنشاء حساب</a></p>
+              <p>هل لديك حساب؟ <a href="login.html" class="switch-link">تسجيل الدخول</a></p>
             </div>
           </div>
         </form>
@@ -50,7 +55,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
@@ -64,57 +69,82 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    document.getElementById('login-form').addEventListener('submit', async (event) => {
+    document.getElementById('register-form').addEventListener('submit', async (event) => {
       event.preventDefault();
 
+      const username = document.getElementById('username').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (password !== confirmPassword) {
+        showNotification("كلمات المرور غير متطابقة.", "error");
+        return;
+      }
 
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        showNotification("تم تسجيل الدخول بنجاح!", "success");
+        await createUserWithEmailAndPassword(auth, email, password);
+        showNotification("تم إنشاء الحساب بنجاح!", "success");
         setTimeout(() => {
-          window.location.href = "index.html";
+          window.location.href = "login.html";
         }, 2000);
       } catch (error) {
-        const errorMessage = error.message || "خطأ أثناء تسجيل الدخول.";
+        const errorMessage = error.message || "خطأ أثناء إنشاء الحساب.";
         showNotification(errorMessage, "error");
       }
     });
-
-    const showNotification = (message, type) => {
-      const notificationContainer = document.getElementById("notification");
-      const notificationMessage = document.getElementById("notification-message");
-      const notificationIcon = document.getElementById("notification-icon");
-
-      notificationMessage.textContent = message;
-
-      const animationData = type === "success"
-        ? "path/to/success-animation.json"
-        : "path/to/error-animation.json";
-
-      notificationIcon.innerHTML = "";
-      lottie.loadAnimation({
-        container: notificationIcon,
-        renderer: "svg",
-        loop: false,
-        autoplay: true,
-        path: animationData
-      });
-
-      notificationContainer.classList.remove("hidden");
-      setTimeout(() => {
-        notificationContainer.classList.add("hidden");
-      }, 3000);
-    };
   </script>
+
+    <script>
+    function showNotification(type, message) {
+  const notification = document.getElementById("notification");
+  const successIcon = document.getElementById("success-icon");
+  const errorIcon = document.getElementById("error-icon");
+  const notificationMessage = document.getElementById("notification-message");
+
+  // Reset state
+  notification.classList.remove("show", "hidden");
+  successIcon.classList.add("hidden");
+  errorIcon.classList.add("hidden");
+
+  // Update state based on type
+  if (type === "success") {
+    notification.classList.add("success", "show");
+    successIcon.classList.remove("hidden");
+  } else if (type === "error") {
+    notification.classList.add("error", "show");
+    errorIcon.classList.remove("hidden");
+  }
+
+  // Set message
+  notificationMessage.textContent = message;
+
+  // Show notification for 3 seconds
+  setTimeout(() => {
+    notification.classList.remove("show");
+    notification.classList.add("hidden");
+  }, 3000);
+}
+
+// Example Usage on specific events like account creation or verification code sent
+document.addEventListener("DOMContentLoaded", () => {
+  // Call this function when a verification code is sent
+  // showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+
+  // Call this function when an error occurs
+  // showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
+});
+</script>
 
   <script>
     const showPasswordCheckbox = document.getElementById('show-password');
     const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
 
     showPasswordCheckbox.addEventListener('change', () => {
-      passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
+      const type = showPasswordCheckbox.checked ? 'text' : 'password';
+      passwordInput.type = type;
+      confirmPasswordInput.type = type;
     });
   </script>
 </body>
