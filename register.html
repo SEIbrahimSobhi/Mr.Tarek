@@ -206,9 +206,16 @@
           </div>
         </div>
       </form>
-      <div id="notification-container" class="notification hidden">
+      <div id="notification" class="notification hidden">
+  <div class="icon">
+    <div id="success-icon" class="circle hidden">
+      <span>✔</span>
+    </div>
+    <div id="error-icon" class="circle hidden">
+      <span>❌</span>
+    </div>
+  </div>
   <p id="notification-message"></p>
-  <div id="notification-icon" class="lottie-container"></div>
 </div>
       <div id="verification-section" style="display: none;">
         <div class="verification-box">
@@ -244,28 +251,46 @@
 </script>
 
   <script>
-const showNotification = (message, type = "success", duration = 3000) => {
-  const notificationContainer = document.getElementById("notification-container");
+function showNotification(type, message) {
+  const notification = document.getElementById("notification");
+  const successIcon = document.getElementById("success-icon");
+  const errorIcon = document.getElementById("error-icon");
   const notificationMessage = document.getElementById("notification-message");
-  const notificationIcon = document.getElementById("notification-icon");
 
-  // تغيير النص بناءً على الرسالة
+  // Reset state
+  notification.className = "notification hidden";
+  successIcon.classList.add("hidden");
+  errorIcon.classList.add("hidden");
+
+  // Update state based on type
+  if (type === "success") {
+    notification.classList.add("success", "show");
+    successIcon.classList.remove("hidden");
+  } else if (type === "error") {
+    notification.classList.add("error", "show");
+    errorIcon.classList.remove("hidden");
+  }
+
+  // Set message
   notificationMessage.textContent = message;
 
-  // تعيين الأيقونة بناءً على النوع
-  notificationIcon.className = `icon ${type}`;
-  notificationIcon.innerHTML = type === "success" ? "✔️" : "❌";
-
-  // عرض الرسالة
-  notificationContainer.classList.remove("hidden");
-  notificationContainer.classList.add("show");
-
-  // إخفاء الرسالة بعد مدة
+  // Show notification for 3 seconds
   setTimeout(() => {
-    notificationContainer.classList.remove("show");
-    notificationContainer.classList.add("hidden");
-  }, duration);
-};
+    notification.classList.remove("show");
+    notification.classList.add("hidden");
+  }, 3000);
+}
+
+// Example Usage
+document.addEventListener("DOMContentLoaded", () => {
+  // Test success notification
+  showNotification("success", "تم إرسال الرمز بنجاح!");
+  
+  // Test error notification
+  setTimeout(() => {
+    showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
+  }, 4000);
+});
 </script>
 </body>
 </html>
