@@ -59,40 +59,60 @@
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, query, collection, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, query, collection, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تهيئة Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.firebasestorage.app",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+  // تهيئة Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+    authDomain: "mr-tarek-2e40f.firebaseapp.com",
+    projectId: "mr-tarek-2e40f",
+    storageBucket: "mr-tarek-2e40f.firebasestorage.app",
+    messagingSenderId: "807997869740",
+    appId: "1:807997869740:web:8eca7473d24693bf861909"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    document.getElementById('login-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
+  document.getElementById('login-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    const identifier = document.getElementById('email').value;  // استخدام الـ ID الخاص بالبريد الإلكتروني
+    const password = document.getElementById('password').value;
 
-      try {
-        // تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
-        await signInWithEmailAndPassword(auth, email, password);
-        showNotification("تم تسجيل الدخول بنجاح!", "success");
-        window.location.href = 'index.html';
-      } catch (error) {
-        showNotification(`خطأ أثناء تسجيل الدخول: ${error.message}`, "error");
+    try {
+      let email = identifier;
+
+      // إذا كان الإدخال ليس بريدًا إلكترونيًا، البحث في قاعدة البيانات
+      if (!identifier.includes('@')) {
+        const usersRef = collection(db, "users"); // تأكد أن "users" هو اسم مجموعة المستخدمين لديك
+        const q = query(usersRef, where("username", "==", identifier)); // البحث عن اسم المستخدم
+        const querySnapshot = await getDoc(q);
+
+        if (querySnapshot.empty) {
+          showNotification("اسم المستخدم غير موجود.", "error");
+          return;
+        }
+
+        // الحصول على البريد الإلكتروني للمستخدم
+        querySnapshot.forEach((doc) => {
+          email = doc.data().email;
+        });
       }
-    });
-  </script>
+
+      // تسجيل الدخول باستخدام البريد الإلكتروني
+      await signInWithEmailAndPassword(auth, email, password);
+      showNotification("تم تسجيل الدخول بنجاح!", "success");
+      window.location.href = 'index.html';
+    } catch (error) {
+      console.error("خطأ أثناء تسجيل الدخول:", error);
+      showNotification("خطأ أثناء تسجيل الدخول: " + error.message, "error");
+    }
+  });
+</script>
 
   <script>
     // Show/Hide password functionality
