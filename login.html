@@ -93,7 +93,7 @@
         const querySnapshot = await getDoc(q);
 
         if (querySnapshot.empty) {
-          showNotification("اسم المستخدم غير موجود.", "error");
+          showNotification("اسم المستخدم غير موجود. الرجاء التحقق من بياناتك.", "error");
           return;
         }
 
@@ -108,8 +108,8 @@
       showNotification("تم تسجيل الدخول بنجاح!", "success");
       window.location.href = 'index.html';
     } catch (error) {
-      console.error("خطأ أثناء تسجيل الدخول:", error);
-      showNotification("خطأ أثناء تسجيل الدخول: " + error.message, "error");
+      // إخفاء تفاصيل الخطأ البرمجي عن المستخدم وعرض رسالة عامة
+      showNotification("حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", "error");
     }
   });
 </script>
