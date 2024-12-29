@@ -19,10 +19,10 @@
                 <form action="" id="login-form">
                 <h2>تسجيل الدخول</h2>
              <div class="inputbox">
-               <ion-icon name="person-outline"></ion-icon>
-              <input type="text" id="identifier" required>
-              <label for="identifier">الإيميل</label>
-          </div>
+            <ion-icon name="mail-outline"></ion-icon>
+            <input type="email" id="email" required>
+            <label for="email">الإيميل</label>
+           </div>
            <div class="inputbox">
           <ion-icon name="lock-closed-outline"></ion-icon>
           <input type="password" id="password" required>
@@ -79,7 +79,7 @@ const firebaseConfig = {
     document.getElementById('login-form').addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const identifier = document.getElementById('identifier').value;
+      const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
       try {
