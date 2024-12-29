@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mr.Tarek-تسجيل الدخول</title>
+  <title>Mr.Tarek - تسجيل الدخول</title>
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <!-- ملف CSS -->
   <link rel="stylesheet" href="assets/css/auth.css">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
 </head>
 <body>
@@ -20,8 +19,8 @@
           <h2>تسجيل الدخول</h2>
           <div class="inputbox">
             <ion-icon name="mail-outline"></ion-icon>
-            <input type="text" id="identifier" required>
-            <label for="identifier">اسم المستخدم أو البريد الإلكتروني</label>
+            <input type="email" id="email" required>
+            <label for="email">الإيميل</label>
           </div>
           <div class="inputbox">
             <ion-icon name="lock-closed-outline"></ion-icon>
@@ -42,15 +41,20 @@
         </form>
         <div id="notification" class="notification hidden">
           <p id="notification-message"></p>
-          <div class="icon" id="notification-icon"></div>
+          <div class="icon">
+            <div id="success-icon" class="circle hidden">✔</div>
+            <div id="error-icon" class="circle hidden">❌</div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Ionicons -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
@@ -70,33 +74,15 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // معالجة تسجيل الدخول
+    // التعامل مع تسجيل الدخول
     document.getElementById('login-form').addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const identifier = document.getElementById('identifier').value;
+      const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      let email = identifier;
 
       try {
-        // إذا كان الإدخال ليس بريدًا إلكترونيًا، ابحث عن البريد الإلكتروني باستخدام اسم المستخدم
-        if (!identifier.includes('@')) {
-          const usersRef = collection(db, "users");
-          const q = query(usersRef, where("username", "==", identifier));
-          const querySnapshot = await getDocs(q);
-
-          if (querySnapshot.empty) {
-            showNotification("اسم المستخدم غير موجود.", "error");
-            return;
-          }
-
-          // الحصول على البريد الإلكتروني المرتبط
-          querySnapshot.forEach((doc) => {
-            email = doc.data().email;
-          });
-        }
-
-        // تسجيل الدخول
+        // تسجيل الدخول باستخدام البريد الإلكتروني
         await signInWithEmailAndPassword(auth, email, password);
         showNotification("تم تسجيل الدخول بنجاح!", "success");
         window.location.href = 'index.html';
@@ -105,42 +91,43 @@
       }
     });
 
-    // عرض/إخفاء كلمة المرور
+    // دالة عرض الإشعارات
+    const showNotification = (message, type = "success", duration = 3000) => {
+      const notificationContainer = document.getElementById("notification");
+      const notificationMessage = document.getElementById("notification-message");
+      const successIcon = document.getElementById("success-icon");
+      const errorIcon = document.getElementById("error-icon");
+
+      // إعداد الرسالة
+      notificationMessage.textContent = message;
+
+      // إظهار الأيقونة المناسبة
+      if (type === "success") {
+        successIcon.classList.remove("hidden");
+        errorIcon.classList.add("hidden");
+      } else {
+        errorIcon.classList.remove("hidden");
+        successIcon.classList.add("hidden");
+      }
+
+      // عرض الإشعار
+      notificationContainer.classList.remove("hidden");
+
+      // إخفاء الإشعار بعد المدة
+      setTimeout(() => {
+        notificationContainer.classList.add("hidden");
+      }, duration);
+    };
+  </script>
+
+  <!-- Show/Hide Password -->
+  <script>
     const showPasswordCheckbox = document.getElementById('show-password');
     const passwordInput = document.getElementById('password');
 
     showPasswordCheckbox.addEventListener('change', () => {
       passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
     });
-
-    // عرض الإشعارات
-    const showNotification = (message, type = "success", duration = 3000) => {
-      const notificationContainer = document.getElementById("notification");
-      const notificationMessage = document.getElementById("notification-message");
-      const notificationIcon = document.getElementById("notification-icon");
-
-      notificationMessage.textContent = message;
-      notificationIcon.innerHTML = ""; // تنظيف أيقونة الإشعار
-
-      const animationData = type === "success"
-        ? "https://assets2.lottiefiles.com/private_files/lf30_jmgekfqg.json"
-        : "https://assets2.lottiefiles.com/private_files/lf30_q77jpumk.json";
-
-      // تحميل الرسوم المتحركة
-      lottie.loadAnimation({
-        container: notificationIcon,
-        renderer: "svg",
-        loop: false,
-        autoplay: true,
-        path: animationData
-      });
-
-      // عرض الإشعار
-      notificationContainer.classList.remove("hidden");
-      setTimeout(() => {
-        notificationContainer.classList.add("hidden");
-      }, duration);
-    };
   </script>
 </body>
 </html>
