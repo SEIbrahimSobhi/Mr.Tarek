@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mr.Tarek - إنشاء حساب</title>
+  <title>Mr.Tarek - تسجيل الدخول</title>
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-  <!-- ملف CSS -->
+  <!-- ملف css -->
   <link rel="stylesheet" href="assets/css/auth.css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
@@ -16,13 +16,8 @@
   <section>
     <div class="form-box">
       <div class="form-value">
-        <form id="register-form">
-          <h2>إنشاء حساب</h2>
-          <div class="inputbox">
-            <ion-icon name="person-outline"></ion-icon>
-            <input type="text" id="username" required>
-            <label for="username">اسم المستخدم</label>
-          </div>
+        <form id="login-form">
+          <h2>تسجيل الدخول</h2>
           <div class="inputbox">
             <ion-icon name="mail-outline"></ion-icon>
             <input type="email" id="email" required>
@@ -33,119 +28,115 @@
             <input type="password" id="password" required>
             <label for="password">كلمة المرور</label>
           </div>
-          <div class="inputbox">
-            <ion-icon name="lock-closed-outline"></ion-icon>
-            <input type="password" id="confirm-password" required>
-            <label for="confirm-password">تأكيد كلمة المرور</label>
+          <div class="forget">
+            <label>
+              <input type="checkbox" id="show-password"> إظهار كلمة المرور
+            </label>
           </div>
           <div class="button-box">
-            <button type="submit">إنشاء حساب</button>
+            <button type="submit">تسجيل دخول</button>
             <div class="register">
-              <p>هل لديك حساب؟ <a href="login.html" class="switch-link">تسجيل الدخول</a></p>
+              <p>ليس لديك حساب؟ <a href="register.html" class="switch-link">إنشاء حساب</a></p>
             </div>
           </div>
         </form>
         <div id="notification" class="notification hidden">
           <p id="notification-message"></p>
-          <div id="notification-icon"></div>
+          <div class="icon">
+            <div id="success-icon" class="circle hidden">
+              <span>✔</span>
+            </div>
+            <div id="error-icon" class="circle hidden">
+              <span>❌</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
+  
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, query, collection, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
+    // تهيئة Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
       projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com",
+      storageBucket: "mr-tarek-2e40f.firebasestorage.app",
       messagingSenderId: "807997869740",
       appId: "1:807997869740:web:8eca7473d24693bf861909"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    document.getElementById('register-form').addEventListener('submit', async (event) => {
+    document.getElementById('login-form').addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const username = document.getElementById('username').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-
-      if (password !== confirmPassword) {
-        showNotification("كلمات المرور غير متطابقة.", "error");
-        return;
-      }
 
       try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        showNotification("تم إنشاء الحساب بنجاح!", "success");
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 2000);
+        // تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
+        await signInWithEmailAndPassword(auth, email, password);
+        showNotification("تم تسجيل الدخول بنجاح!", "success");
+        window.location.href = 'index.html';
       } catch (error) {
-        const errorMessage = error.message || "خطأ أثناء إنشاء الحساب.";
-        showNotification(errorMessage, "error");
+        showNotification(`خطأ أثناء تسجيل الدخول: ${error.message}`, "error");
       }
     });
   </script>
 
-    <script>
-    function showNotification(type, message) {
-  const notification = document.getElementById("notification");
-  const successIcon = document.getElementById("success-icon");
-  const errorIcon = document.getElementById("error-icon");
-  const notificationMessage = document.getElementById("notification-message");
-
-  // Reset state
-  notification.classList.remove("show", "hidden");
-  successIcon.classList.add("hidden");
-  errorIcon.classList.add("hidden");
-
-  // Update state based on type
-  if (type === "success") {
-    notification.classList.add("success", "show");
-    successIcon.classList.remove("hidden");
-  } else if (type === "error") {
-    notification.classList.add("error", "show");
-    errorIcon.classList.remove("hidden");
-  }
-
-  // Set message
-  notificationMessage.textContent = message;
-
-  // Show notification for 3 seconds
-  setTimeout(() => {
-    notification.classList.remove("show");
-    notification.classList.add("hidden");
-  }, 3000);
-}
-
-// Example Usage on specific events like account creation or verification code sent
-document.addEventListener("DOMContentLoaded", () => {
-  // Call this function when a verification code is sent
-  // showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-
-  // Call this function when an error occurs
-  // showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
-});
-</script>
-
   <script>
+    // Show/Hide password functionality
     const showPasswordCheckbox = document.getElementById('show-password');
     const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm-password');
 
     showPasswordCheckbox.addEventListener('change', () => {
-      const type = showPasswordCheckbox.checked ? 'text' : 'password';
-      passwordInput.type = type;
-      confirmPasswordInput.type = type;
+      if (showPasswordCheckbox.checked) {
+        passwordInput.type = 'text';
+      } else {
+        passwordInput.type = 'password';
+      }
     });
+  </script>
+
+  <script>
+    const showNotification = (message, type = "success", duration = 3000) => {
+      const notificationContainer = document.getElementById("notification");
+      const notificationMessage = document.getElementById("notification-message");
+      const successIcon = document.getElementById("success-icon");
+      const errorIcon = document.getElementById("error-icon");
+
+      // تغيير النص بناءً على الرسالة
+      notificationMessage.textContent = message;
+
+      // إظهار الأيقونات بناءً على النوع
+      if (type === "success") {
+        successIcon.classList.remove("hidden");
+        errorIcon.classList.add("hidden");
+      } else {
+        successIcon.classList.add("hidden");
+        errorIcon.classList.remove("hidden");
+      }
+
+      // عرض الرسالة
+      notificationContainer.classList.remove("hidden");
+      notificationContainer.classList.add("show");
+
+      // إخفاء الرسالة بعد مدة
+      setTimeout(() => {
+        notificationContainer.classList.remove("show");
+        notificationContainer.classList.add("hidden");
+      }, duration);
+    };
   </script>
 </body>
 </html>
