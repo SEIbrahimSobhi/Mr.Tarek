@@ -9,6 +9,7 @@
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <!-- ملف CSS -->
   <link rel="stylesheet" href="assets/css/auth.css">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
 </head>
 <body>
@@ -19,8 +20,8 @@
           <h2>تسجيل الدخول</h2>
           <div class="inputbox">
             <ion-icon name="mail-outline"></ion-icon>
-            <input type="text" id="identifier" required>
-            <label for="identifier">الإيميل أو اسم المستخدم</label>
+            <input type="email" id="email" required>
+            <label for="email">الإيميل</label>
           </div>
           <div class="inputbox">
             <ion-icon name="lock-closed-outline"></ion-icon>
@@ -29,7 +30,7 @@
           </div>
           <div class="forget">
             <label>
-              <input type="checkbox" id="show-password"> عرض كلمة المرور
+              <input type="checkbox" id="show-password"> إظهار كلمة المرور
             </label>
           </div>
           <div class="button-box">
@@ -41,21 +42,16 @@
         </form>
         <div id="notification" class="notification hidden">
           <p id="notification-message"></p>
-          <div class="icon" id="notification-icon"></div>
+          <div id="notification-icon"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تهيئة Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -67,74 +63,37 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
     document.getElementById('login-form').addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const identifier = document.getElementById('identifier').value.trim();
+      const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      if (!identifier || !password) {
-        showNotification("يرجى إدخال الإيميل/اسم المستخدم وكلمة المرور.", "error");
-        return;
-      }
-
-      let email = identifier;
-
       try {
-        // إذا لم يكن الإدخال بريدًا إلكترونيًا، ابحث عن الإيميل باستخدام اسم المستخدم
-        if (!identifier.includes('@')) {
-          const usersRef = collection(db, "users");
-          const q = query(usersRef, where("username", "==", identifier));
-          const querySnapshot = await getDocs(q);
-
-          if (querySnapshot.empty) {
-            showNotification("اسم المستخدم غير موجود.", "error");
-            return;
-          }
-
-          querySnapshot.forEach((doc) => {
-            email = doc.data().email;
-          });
-        }
-
-        // تسجيل الدخول
         await signInWithEmailAndPassword(auth, email, password);
         showNotification("تم تسجيل الدخول بنجاح!", "success");
-        window.location.href = 'index.html';
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
       } catch (error) {
-        showNotification(`خطأ أثناء تسجيل الدخول: ${error.message}`, "error");
+        const errorMessage = error.message || "خطأ أثناء تسجيل الدخول.";
+        showNotification(errorMessage, "error");
       }
     });
-  </script>
 
-  <script>
-    // عرض/إخفاء كلمة المرور
-    const showPasswordCheckbox = document.getElementById('show-password');
-    const passwordInput = document.getElementById('password');
-
-    showPasswordCheckbox.addEventListener('change', () => {
-      passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
-    });
-  </script>
-
-  <script>
-    const showNotification = (message, type = "success", duration = 3000) => {
+    const showNotification = (message, type) => {
       const notificationContainer = document.getElementById("notification");
       const notificationMessage = document.getElementById("notification-message");
       const notificationIcon = document.getElementById("notification-icon");
 
       notificationMessage.textContent = message;
 
-      // تنظيف أي محتوى سابق
-      notificationIcon.innerHTML = "";
-
-      // اختيار الرسوم المتحركة
       const animationData = type === "success"
-        ? "https://assets2.lottiefiles.com/private_files/lf30_jmgekfqg.json"
-        : "https://assets2.lottiefiles.com/private_files/lf30_q77jpumk.json";
+        ? "path/to/success-animation.json"
+        : "path/to/error-animation.json";
 
+      notificationIcon.innerHTML = "";
       lottie.loadAnimation({
         container: notificationIcon,
         renderer: "svg",
@@ -144,11 +103,19 @@
       });
 
       notificationContainer.classList.remove("hidden");
-
       setTimeout(() => {
         notificationContainer.classList.add("hidden");
-      }, duration);
+      }, 3000);
     };
+  </script>
+
+  <script>
+    const showPasswordCheckbox = document.getElementById('show-password');
+    const passwordInput = document.getElementById('password');
+
+    showPasswordCheckbox.addEventListener('change', () => {
+      passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
+    });
   </script>
 </body>
 </html>
