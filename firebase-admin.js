@@ -1,8 +1,8 @@
 // Import the Firebase Admin SDK
-const admin = require('firebase-admin');
+var admin = require('firebase-admin');
 
 // Load the service account key JSON file
-const serviceAccount = require('serviceAccountKey.json'); // تأكد من أن هذا المسار صحيح
+var serviceAccount = require('serviceAccountKey.json'); // تأكد من أن هذا المسار صحيح
 
 // Initialize the Admin SDK
 admin.initializeApp({
@@ -11,6 +11,6 @@ admin.initializeApp({
 });
 
 // Reference to your Firestore database
-const db = admin.firestore();
+var db = admin.firestore();
 
 module.exports = db;
