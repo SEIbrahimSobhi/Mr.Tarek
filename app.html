@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الرياضيات التعليمية</title>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js"></script>
+    <style>
+    body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    text-align: center;
+}
+
+.container {
+    margin: 50px auto;
+    width: 80%;
+    max-width: 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.input-section {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#result {
+    margin-top: 20px;
+}
+
+#solutionSteps {
+    text-align: left;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>منصة الرياضيات التعليمية</h1>
+        <div class="input-section">
+            <label for="question">أدخل السؤال:</label>
+            <textarea id="question" placeholder="اكتب سؤالك هنا..."></textarea>
+            <button id="submitQuestion">حل السؤال</button>
+        </div>
+        <div id="result">
+            <h2>نتيجة الحل:</h2>
+            <div id="solutionSteps"></div>
+        </div>
+    </div>
+
+    <script>
+    // إعداد Firebase
+const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+document.getElementById('submitQuestion').addEventListener('click', async () => {
+    const question = document.getElementById('question').value.trim();
+    if (question) {
+        // إرسال السؤال إلى قاعدة البيانات
+        const docRef = await db.collection('questions').add({
+            question: question,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // معالجة السؤال وعرض الحل
+        displaySolution(question);
+    }
+});
+
+function displaySolution(question) {
+    // مكان لتحليل السؤال وعرض الفكرة والحل
+    const solutionSteps = document.getElementById('solutionSteps');
+    solutionSteps.innerHTML = '';
+
+    // مثال بسيط لتحليل السؤال وعرض الحل
+    if (question.includes('=') && question.includes('x')) {
+        solutionSteps.innerHTML = `
+            <p>هذا سؤال معادلة خطية.</p>
+            <p>الخطوة 1: عزل المتغير x.</p>
+            <p>الخطوة 2: الحل هو x = (18 - 3) / 5 = 3.</p>
+            <p>النتيجة النهائية: x = 3.</p>
+        `;
+    } else {
+        solutionSteps.innerHTML = `<p>لا يمكن تحليل السؤال. يرجى إدخال سؤال صحيح.</p>`;
+    }
+}
+    </script>
+</body>
+</html>
