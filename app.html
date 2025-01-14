@@ -110,13 +110,14 @@ async function fetchAIAnswer(question) {
         },
         body: JSON.stringify({
             model: "text-davinci-003",
-            prompt: `حل معادلة رياضية: ${question}`,
-            max_tokens: 150
+            prompt: `أعطني ملاحظات عن السؤال التالي وفكرته وطرق حله: ${question}`,
+            max_tokens: 300
         })
     });
     const data = await response.json();
     return data.choices[0].text.trim();
 }
+
 
 // دالة لعرض الحل
 function displaySolution(question) {
