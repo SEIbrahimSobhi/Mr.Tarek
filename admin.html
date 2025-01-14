@@ -53,6 +53,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>Additional Info</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -62,8 +63,20 @@
     </table>
 
     <script type="module">
-        import { db } from './firebase-admin.js'; // تأكد من المسار الصحيح للملف
+        import { auth } from './firebase-auth.js'; // تأكد من مسار ملف التوثيق
+        import { db } from './firebase-admin.js';
         import { collection, getDocs, doc, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+        // التحقق من المستخدم الحالي
+        auth.onAuthStateChanged(async (user) => {
+            if (user && user.email === 'seebrahemsobhy@gmail.com') {
+                console.log('Welcome, Admin!');
+                await fetchUsers();
+            } else {
+                alert('Access denied.');
+                window.location.href = '/login.html'; // إعادة التوجيه إلى صفحة تسجيل الدخول
+            }
+        });
 
         const usersRef = collection(db, 'users');
 
@@ -81,6 +94,7 @@
                         <td>${userData.username}</td>
                         <td>${userData.email}</td>
                         <td>${userData.phone}</td>
+                        <td>${userData.additionalInfo || 'N/A'}</td>
                         <td class="actions">
                             <button onclick="deleteUser('${doc.id}')">Delete</button>
                         </td>
@@ -103,8 +117,7 @@
             }
         }
 
-        window.deleteUser = deleteUser; // تأكد من أن الوظيفة متاحة للنقر
-        fetchUsers();
+        window.deleteUser = deleteUser;
     </script>
 </body>
 </html>
