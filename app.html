@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة الرياضيات التعليمية</title>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js"></script>
     <style>
-    body {
+body {
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
     margin: 0;
@@ -17,7 +13,6 @@
     direction: rtl;
     text-align: center;
 }
-
 .container {
     margin: 50px auto;
     width: 80%;
@@ -27,11 +22,6 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
-.input-section {
-    margin-bottom: 20px;
-}
-
 textarea {
     width: 100%;
     height: 100px;
@@ -41,7 +31,6 @@ textarea {
     border: 1px solid #ccc;
     resize: none;
 }
-
 button {
     padding: 10px 20px;
     margin-top: 10px;
@@ -51,15 +40,12 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
-
 button:hover {
     background-color: #0056b3;
 }
-
 #result {
     margin-top: 20px;
 }
-
 #solutionSteps {
     text-align: left;
 }
@@ -80,8 +66,13 @@ button:hover {
     </div>
 
     <script>
-    // إعداد Firebase
-const firebaseConfig = {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+
+// إعدادات Firebase الخاصة بك
+    const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
       projectId: "mr-tarek-2e40f",
@@ -90,16 +81,18 @@ const firebaseConfig = {
       appId: "1:807997869740:web:8eca7473d24693bf861909"
     };
 
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// تهيئة Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
+// إضافة حدث للزر
 document.getElementById('submitQuestion').addEventListener('click', async () => {
     const question = document.getElementById('question').value.trim();
     if (question) {
         // إرسال السؤال إلى قاعدة البيانات
-        const docRef = await db.collection('questions').add({
+        await addDoc(collection(db, "questions"), {
             question: question,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: serverTimestamp()
         });
 
         // معالجة السؤال وعرض الحل
@@ -107,22 +100,34 @@ document.getElementById('submitQuestion').addEventListener('click', async () => 
     }
 });
 
-function displaySolution(question) {
-    // مكان لتحليل السؤال وعرض الفكرة والحل
-    const solutionSteps = document.getElementById('solutionSteps');
-    solutionSteps.innerHTML = '';
+// دالة لتحليل السؤال باستخدام OpenAI API
+async function fetchAIAnswer(question) {
+    const response = await fetch('https://api.openai.com/v1/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
+        },
+        body: JSON.stringify({
+            model: "text-davinci-003",
+            prompt: `حل معادلة رياضية: ${question}`,
+            max_tokens: 150
+        })
+    });
+    const data = await response.json();
+    return data.choices[0].text.trim();
+}
 
-    // مثال بسيط لتحليل السؤال وعرض الحل
-    if (question.includes('=') && question.includes('x')) {
-        solutionSteps.innerHTML = `
-            <p>هذا سؤال معادلة خطية.</p>
-            <p>الخطوة 1: عزل المتغير x.</p>
-            <p>الخطوة 2: الحل هو x = (18 - 3) / 5 = 3.</p>
-            <p>النتيجة النهائية: x = 3.</p>
-        `;
-    } else {
-        solutionSteps.innerHTML = `<p>لا يمكن تحليل السؤال. يرجى إدخال سؤال صحيح.</p>`;
-    }
+// دالة لعرض الحل
+function displaySolution(question) {
+    const solutionSteps = document.getElementById('solutionSteps');
+    solutionSteps.innerHTML = 'جاري تحليل السؤال...';
+
+    fetchAIAnswer(question).then((answer) => {
+        solutionSteps.innerHTML = `<p>الإجابة المتوقعة: ${answer}</p>`;
+    }).catch((error) => {
+        solutionSteps.innerHTML = `<p>لم نتمكن من إيجاد إجابة. يرجى المحاولة لاحقًا.</p>`;
+    });
 }
     </script>
 </body>
