@@ -4,28 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr.Tarek-إنشاء حساب</title>
-<!--   ملف css -->
+  <!--   ملف css -->
   <link rel="stylesheet" href="assets/css/auth.css">
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
+
   <!-- تحميل مكتبة EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-  <!-- تهيئة EmailJS باستخدام المفتاح العام -->
-  <script type="text/javascript">
-    (function () {
-      emailjs.init("K0gXc0-X0CONTIkX_"); // مفتاح EmailJS العام
-    })();
-  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
     // تكوين Firebase
     const firebaseConfig = {
@@ -42,31 +35,10 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let countdownInterval;
+    let verificationCode;
+    let userInfo;
 
-    // دالة لبدء العداد
-    const startCountdown = (duration) => {
-      const countdownElement = document.getElementById("countdown");
-      let remainingTime = duration;
-
-      countdownInterval = setInterval(() => {
-        const minutes = Math.floor(remainingTime / 60);
-        const seconds = remainingTime % 60;
-
-        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-
-        if (remainingTime <= 0) {
-          clearInterval(countdownInterval);
-          showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
-          countdownElement.textContent = "انتهت صلاحية الرمز.";
-          document.getElementById("resend-code").style.display = "block";
-        }
-
-        remainingTime--;
-      }, 1000);
-    };
-
-    // دالة إرسال البريد الإلكتروني باستخدام EmailJS
+    // دالة لإرسال البريد الإلكتروني
     const sendVerificationEmail = async (email, verificationCode) => {
       try {
         await emailjs.send("service_4de4l3i", "template_gqjxtul", {
@@ -81,9 +53,6 @@
     };
 
     document.addEventListener("DOMContentLoaded", () => {
-      let verificationCode;
-      let userInfo;
-
       document.getElementById("register-form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -130,14 +99,15 @@
             const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
             const user = userCredential.user;
 
-            // حفظ بيانات المستخدم في Firestore
+            // حفظ بيانات المستخدم في Firestore مع إضافة role كـ "student"
             await setDoc(doc(db, "users", user.uid), {
               ...userInfo,
+              role: 'student',  // تحديد أن المستخدم هو طالب
               emailVerified: true,
             });
 
             showNotification("success", "تم انشاء حساب.");
-            window.location.href = "index.html";
+            window.location.href = "index.html";  // الانتقال إلى الصفحة الرئيسية بعد التسجيل
           } catch (error) {
             console.error("خطأ أثناء إنشاء الحساب:", error);
             showNotification("error", "حدث خطأ أثناء إنشاء الحساب.");
@@ -160,135 +130,116 @@
         }
       });
     });
+
+    // دالة لبدء العداد
+    const startCountdown = (duration) => {
+      const countdownElement = document.getElementById("countdown");
+      let remainingTime = duration;
+
+      countdownInterval = setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+
+        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+
+        if (remainingTime <= 0) {
+          clearInterval(countdownInterval);
+          showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
+          countdownElement.textContent = "انتهت صلاحية الرمز.";
+          document.getElementById("resend-code").style.display = "block";
+        }
+
+        remainingTime--;
+      }, 1000);
+    };
+
+    // دالة لعرض التنبيهات
+    function showNotification(type, message) {
+      const notification = document.getElementById("notification");
+      const successIcon = document.getElementById("success-icon");
+      const errorIcon = document.getElementById("error-icon");
+      const notificationMessage = document.getElementById("notification-message");
+
+      // Reset state
+      notification.classList.remove("show", "hidden");
+      successIcon.classList.add("hidden");
+      errorIcon.classList.add("hidden");
+
+      // Update state based on type
+      if (type === "success") {
+        notification.classList.add("success", "show");
+        successIcon.classList.remove("hidden");
+      } else if (type === "error") {
+        notification.classList.add("error", "show");
+        errorIcon.classList.remove("hidden");
+      }
+
+      // Set message
+      notificationMessage.textContent = message;
+
+      // Show notification for 3 seconds
+      setTimeout(() => {
+        notification.classList.remove("show");
+        notification.classList.add("hidden");
+      }, 3000);
+    }
   </script>
 </head>
 <body>
- <section>
-  <div class="form-box">
-    <div class="form-value">
-      <form id="register-form">
-        <div class="title-box">
-          <h2>إنشاء حساب</h2>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="person-outline"></ion-icon>
-          <input type="text" id="username" required>
-          <label for="username">اسم المستخدم</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="person-outline"></ion-icon>
-          <input type="text" id="student-name" required>
-          <label for="student-name">اسم الطالب</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="call-outline"></ion-icon>
-          <input type="tel" id="phone" required>
-          <label for="phone">رقم الهاتف</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="mail-outline"></ion-icon>
-          <input type="email" id="email" required>
-          <label for="email">الإيميل</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="lock-closed-outline"></ion-icon>
-          <input type="password" id="password" required>
-          <label for="password">كلمة المرور</label>
-        </div>
-        <div class="forget">
-      <label>
-        <input type="checkbox" id="show-password">  show password</label>
-      </div>
-        <div class="button-box">
-          <button type="submit">إنشاء حساب</button>
-          <div class="register">
-            <p>لديك حساب؟ <a href="login.html" class="switch-link">تسجيل دخول</a></p>
+  <section>
+    <div class="form-box">
+      <div class="form-value">
+        <form id="register-form">
+          <div class="title-box">
+            <h2>إنشاء حساب</h2>
           </div>
-        </div>
-      </form>
-      <div id="notification" class="notification hidden">
-  <p id="notification-message"></p>
-  <div class="icon">
-    <div id="success-icon" class="circle hidden">
-      <span>✔</span>
-    </div>
-    <div id="error-icon" class="circle hidden">
-      <span>❌</span>
-    </div>
-  </div>
-</div>
-      <div id="verification-section" style="display: none;">
-        <div class="verification-box">
-          <h2>تأكيد البريد الإلكتروني</h2>
-          <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
           <div class="inputbox">
-            <input type="text" id="verification-code" placeholder="رمز التحقق" required>
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" id="username" required>
+            <label for="username">اسم المستخدم</label>
           </div>
-          <button id="verify-code">تحقق</button>
-          <p id="countdown">صلاحية الرمز: 3:00</p>
-          <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
-        </div>
+          <div class="inputbox">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" id="student-name" required>
+            <label for="student-name">اسم الطالب</label>
+          </div>
+          <div class="inputbox">
+            <ion-icon name="call-outline"></ion-icon>
+            <input type="tel" id="phone" required>
+            <label for="phone">رقم الهاتف</label>
+          </div>
+          <div class="inputbox">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input type="email" id="email" required>
+            <label for="email">الإيميل</label>
+          </div>
+          <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="password" required>
+            <label for="password">كلمة المرور</label>
+          </div>
+          <div class="inputbox">
+            <input type="submit" value="إنشاء الحساب">
+          </div>
+        </form>
       </div>
     </div>
-  </div>
-</section>
 
+    <!--  عرض رسالة -->
+    <div class="notification hidden" id="notification">
+      <ion-icon name="checkmark-circle-outline" id="success-icon" class="hidden"></ion-icon>
+      <ion-icon name="close-circle-outline" id="error-icon" class="hidden"></ion-icon>
+      <span id="notification-message"></span>
+    </div>
 
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-<script>
-  // Show/Hide password functionality
-  const showPasswordCheckbox = document.getElementById('show-password');
-  const passwordInput = document.getElementById('password');
-
-  showPasswordCheckbox.addEventListener('change', () => {
-    if (showPasswordCheckbox.checked) {
-      passwordInput.type = 'text';
-    } else {
-      passwordInput.type = 'password';
-    }
-  });
-</script>
-
-  <script>
-    function showNotification(type, message) {
-  const notification = document.getElementById("notification");
-  const successIcon = document.getElementById("success-icon");
-  const errorIcon = document.getElementById("error-icon");
-  const notificationMessage = document.getElementById("notification-message");
-
-  // Reset state
-  notification.classList.remove("show", "hidden");
-  successIcon.classList.add("hidden");
-  errorIcon.classList.add("hidden");
-
-  // Update state based on type
-  if (type === "success") {
-    notification.classList.add("success", "show");
-    successIcon.classList.remove("hidden");
-  } else if (type === "error") {
-    notification.classList.add("error", "show");
-    errorIcon.classList.remove("hidden");
-  }
-
-  // Set message
-  notificationMessage.textContent = message;
-
-  // Show notification for 3 seconds
-  setTimeout(() => {
-    notification.classList.remove("show");
-    notification.classList.add("hidden");
-  }, 3000);
-}
-
-// Example Usage on specific events like account creation or verification code sent
-document.addEventListener("DOMContentLoaded", () => {
-  // Call this function when a verification code is sent
-  // showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-
-  // Call this function when an error occurs
-  // showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
-});
-</script>
+    <!-- قسم التحقق -->
+    <div class="verification-box hidden" id="verification-section">
+      <h3>تم إرسال رمز التحقق إلى بريدك الإلكتروني</h3>
+      <input type="text" id="verification-code" placeholder="أدخل رمز التحقق" required>
+      <div id="countdown">صلاحية الرمز: 03:00</div>
+      <button id="verify-code">تأكيد</button>
+      <button id="resend-code" style="display:none;">إعادة إرسال الرمز</button>
+    </div>
+  </section>
 </body>
 </html>
