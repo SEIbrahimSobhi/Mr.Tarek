@@ -4,14 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr.Tarek-إنشاء حساب</title>
-  <!--   ملف css -->
+  <!-- ملف CSS -->
   <link rel="stylesheet" href="assets/css/auth.css">
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
-
   <!-- تحميل مكتبة EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
@@ -25,9 +24,8 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تكوين Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -84,82 +82,94 @@
       let verificationCode;
       let userInfo;
 
-      document.getElementById("register-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
+      // التفاعل مع نموذج التسجيل
+      const registerForm = document.getElementById("register-form");
+      if (registerForm) {
+        registerForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        const username = document.getElementById("username").value.trim();
-        const studentName = document.getElementById("student-name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+          const username = document.getElementById("username").value.trim();
+          const studentName = document.getElementById("student-name").value.trim();
+          const phone = document.getElementById("phone").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
 
-        if (!username || !studentName || !phone || !email || !password) {
-          showNotification("error", "يرجى ملء جميع البيانات.");
-          return;
-        }
+          if (!username || !studentName || !phone || !email || !password) {
+            showNotification("error", "يرجى ملء جميع البيانات.");
+            return;
+          }
 
-        try {
-          // توليد رمز التحقق
-          verificationCode = Math.floor(100000 + Math.random() * 900000);
-
-          // تخزين البيانات مؤقتًا
-          userInfo = { username, studentName, phone, email, password };
-
-          // إرسال البريد الإلكتروني مع رمز التحقق
-          await sendVerificationEmail(email, verificationCode);
-
-          // عرض قسم التحقق
-          showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-          document.getElementById("register-form").style.display = "none";
-          document.getElementById("verification-section").style.display = "block";
-
-          // بدء العداد
-          startCountdown(180);
-        } catch (error) {
-          console.error("خطأ أثناء إنشاء الحساب:", error);
-          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-        }
-      });
-
-      document.getElementById("verify-code").addEventListener("click", async () => {
-        const enteredCode = document.getElementById("verification-code").value.trim();
-
-        if (parseInt(enteredCode, 10) === verificationCode) {
           try {
-            // إنشاء المستخدم في Firebase
-            const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
-            const user = userCredential.user;
+            // توليد رمز التحقق
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-            // حفظ بيانات المستخدم في Firestore
-            await setDoc(doc(db, "users", user.uid), {
-              ...userInfo,
-              emailVerified: true,
-              role: "student"  // تعيين دور الطالب
-            });
+            // تخزين البيانات مؤقتًا
+            userInfo = { username, studentName, phone, email, password };
 
-            showNotification("success", "تم انشاء حساب.");
-            window.location.href = "index.html";
+            // إرسال البريد الإلكتروني مع رمز التحقق
+            await sendVerificationEmail(email, verificationCode);
+
+            // عرض قسم التحقق
+            showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+            document.getElementById("register-form").style.display = "none";
+            document.getElementById("verification-section").style.display = "block";
+
+            // بدء العداد
+            startCountdown(180);
           } catch (error) {
             console.error("خطأ أثناء إنشاء الحساب:", error);
-            showNotification("error", "حدث خطأ أثناء إنشاء الحساب.");
+            showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
           }
-        } else {
-          showNotification("error", "رمز التحقق غير صحيح.");
-        }
-      });
+        });
+      }
 
-      document.getElementById("resend-code").addEventListener("click", async () => {
-        try {
-          verificationCode = Math.floor(100000 + Math.random() * 900000);
-          await sendVerificationEmail(userInfo.email, verificationCode);
-          showNotification("success", "تم إرسال رمز تحقق جديد.");
-          document.getElementById("resend-code").style.display = "none";
-          startCountdown(180);
-        } catch (error) {
-          console.error("خطأ أثناء إعادة إرسال الرمز:", error);
-          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-        }
-      });
+      // التفاعل مع زر التحقق
+      const verifyCodeButton = document.getElementById("verify-code");
+      if (verifyCodeButton) {
+        verifyCodeButton.addEventListener("click", async () => {
+          const enteredCode = document.getElementById("verification-code").value.trim();
+
+          if (parseInt(enteredCode, 10) === verificationCode) {
+            try {
+              // إنشاء المستخدم في Firebase
+              const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
+              const user = userCredential.user;
+
+              // حفظ بيانات المستخدم في Firestore
+              await setDoc(doc(db, "users", user.uid), {
+                ...userInfo,
+                emailVerified: true,
+                role: "student"  // تعيين دور الطالب
+              });
+
+              showNotification("success", "تم انشاء حساب.");
+              window.location.href = "index.html";
+            } catch (error) {
+              console.error("خطأ أثناء إنشاء الحساب:", error);
+              showNotification("error", "حدث خطأ أثناء إنشاء الحساب.");
+            }
+          } else {
+            showNotification("error", "رمز التحقق غير صحيح.");
+          }
+        });
+      }
+
+      // التفاعل مع زر إعادة إرسال الرمز
+      const resendCodeButton = document.getElementById("resend-code");
+      if (resendCodeButton) {
+        resendCodeButton.addEventListener("click", async () => {
+          try {
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
+            await sendVerificationEmail(userInfo.email, verificationCode);
+            showNotification("success", "تم إرسال رمز تحقق جديد.");
+            document.getElementById("resend-code").style.display = "none";
+            startCountdown(180);
+          } catch (error) {
+            console.error("خطأ أثناء إعادة إرسال الرمز:", error);
+            showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+          }
+        });
+      }
     });
   </script>
 </head>
@@ -198,7 +208,7 @@
         </div>
         <div class="forget">
           <label>
-            <input type="checkbox" id="show-password">  show password
+            <input type="checkbox" id="show-password">  عرض كلمة المرور
           </label>
         </div>
         <div class="button-box">
