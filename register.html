@@ -4,21 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr.Tarek-إنشاء حساب</title>
-  <!--   ملف css -->
   <link rel="stylesheet" href="assets/css/auth.css">
-  <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
-
-  <!-- تحميل مكتبة EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <!-- تهيئة EmailJS باستخدام المفتاح العام -->
   <script type="text/javascript">
     (function () {
-      emailjs.init("K0gXc0-X0CONTIkX_"); // مفتاح EmailJS العام
+      emailjs.init("K0gXc0-X0CONTIkX_");
     })();
   </script>
 
@@ -27,7 +21,6 @@
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تكوين Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -37,50 +30,14 @@
       appId: "1:807997869740:web:8eca7473d24693bf861909"
     };
 
-    // تهيئة Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     let countdownInterval;
+    let verificationCode;
+    let userInfo;
 
-    // دالة لبدء العداد
-    const startCountdown = (duration) => {
-      const countdownElement = document.getElementById("countdown");
-      let remainingTime = duration;
-
-      countdownInterval = setInterval(() => {
-        const minutes = Math.floor(remainingTime / 60);
-        const seconds = remainingTime % 60;
-
-        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-
-        if (remainingTime <= 0) {
-          clearInterval(countdownInterval);
-          showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
-          countdownElement.textContent = "انتهت صلاحية الرمز.";
-          document.getElementById("resend-code").style.display = "block";
-        }
-
-        remainingTime--;
-      }, 1000);
-    };
-
-    // دالة إرسال البريد الإلكتروني باستخدام EmailJS
-    const sendVerificationEmail = async (email, verificationCode) => {
-      try {
-        await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-          email: email,
-          verification_code: verificationCode
-        });
-        console.log("تم إرسال البريد الإلكتروني بنجاح");
-      } catch (error) {
-        console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
-        throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
-      }
-    };
-
-    // دالة لعرض الإشعارات
     const showNotification = (type, message) => {
       const notification = document.getElementById("notification");
       const messageElement = document.getElementById("notification-message");
@@ -103,10 +60,41 @@
       }, 3000);
     };
 
-    document.addEventListener("DOMContentLoaded", () => {
-      let verificationCode;
-      let userInfo;
+    const sendVerificationEmail = async (email, verificationCode) => {
+      try {
+        await emailjs.send("service_4de4l3i", "template_gqjxtul", {
+          email: email,
+          verification_code: verificationCode
+        });
+        console.log("تم إرسال البريد الإلكتروني بنجاح");
+      } catch (error) {
+        console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
+        throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
+      }
+    };
 
+    const startCountdown = (duration) => {
+      const countdownElement = document.getElementById("countdown");
+      let remainingTime = duration;
+
+      countdownInterval = setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+
+        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+
+        if (remainingTime <= 0) {
+          clearInterval(countdownInterval);
+          showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
+          countdownElement.textContent = "انتهت صلاحية الرمز.";
+          document.getElementById("resend-code").style.display = "block";
+        }
+
+        remainingTime--;
+      }, 1000);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("register-form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -122,21 +110,13 @@
         }
 
         try {
-          // توليد رمز التحقق
           verificationCode = Math.floor(100000 + Math.random() * 900000);
-
-          // تخزين البيانات مؤقتًا
           userInfo = { username, studentName, phone, email, password };
-
-          // إرسال البريد الإلكتروني مع رمز التحقق
           await sendVerificationEmail(email, verificationCode);
 
-          // عرض قسم التحقق
           showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
           document.getElementById("register-form").style.display = "none";
           document.getElementById("verification-section").style.display = "block";
-
-          // بدء العداد
           startCountdown(180);
         } catch (error) {
           console.error("خطأ أثناء إنشاء الحساب:", error);
@@ -149,15 +129,13 @@
 
         if (parseInt(enteredCode, 10) === verificationCode) {
           try {
-            // إنشاء المستخدم في Firebase
             const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
             const user = userCredential.user;
 
-            // حفظ بيانات المستخدم في Firestore
             await setDoc(doc(db, "users", user.uid), {
               ...userInfo,
               emailVerified: true,
-              role: "student"  // تعيين دور الطالب
+              role: "student"
             });
 
             showNotification("success", "تم انشاء حساب.");
