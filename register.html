@@ -19,7 +19,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
@@ -95,72 +95,83 @@
     };
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("register-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
+      // تأكد من أن العناصر موجودة قبل إضافة الـ event listeners
+      const registerForm = document.getElementById("register-form");
+      const verifyCodeButton = document.getElementById("verify-code");
+      const resendCodeButton = document.getElementById("resend-code");
 
-        const username = document.getElementById("username").value.trim();
-        const studentName = document.getElementById("student-name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+      if (registerForm) {
+        registerForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        if (!username || !studentName || !phone || !email || !password) {
-          showNotification("error", "يرجى ملء جميع البيانات.");
-          return;
-        }
+          const username = document.getElementById("username").value.trim();
+          const studentName = document.getElementById("student-name").value.trim();
+          const phone = document.getElementById("phone").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
 
-        try {
-          verificationCode = Math.floor(100000 + Math.random() * 900000);
-          userInfo = { username, studentName, phone, email, password };
-          await sendVerificationEmail(email, verificationCode);
+          if (!username || !studentName || !phone || !email || !password) {
+            showNotification("error", "يرجى ملء جميع البيانات.");
+            return;
+          }
 
-          showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-          document.getElementById("register-form").style.display = "none";
-          document.getElementById("verification-section").style.display = "block";
-          startCountdown(180);
-        } catch (error) {
-          console.error("خطأ أثناء إنشاء الحساب:", error);
-          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-        }
-      });
-
-      document.getElementById("verify-code").addEventListener("click", async () => {
-        const enteredCode = document.getElementById("verification-code").value.trim();
-
-        if (parseInt(enteredCode, 10) === verificationCode) {
           try {
-            const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
-            const user = userCredential.user;
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
+            userInfo = { username, studentName, phone, email, password };
+            await sendVerificationEmail(email, verificationCode);
 
-            await setDoc(doc(db, "users", user.uid), {
-              ...userInfo,
-              emailVerified: true,
-              role: "student"
-            });
-
-            showNotification("success", "تم انشاء حساب.");
-            window.location.href = "index.html";
+            showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+            document.getElementById("register-form").style.display = "none";
+            document.getElementById("verification-section").style.display = "block";
+            startCountdown(180);
           } catch (error) {
             console.error("خطأ أثناء إنشاء الحساب:", error);
-            showNotification("error", "حدث خطأ أثناء إنشاء الحساب.");
+            showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
           }
-        } else {
-          showNotification("error", "رمز التحقق غير صحيح.");
-        }
-      });
+        });
+      }
 
-      document.getElementById("resend-code").addEventListener("click", async () => {
-        try {
-          verificationCode = Math.floor(100000 + Math.random() * 900000);
-          await sendVerificationEmail(userInfo.email, verificationCode);
-          showNotification("success", "تم إرسال رمز تحقق جديد.");
-          document.getElementById("resend-code").style.display = "none";
-          startCountdown(180);
-        } catch (error) {
-          console.error("خطأ أثناء إعادة إرسال الرمز:", error);
-          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-        }
-      });
+      if (verifyCodeButton) {
+        verifyCodeButton.addEventListener("click", async () => {
+          const enteredCode = document.getElementById("verification-code").value.trim();
+
+          if (parseInt(enteredCode, 10) === verificationCode) {
+            try {
+              const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
+              const user = userCredential.user;
+
+              await setDoc(doc(db, "users", user.uid), {
+                ...userInfo,
+                emailVerified: true,
+                role: "student"
+              });
+
+              showNotification("success", "تم انشاء حساب.");
+              window.location.href = "index.html";
+            } catch (error) {
+              console.error("خطأ أثناء إنشاء الحساب:", error);
+              showNotification("error", "حدث خطأ أثناء إنشاء الحساب.");
+            }
+          } else {
+            showNotification("error", "رمز التحقق غير صحيح.");
+          }
+        });
+      }
+
+      if (resendCodeButton) {
+        resendCodeButton.addEventListener("click", async () => {
+          try {
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
+            await sendVerificationEmail(userInfo.email, verificationCode);
+            showNotification("success", "تم إرسال رمز تحقق جديد.");
+            resendCodeButton.style.display = "none";
+            startCountdown(180);
+          } catch (error) {
+            console.error("خطأ أثناء إعادة إرسال الرمز:", error);
+            showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+          }
+        });
+      }
     });
   </script>
 </head>
