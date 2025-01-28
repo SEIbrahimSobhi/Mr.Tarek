@@ -24,7 +24,7 @@
 
 
   <!-- تحميل مكتبة bcryptjs عبر Script مباشر -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
@@ -88,51 +88,45 @@
       let verificationCode;
       let userInfo;
 
-      document.getElementById("register-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
+document.getElementById("register-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        const username = document.getElementById("username").value.trim();
-        const studentName = document.getElementById("student-name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+    const username = document.getElementById("username").value.trim();
+    const studentName = document.getElementById("student-name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-        if (!username || !studentName || !phone || !email || !password) {
-          showNotification("error", "يرجى ملء جميع البيانات.");
-          return;
-        }
+    if (!username || !studentName || !phone || !email || !password) {
+        showNotification("error", "يرجى ملء جميع البيانات.");
+        return;
+    }
 
-        try {
-          // توليد رمز التحقق
-          verificationCode = Math.floor(100000 + Math.random() * 900000);
+    try {
+        // توليد رمز التحقق
+        verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-          // تخزين البيانات مؤقتًا
-          userInfo = { username, studentName, phone, email, password };
+        // تشفير كلمة السر باستخدام bcryptjs (synchronous method)
+        const hashedPassword = bcrypt.hashSync(password, 10);
 
-          // تشفير كلمة السر باستخدام bcryptjs
-          bcrypt.hash(password, 10, async (err, hashedPassword) => {
-            if (err) {
-              console.error("خطأ أثناء تشفير كلمة المرور:", err);
-              showNotification("error", "حدث خطأ أثناء تشفير كلمة المرور.");
-              return;
-            }
+        // تخزين البيانات مؤقتًا
+        userInfo = { username, studentName, phone, email, password: hashedPassword };
 
-            // إرسال البريد الإلكتروني مع رمز التحقق
-            await sendVerificationEmail(email, verificationCode);
+        // إرسال البريد الإلكتروني مع رمز التحقق
+        await sendVerificationEmail(email, verificationCode);
 
-            // عرض قسم التحقق
-            showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-            document.getElementById("register-form").style.display = "none";
-            document.getElementById("verification-section").style.display = "block";
+        // عرض قسم التحقق
+        showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("verification-section").style.display = "block";
 
-            // بدء العداد
-            startCountdown(180);
-          });
-        } catch (error) {
-          console.error("خطأ أثناء إنشاء الحساب:", error);
-          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-        }
-      });
+        // بدء العداد
+        startCountdown(180);
+    } catch (error) {
+        console.error("خطأ أثناء إنشاء الحساب:", error);
+        showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+    }
+});
 
       document.getElementById("verify-code").addEventListener("click", async () => {
         const enteredCode = document.getElementById("verification-code").value.trim();
