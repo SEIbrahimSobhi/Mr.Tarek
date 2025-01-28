@@ -22,7 +22,7 @@
     })();
   </script>
 
-  <!-- تحميل مكتبة bcryptjs عبر Script مباشر   -->
+  <!-- تحميل مكتبة bcryptjs عبر Script مباشر -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 
   <script type="module">
@@ -109,18 +109,24 @@
           userInfo = { username, studentName, phone, email, password };
 
           // تشفير كلمة السر باستخدام bcryptjs
-          const hashedPassword = await bcrypt.hash(password, 10);  // هنا يتم تشفير كلمة السر
+          bcrypt.hash(password, 10, async (err, hashedPassword) => {
+            if (err) {
+              console.error("خطأ أثناء تشفير كلمة المرور:", err);
+              showNotification("error", "حدث خطأ أثناء تشفير كلمة المرور.");
+              return;
+            }
 
-          // إرسال البريد الإلكتروني مع رمز التحقق
-          await sendVerificationEmail(email, verificationCode);
+            // إرسال البريد الإلكتروني مع رمز التحقق
+            await sendVerificationEmail(email, verificationCode);
 
-          // عرض قسم التحقق
-          showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-          document.getElementById("register-form").style.display = "none";
-          document.getElementById("verification-section").style.display = "block";
+            // عرض قسم التحقق
+            showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+            document.getElementById("register-form").style.display = "none";
+            document.getElementById("verification-section").style.display = "block";
 
-          // بدء العداد
-          startCountdown(180);
+            // بدء العداد
+            startCountdown(180);
+          });
         } catch (error) {
           console.error("خطأ أثناء إنشاء الحساب:", error);
           showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
