@@ -27,66 +27,73 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تكوين Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+// تكوين Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+  authDomain: "mr-tarek-2e40f.firebaseapp.com",
+  projectId: "mr-tarek-2e40f",
+  storageBucket: "mr-tarek-2e40f.appspot.com",
+  messagingSenderId: "807997869740",
+  appId: "1:807997869740:web:8eca7473d24693bf861909"
+};
 
-    // تهيئة Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+// تهيئة Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    let countdownInterval;
+let countdownInterval;
 
-    // دالة لبدء العداد
-    const startCountdown = (duration) => {
-      const countdownElement = document.getElementById("countdown");
-      let remainingTime = duration;
+// دالة لبدء العداد
+const startCountdown = (duration) => {
+  const countdownElement = document.getElementById("countdown");
+  let remainingTime = duration;
 
-      countdownInterval = setInterval(() => {
-        const minutes = Math.floor(remainingTime / 60);
-        const seconds = remainingTime % 60;
+  countdownInterval = setInterval(() => {
+    const minutes = Math.floor(remainingTime / 60);
+    const seconds = remainingTime % 60;
 
-        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 
-        if (remainingTime <= 0) {
-          clearInterval(countdownInterval);
-          showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
-          countdownElement.textContent = "انتهت صلاحية الرمز.";
-          document.getElementById("resend-code").style.display = "block";
-        }
+    if (remainingTime <= 0) {
+      clearInterval(countdownInterval);
+      showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
+      countdownElement.textContent = "انتهت صلاحية الرمز.";
+      document.getElementById("resend-code").style.display = "block";
+    }
 
-        remainingTime--;
-      }, 1000);
-    };
+    remainingTime--;
+  }, 1000);
+};
 
-    // دالة إرسال البريد الإلكتروني باستخدام EmailJS
-    const sendVerificationEmail = async (email, verificationCode) => {
-      try {
-        await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-          email: email,
-          verification_code: verificationCode
-        });
-        console.log("تم إرسال البريد الإلكتروني بنجاح");
-      } catch (error) {
-        console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
-        throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
-      }
-    };
+// دالة إرسال البريد الإلكتروني باستخدام EmailJS
+const sendVerificationEmail = async (email, verificationCode) => {
+  try {
+    await emailjs.send("service_4de4l3i", "template_gqjxtul", {
+      email: email,
+      verification_code: verificationCode
+    });
+    console.log("تم إرسال البريد الإلكتروني بنجاح");
+  } catch (error) {
+    console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
+    throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
+  }
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   let verificationCode;
   let userInfo;
+
+  // التأكد من تحميل مكتبة bcryptjs
+  const bcrypt = window.bcrypt;
+  if (!bcrypt) {
+    console.error("لم يتم تحميل مكتبة bcryptjs. تأكد من إضافة المكتبة بشكل صحيح.");
+    return;
+  }
 
   document.getElementById("register-form").addEventListener("submit", async (e) => {
     e.preventDefault();
