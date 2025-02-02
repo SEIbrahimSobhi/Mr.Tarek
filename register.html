@@ -22,8 +22,9 @@
     })();
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+
   <script type="module">
-    import * as bcrypt from "https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
@@ -86,11 +87,13 @@
     };
 
   document.addEventListener("DOMContentLoaded", () => {
-    if (!bcrypt) {
-      console.error("لم يتم تحميل المكتبة");
-      return;
-    }
-
+  const bcrypt = window.dcodeIO?.bcrypt; // الوصول الصحيح إلى المكتبة
+  
+  if (!bcrypt) {
+    console.error("لم يتم تحميل المكتبة");
+    showNotification("error", "خطأ في النظام. يرجى إعادة المحاولة لاحقًا.");
+    return;
+  }
       document.getElementById("register-form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -107,7 +110,7 @@
 
         try {
           verificationCode = Math.floor(100000 + Math.random() * 900000);
-          const hashedPassword = bcrypt.hashSync(password, 10);
+          const hashedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
           userInfo = { username, studentName, phone, email, password: hashedPassword };
 
           await sendVerificationEmail(email, verificationCode);
