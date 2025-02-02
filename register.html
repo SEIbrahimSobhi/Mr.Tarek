@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr.Tarek-إنشاء حساب</title>
-<!--   ملف css -->
+  <!-- ملف css -->
   <link rel="stylesheet" href="assets/css/auth.css">
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
 
   <!-- تحميل مكتبة EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -22,287 +22,256 @@
     })();
   </script>
 
-
   <!-- تحميل مكتبة bcryptjs عبر Script مباشر -->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 
   <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-// تكوين Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-  authDomain: "mr-tarek-2e40f.firebaseapp.com",
-  projectId: "mr-tarek-2e40f",
-  storageBucket: "mr-tarek-2e40f.appspot.com",
-  messagingSenderId: "807997869740",
-  appId: "1:807997869740:web:8eca7473d24693bf861909"
-};
+    // تكوين Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+      authDomain: "mr-tarek-2e40f.firebaseapp.com",
+      projectId: "mr-tarek-2e40f",
+      storageBucket: "mr-tarek-2e40f.appspot.com",
+      messagingSenderId: "807997869740",
+      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    };
 
-// تهيئة Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-let countdownInterval;
+    let countdownInterval;
+    let verificationCode;
+    let userInfo;
 
-// دالة لبدء العداد
-const startCountdown = (duration) => {
-  const countdownElement = document.getElementById("countdown");
-  let remainingTime = duration;
+    // دالة لبدء العداد
+    const startCountdown = (duration) => {
+      const countdownElement = document.getElementById("countdown");
+      let remainingTime = duration;
 
-  countdownInterval = setInterval(() => {
-    const minutes = Math.floor(remainingTime / 60);
-    const seconds = remainingTime % 60;
+      clearInterval(countdownInterval); // إعادة تعيين العداد
 
-    countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      countdownInterval = setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
 
-    if (remainingTime <= 0) {
-      clearInterval(countdownInterval);
-      showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
-      countdownElement.textContent = "انتهت صلاحية الرمز.";
-      document.getElementById("resend-code").style.display = "block";
-    }
+        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 
-    remainingTime--;
-  }, 1000);
-};
+        if (remainingTime <= 0) {
+          clearInterval(countdownInterval);
+          showNotification("error", "انتهت صلاحية الرمز. يرجى طلب رمز جديد.");
+          countdownElement.textContent = "انتهت صلاحية الرمز.";
+          document.getElementById("resend-code").style.display = "block";
+        }
 
-// دالة إرسال البريد الإلكتروني باستخدام EmailJS
-const sendVerificationEmail = async (email, verificationCode) => {
-  try {
-    await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-      email: email,
-      verification_code: verificationCode
-    });
-    console.log("تم إرسال البريد الإلكتروني بنجاح");
-  } catch (error) {
-    console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
-    throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
-  }
-};
+        remainingTime--;
+      }, 1000);
+    };
 
-document.addEventListener("DOMContentLoaded", () => {
-  let verificationCode;
-  let userInfo;
-
-  // التأكد من تحميل مكتبة bcryptjs
-  const bcrypt = window.bcrypt;
-  if (!bcrypt) {
-    console.error("لم يتم تحميل مكتبة bcryptjs. تأكد من إضافة المكتبة بشكل صحيح.");
-    return;
-  }
-
-  document.getElementById("register-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const username = document.getElementById("username").value.trim();
-    const studentName = document.getElementById("student-name").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    if (!username || !studentName || !phone || !email || !password) {
-      showNotification("error", "يرجى ملء جميع البيانات.");
-      return;
-    }
-
-    try {
-      // توليد رمز التحقق
-      verificationCode = Math.floor(100000 + Math.random() * 900000);
-
-      // تشفير كلمة المرور باستخدام bcrypt
-      const hashedPassword = bcrypt.hashSync(password, 10);
-
-      // تخزين البيانات مؤقتًا
-      userInfo = { username, studentName, phone, email, password: hashedPassword };
-
-      // إرسال رمز التحقق عبر البريد الإلكتروني
-      await sendVerificationEmail(email, verificationCode);
-
-      showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-      document.getElementById("register-form").style.display = "none";
-      document.getElementById("verification-section").style.display = "block";
-
-      // بدء العد التنازلي
-      startCountdown(180);
-    } catch (error) {
-      console.error("خطأ أثناء إرسال رمز التحقق:", error);
-      showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-    }
-  });
-
-  document.getElementById("verify-code").addEventListener("click", async () => {
-    const enteredCode = document.getElementById("verification-code").value.trim();
-
-    if (Number(enteredCode) === verificationCode) {
+    // دالة إرسال البريد الإلكتروني باستخدام EmailJS
+    const sendVerificationEmail = async (email, verificationCode) => {
       try {
-        // إنشاء المستخدم في Firebase
-        const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
-        const user = userCredential.user;
-
-        // حفظ البيانات في Firestore
-        await setDoc(doc(db, "users", user.uid), {
-          ...userInfo,
-          emailVerified: true,
+        await emailjs.send("service_4de4l3i", "template_gqjxtul", {
+          email: email,
+          verification_code: verificationCode
         });
-
-        showNotification("success", "تم إنشاء الحساب بنجاح.");
-        window.location.href = "index.html";
+        console.log("تم إرسال البريد الإلكتروني بنجاح");
       } catch (error) {
-        console.error("خطأ أثناء إنشاء الحساب:", error);
-        showNotification("error", "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى.");
+        console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
+        throw new Error("حدث خطأ أثناء إرسال البريد الإلكتروني.");
       }
-    } else {
-      showNotification("error", "رمز التحقق غير صحيح.");
-    }
-  });
+    };
 
-  document.getElementById("resend-code").addEventListener("click", async () => {
-    try {
-      verificationCode = Math.floor(100000 + Math.random() * 900000);
-      await sendVerificationEmail(userInfo.email, verificationCode);
-      showNotification("success", "تم إرسال رمز تحقق جديد.");
-      document.getElementById("resend-code").style.display = "none";
-      startCountdown(180);
-    } catch (error) {
-      console.error("خطأ أثناء إعادة إرسال الرمز:", error);
-      showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
-    }
-  });
-});
+    document.addEventListener("DOMContentLoaded", () => {
+      const bcrypt = window.bcrypt;
+      if (!bcrypt) {
+        console.error("لم يتم تحميل مكتبة bcryptjs. تأكد من إضافة المكتبة بشكل صحيح.");
+        return;
+      }
+
+      document.getElementById("register-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const studentName = document.getElementById("student-name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!username || !studentName || !phone || !email || !password) {
+          showNotification("error", "يرجى ملء جميع البيانات.");
+          return;
+        }
+
+        try {
+          verificationCode = Math.floor(100000 + Math.random() * 900000);
+          const hashedPassword = bcrypt.hashSync(password, 10);
+          userInfo = { username, studentName, phone, email, password: hashedPassword };
+
+          await sendVerificationEmail(email, verificationCode);
+
+          showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
+          document.getElementById("register-form").style.display = "none";
+          document.getElementById("verification-section").style.display = "block";
+
+          startCountdown(180);
+        } catch (error) {
+          console.error("خطأ أثناء إرسال رمز التحقق:", error);
+          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+        }
+      });
+
+      document.getElementById("verify-code").addEventListener("click", async () => {
+        const enteredCode = document.getElementById("verification-code").value.trim();
+
+        if (Number(enteredCode) === verificationCode) {
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
+            const user = userCredential.user;
+
+            await setDoc(doc(db, "users", user.uid), {
+              ...userInfo,
+              emailVerified: true,
+            });
+
+            showNotification("success", "تم إنشاء الحساب بنجاح.");
+            window.location.href = "index.html";
+          } catch (error) {
+            console.error("خطأ أثناء إنشاء الحساب:", error);
+            showNotification("error", "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى.");
+          }
+        } else {
+          showNotification("error", "رمز التحقق غير صحيح.");
+        }
+      });
+
+      document.getElementById("resend-code").addEventListener("click", async () => {
+        try {
+          verificationCode = Math.floor(100000 + Math.random() * 900000);
+          await sendVerificationEmail(userInfo.email, verificationCode);
+          showNotification("success", "تم إرسال رمز تحقق جديد.");
+          document.getElementById("resend-code").style.display = "none";
+          startCountdown(180);
+        } catch (error) {
+          console.error("خطأ أثناء إعادة إرسال الرمز:", error);
+          showNotification("error", "حدث خطأ أثناء إرسال رمز التحقق. حاول مرة أخرى.");
+        }
+      });
+    });
   </script>
-  
 </head>
 <body>
- <section>
-  <div class="form-box">
-    <div class="form-value">
-      <form id="register-form">
-        <div class="title-box">
-          <h2>إنشاء حساب</h2>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="person-outline"></ion-icon>
-          <input type="text" id="username" required>
-          <label for="username">اسم المستخدم</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="person-outline"></ion-icon>
-          <input type="text" id="student-name" required>
-          <label for="student-name">اسم الطالب</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="call-outline"></ion-icon>
-          <input type="tel" id="phone" required>
-          <label for="phone">رقم الهاتف</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="mail-outline"></ion-icon>
-          <input type="email" id="email" required>
-          <label for="email">الإيميل</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="lock-closed-outline"></ion-icon>
-          <input type="password" id="password" required>
-          <label for="password">كلمة المرور</label>
-        </div>
-        <div class="forget">
-      <label>
-        <input type="checkbox" id="show-password">  show password</label>
-      </div>
-        <div class="button-box">
-          <button type="submit">إنشاء حساب</button>
-          <div class="register">
-            <p>لديك حساب؟ <a href="login.html" class="switch-link">تسجيل دخول</a></p>
+  <section>
+    <div class="form-box">
+      <div class="form-value">
+        <form id="register-form">
+          <div class="title-box">
+            <h2>إنشاء حساب</h2>
           </div>
-        </div>
-      </form>
-      <div id="notification" class="notification hidden">
-  <p id="notification-message"></p>
-  <div class="icon">
-    <div id="success-icon" class="circle hidden">
-      <span>✔</span>
-    </div>
-    <div id="error-icon" class="circle hidden">
-      <span>❌</span>
-    </div>
-  </div>
-</div>
-      <div id="verification-section" style="display: none;">
-        <div class="verification-box">
-          <h2>تأكيد البريد الإلكتروني</h2>
-          <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
           <div class="inputbox">
-            <input type="text" id="verification-code" placeholder="رمز التحقق" required>
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" id="username" required>
+            <label for="username">اسم المستخدم</label>
           </div>
-          <button id="verify-code">تحقق</button>
-          <p id="countdown">صلاحية الرمز: 3:00</p>
-          <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
+          <div class="inputbox">
+            <ion-icon name="person-outline"></ion-icon>
+            <input type="text" id="student-name" required>
+            <label for="student-name">اسم الطالب</label>
+          </div>
+          <div class="inputbox">
+            <ion-icon name="call-outline"></ion-icon>
+            <input type="tel" id="phone" required>
+            <label for="phone">رقم الهاتف</label>
+          </div>
+          <div class="inputbox">
+            <ion-icon name="mail-outline"></ion-icon>
+            <input type="email" id="email" required>
+            <label for="email">الإيميل</label>
+          </div>
+          <div class="inputbox">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <input type="password" id="password" required>
+            <label for="password">كلمة المرور</label>
+          </div>
+          <div class="forget">
+            <label>
+              <input type="checkbox" id="show-password">  show password</label>
+          </div>
+          <div class="button-box">
+            <button type="submit">إنشاء حساب</button>
+            <div class="register">
+              <p>لديك حساب؟ <a href="login.html" class="switch-link">تسجيل دخول</a></p>
+            </div>
+          </div>
+        </form>
+        <div id="notification" class="notification hidden">
+          <p id="notification-message"></p>
+          <div class="icon">
+            <div id="success-icon" class="circle hidden">
+              <span>✔</span>
+            </div>
+            <div id="error-icon" class="circle hidden">
+              <span>❌</span>
+            </div>
+          </div>
+        </div>
+        <div id="verification-section" style="display: none;">
+          <div class="verification-box">
+            <h2>تأكيد البريد الإلكتروني</h2>
+            <p>تم إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى إدخال الرمز:</p>
+            <div class="inputbox">
+              <input type="text" id="verification-code" placeholder="رمز التحقق" required>
+            </div>
+            <button id="verify-code">تحقق</button>
+            <p id="countdown">صلاحية الرمز: 3:00</p>
+            <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-<script>
-  // Show/Hide password functionality
-  const showPasswordCheckbox = document.getElementById('show-password');
-  const passwordInput = document.getElementById('password');
-
-  showPasswordCheckbox.addEventListener('change', () => {
-    if (showPasswordCheckbox.checked) {
-      passwordInput.type = 'text';
-    } else {
-      passwordInput.type = 'password';
-    }
-  });
-</script>
-
   <script>
+    // Show/Hide password functionality
+    const showPasswordCheckbox = document.getElementById('show-password');
+    const passwordInput = document.getElementById('password');
+
+    showPasswordCheckbox.addEventListener('change', () => {
+      passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
+    });
+
     function showNotification(type, message) {
-  const notification = document.getElementById("notification");
-  const successIcon = document.getElementById("success-icon");
-  const errorIcon = document.getElementById("error-icon");
-  const notificationMessage = document.getElementById("notification-message");
+      const notification = document.getElementById("notification");
+      const successIcon = document.getElementById("success-icon");
+      const errorIcon = document.getElementById("error-icon");
+      const notificationMessage = document.getElementById("notification-message");
 
-  // Reset state
-  notification.classList.remove("show", "hidden");
-  successIcon.classList.add("hidden");
-  errorIcon.classList.add("hidden");
+      notification.classList.remove("show", "hidden");
+      successIcon.classList.add("hidden");
+      errorIcon.classList.add("hidden");
 
-  // Update state based on type
-  if (type === "success") {
-    notification.classList.add("success", "show");
-    successIcon.classList.remove("hidden");
-  } else if (type === "error") {
-    notification.classList.add("error", "show");
-    errorIcon.classList.remove("hidden");
-  }
+      if (type === "success") {
+        notification.classList.add("success", "show");
+        successIcon.classList.remove("hidden");
+      } else if (type === "error") {
+        notification.classList.add("error", "show");
+        errorIcon.classList.remove("hidden");
+      }
 
-  // Set message
-  notificationMessage.textContent = message;
+      notificationMessage.textContent = message;
 
-  // Show notification for 3 seconds
-  setTimeout(() => {
-    notification.classList.remove("show");
-    notification.classList.add("hidden");
-  }, 3000);
-}
-
-// Example Usage on specific events like account creation or verification code sent
-document.addEventListener("DOMContentLoaded", () => {
-  // Call this function when a verification code is sent
-  // showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
-
-  // Call this function when an error occurs
-  // showNotification("error", "حدث خطأ أثناء إرسال الرمز.");
-});
-</script>
+      setTimeout(() => {
+        notification.classList.remove("show");
+        notification.classList.add("hidden");
+      }, 3000);
+    }
+  </script>
 </body>
 </html>
