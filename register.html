@@ -22,10 +22,8 @@
     })();
   </script>
 
-  <!-- تحميل مكتبة bcryptjs عبر Script مباشر -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
-  
   <script type="module">
+    import bcrypt from "https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
@@ -87,12 +85,11 @@
       }
     };
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const bcrypt = window.bcrypt; 
-      if (!bcrypt) {
-        console.error("لم يتم تحميل مكتبة");
-        return;
-      }
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!bcrypt) {
+      console.error("لم يتم تحميل المكتبة");
+      return;
+    }
 
       document.getElementById("register-form").addEventListener("submit", async (e) => {
         e.preventDefault();
