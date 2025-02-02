@@ -23,7 +23,7 @@
   </script>
 
   <!-- تحميل مكتبة bcryptjs عبر Script مباشر -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
   
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
@@ -88,9 +88,9 @@
     };
 
     document.addEventListener("DOMContentLoaded", () => {
-      const bcrypt = window.bcryptjs;
+      const bcrypt = window.bcrypt; 
       if (!bcrypt) {
-        console.error("لم يتم تحميل مكتبة bcryptjs. تأكد من إضافة المكتبة بشكل صحيح.");
+        console.error("لم يتم تحميل مكتبة");
         return;
       }
 
