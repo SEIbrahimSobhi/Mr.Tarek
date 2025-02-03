@@ -86,14 +86,15 @@
       }
     };
 
-  document.addEventListener("DOMContentLoaded", () => {
-  const bcrypt = window.dcodeIO?.bcrypt; // الوصول الصحيح إلى المكتبة
-  
-  if (!bcrypt) {
-    console.error("لم يتم تحميل المكتبة");
-    showNotification("error", "خطأ في النظام. يرجى إعادة المحاولة لاحقًا.");
-    return;
-  }
+    document.addEventListener("DOMContentLoaded", () => {
+      const bcrypt = window.dcodeIO?.bcrypt; // الوصول الصحيح إلى المكتبة
+
+      if (!bcrypt) {
+        console.error("لم يتم تحميل المكتبة");
+        showNotification("error", "خطأ في النظام. يرجى إعادة المحاولة لاحقًا.");
+        return;
+      }
+
       document.getElementById("register-form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -209,25 +210,26 @@
             </div>
           </div>
         </form>
+
+        <!-- إشعار واحد فقط -->
         <div id="notification" class="notification">
-        <div id="notification" class="notification">
-    <div class="notification-card">
-        <!-- Success Icon -->
-        <svg class="success-icon" viewBox="0 0 100 100">
-            <circle class="outer-circle" cx="50" cy="50" r="45"/>
-            <path class="checkmark" d="M25 55 L40 70 L75 35"/>
-        </svg>
-        
-        <!-- Error Icon -->
-        <svg class="error-icon" viewBox="0 0 100 100">
-            <circle class="outer-circle" cx="50" cy="50" r="45"/>
-            <path class="cross" d="M35 35 L65 65 M65 35 L35 65"/>
-        </svg>
-        
-        <p class="notification-text"></p>
-    </div>
-</div>
+          <div class="notification-card">
+            <!-- Success Icon -->
+            <svg class="success-icon" viewBox="0 0 100 100">
+              <circle class="outer-circle" cx="50" cy="50" r="45"/>
+              <path class="checkmark" d="M25 55 L40 70 L75 35"/>
+            </svg>
+            
+            <!-- Error Icon -->
+            <svg class="error-icon" viewBox="0 0 100 100">
+              <circle class="outer-circle" cx="50" cy="50" r="45"/>
+              <path class="cross" d="M35 35 L65 65 M65 35 L35 65"/>
+            </svg>
+            
+            <p class="notification-text"></p>
+          </div>
         </div>
+
         <div id="verification-section" style="display: none;">
           <div class="verification-box">
             <h2>تأكيد البريد الإلكتروني</h2>
@@ -255,32 +257,32 @@
       passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
     });
 
-function showNotification(type, message, duration = 3000) {
-    const notification = document.getElementById('notification');
-    const card = notification.querySelector('.notification-card');
-    
-    // Reset previous state
-    notification.className = 'notification';
-    card.className = 'notification-card';
-    
-    // Hide all icons
-    document.querySelectorAll('svg').forEach(icon => icon.style.display = 'none');
-    
-    // Show selected icon
-    const icon = document.querySelector(`.${type}-icon`);
-    icon.style.display = 'block';
-    
-    // Set message
-    document.querySelector('.notification-text').textContent = message;
-    
-    // Activate notification
-    notification.classList.add('active');
-    
-    // Auto-close
-    setTimeout(() => {
+    function showNotification(type, message, duration = 3000) {
+      const notification = document.getElementById('notification');
+      const card = notification.querySelector('.notification-card');
+      
+      // Reset previous state
+      notification.className = 'notification';
+      card.className = 'notification-card';
+      
+      // Hide all icons
+      document.querySelectorAll('.success-icon, .error-icon').forEach(icon => icon.style.display = 'none');
+      
+      // Show selected icon
+      const icon = document.querySelector(`.${type}-icon`);
+      icon.style.display = 'block';
+      
+      // Set message
+      document.querySelector('.notification-text').textContent = message;
+      
+      // Activate notification
+      notification.classList.add('active');
+      
+      // Auto-close
+      setTimeout(() => {
         notification.classList.remove('active');
-    }, duration);
-}
+      }, duration);
+    }
   </script>
 </body>
 </html>
