@@ -4,7 +4,9 @@
 :root {
     --success-color: #4CAF50;
     --error-color: #f44336;
-    --duration: 0.6s;
+    --animation-duration: 1s;
+    --card-width: min(90vw, 400px);
+    --icon-size: min(20vw, 100px);
 }
 
 
@@ -226,137 +228,139 @@ button#verify-code {
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.4s ease-out;
+    transition: all 0.3s ease-out;
+    width: var(--card-width);
 }
 
-.notification.show {
+.notification.active {
     opacity: 1;
     visibility: visible;
 }
 
-.notification-box {
+.notification-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
-    border-radius: 24px;
-    padding: 40px;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
-    transform: scale(0.8);
-    transition: all var(--duration) cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 20px;
+    padding: min(5vw, 40px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    transform: scale(0.5) rotate(15deg);
+    animation: cardEntry 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
 
-.notification.show .notification-box {
-    transform: scale(1);
+/* Responsive Icon Styles */
+.success-icon, .error-icon {
+    display: none;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    margin: 0 auto min(5vw, 20px);
 }
 
-/* Common Icon Styles */
-.icon-container {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 25px;
-}
-
-.circle {
+/* Common Icon Animations */
+.outer-circle {
     fill: none;
-    stroke-width: 2;
-    stroke-dasharray: 157;
-    stroke-dashoffset: 157;
-    animation: draw-circle var(--duration) ease-out forwards;
+    stroke-width: 3;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    animation: drawCircle var(--animation-duration) ease-out forwards;
 }
 
-/* Success Animation */
-.success-icon .check {
-    stroke-width: 2;
+.checkmark, .cross {
     fill: none;
-    stroke-dasharray: 48;
-    stroke-dashoffset: 48;
-    animation: draw-check calc(var(--duration) * 0.8) ease-out 0.3s forwards;
+    stroke-width: 3;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: drawMark calc(var(--animation-duration) * 0.8) ease-out 0.3s forwards;
 }
 
-.notification.success {
-    .circle { stroke: var(--success-color); }
-    .check { stroke: var(--success-color); }
-    .error-icon { display: none; }
-    .notification-box {
-        animation: success-glow 1.5s ease-in-out infinite alternate;
-    }
-}
+/* Success Specific Styles */
+.success-icon .outer-circle { stroke: var(--success-color); }
+.success-icon .checkmark { stroke: var(--success-color); }
 
-/* Error Animation */
-.error-icon .cross {
-    stroke-width: 2;
-    fill: none;
-    stroke-dasharray: 48;
-    stroke-dashoffset: 48;
-    animation: draw-cross calc(var(--duration) * 0.8) ease-out 0.3s forwards;
-}
+/* Error Specific Styles */
+.error-icon .outer-circle { stroke: var(--error-color); }
+.error-icon .cross { stroke: var(--error-color); }
 
-.notification.error {
-    .circle { stroke: var(--error-color); }
-    .cross { stroke: var(--error-color); }
-    .success-icon { display: none; }
-    .notification-box {
-        animation: error-shake 0.4s ease-out;
-    }
-}
-
-/* Keyframes */
-@keyframes draw-circle {
-    to { stroke-dashoffset: 0; }
-}
-
-@keyframes draw-check {
-    to { stroke-dashoffset: 0; }
-}
-
-@keyframes draw-cross {
-    to { stroke-dashoffset: 0; }
-}
-
-@keyframes success-glow {
-    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.2); }
-    100% { box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
-}
-
-@keyframes error-shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
-}
-
-/* Message Animation */
-.message {
+/* Text Styles */
+.notification-text {
     text-align: center;
-    font-size: 20px;
-    color: #2d3436;
+    font-size: min(5vw, 20px);
+    color: #333;
     margin: 0;
     opacity: 0;
     transform: translateY(20px);
-    animation: text-rise 0.4s ease-out 0.8s forwards;
+    animation: textAppear 0.4s ease-out 0.8s forwards;
 }
 
-@keyframes text-rise {
+/* Keyframe Animations */
+@keyframes cardEntry {
+    0% { transform: scale(0.5) rotate(15deg); }
+    60% { transform: scale(1.1) rotate(-5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes drawMark {
+    to { 
+        stroke-dashoffset: 0;
+        filter: drop-shadow(0 0 8px currentColor);
+    }
+}
+
+@keyframes textAppear {
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* Particle Effects */
-.notification-box::after {
+/* Special Effects */
+.notification-card::after {
     content: '';
     position: absolute;
     width: 120%;
     height: 120%;
     top: -10%;
     left: -10%;
-    background: radial-gradient(circle, rgba(76,175,80,0.1) 0%, transparent 70%);
-    animation: particle-expand 1s ease-out forwards;
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+    opacity: 0.1;
+    animation: particleExplosion 1s ease-out forwards;
 }
 
-@keyframes particle-expand {
-    to {
-        transform: scale(2);
-        opacity: 0;
+@keyframes particleExplosion {
+    0% { transform: scale(0); opacity: 0.3; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+/* Media Queries for Extra Small Devices */
+@media (max-width: 480px) {
+    :root {
+        --icon-size: 25vw;
+    }
+    
+    .notification-card {
+        padding: 20px;
+        border-radius: 15px;
+    }
+    
+    .notification-text {
+        font-size: 16px;
+    }
+}
+
+/* Media Queries for Landscape Orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+    .notification {
+        top: 30%;
+    }
+    
+    .notification-card {
+        padding: 15px;
+    }
+    
+    .notification-text {
+        font-size: 14px;
     }
 }
