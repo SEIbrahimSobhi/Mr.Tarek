@@ -210,23 +210,23 @@
           </div>
         </form>
         <div id="notification" class="notification">
-        <div class="notification-box">
-        <div class="icon-container">
-            <!-- Success Icon -->
-            <svg class="success-icon" viewBox="0 0 52 52">
-                <circle class="circle" cx="26" cy="26" r="25"/>
-                <path class="check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-            </svg>
-
-            <!-- Error Icon -->
-            <svg class="error-icon" viewBox="0 0 52 52">
-                <circle class="circle" cx="26" cy="26" r="25"/>
-                <path class="cross" d="M16 16 36 36 M36 16 16 36"/>
-            </svg>
-        </div>
-        <p id="notification-message" class="message"></p>
-      </div>
+        <div id="notification" class="notification">
+    <div class="notification-card">
+        <!-- Success Icon -->
+        <svg class="success-icon" viewBox="0 0 100 100">
+            <circle class="outer-circle" cx="50" cy="50" r="45"/>
+            <path class="checkmark" d="M25 55 L40 70 L75 35"/>
+        </svg>
+        
+        <!-- Error Icon -->
+        <svg class="error-icon" viewBox="0 0 100 100">
+            <circle class="outer-circle" cx="50" cy="50" r="45"/>
+            <path class="cross" d="M35 35 L65 65 M65 35 L35 65"/>
+        </svg>
+        
+        <p class="notification-text"></p>
     </div>
+</div>
         </div>
         <div id="verification-section" style="display: none;">
           <div class="verification-box">
@@ -257,19 +257,28 @@
 
 function showNotification(type, message, duration = 3000) {
     const notification = document.getElementById('notification');
-    const box = notification.querySelector('.notification-box');
+    const card = notification.querySelector('.notification-card');
     
-    // Reset previous animations
+    // Reset previous state
     notification.className = 'notification';
-    box.style.animation = '';
+    card.className = 'notification-card';
     
-    // Set new state
-    notification.classList.add(type, 'show');
-    document.getElementById('notification-message').textContent = message;
+    // Hide all icons
+    document.querySelectorAll('svg').forEach(icon => icon.style.display = 'none');
+    
+    // Show selected icon
+    const icon = document.querySelector(`.${type}-icon`);
+    icon.style.display = 'block';
+    
+    // Set message
+    document.querySelector('.notification-text').textContent = message;
+    
+    // Activate notification
+    notification.classList.add('active');
     
     // Auto-close
     setTimeout(() => {
-        notification.classList.remove('show');
+        notification.classList.remove('active');
     }, duration);
 }
   </script>
