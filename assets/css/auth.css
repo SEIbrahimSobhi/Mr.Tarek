@@ -1,208 +1,226 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
 
 :root {
     --success-color: #4CAF50;
     --error-color: #f44336;
-    --primary-color: #1a73e8;
-    --background-blur: blur(15px);
-    --input-bg: rgba(255, 255, 255, 0.15);
-    --text-light: #ffffff;
-    --text-dark: #2d3436;
-    --transition-speed: 0.3s;
+    --animation-duration: 1s;
     --card-width: min(90vw, 400px);
     --icon-size: min(20vw, 100px);
 }
 
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background: url('hero-bg.jpg') no-repeat center/cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    margin: 0;
+  background: url('hero-bg.jpg') no-repeat center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  margin: 0;
 }
 
 .form-box {
-    width: 360px;
-    max-width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border-radius: 20px;
-    backdrop-filter: var(--background-blur);
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    margin: 0 auto;
-    transition: all var(--transition-speed) ease;
+  width: 360px;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+  transition: all 0.3s ease;
 }
 
 h1 {
-    color: var(--text-light);
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
 }
 
 .inputbox {
-    position: relative;
-    margin-bottom: 20px;
-    text-align: left;
+  position: relative;
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 .inputbox input {
-    width: 100%;
-    padding: 10px 15px 10px 40px;
-    border: none;
-    border-radius: 10px;
-    background: var(--input-bg);
-    color: var(--text-light);
-    font-size: 1rem;
-    outline: none;
-    transition: all var(--transition-speed) ease;
-    backdrop-filter: blur(5px);
-    padding-right: 40px;
+  width: 100%;
+  padding: 10px 15px 10px 40px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  padding-right: 40px; /* إضافة مساحة للأيقونة */
 }
 
 .inputbox input:focus {
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 5px #fff;
 }
 
 .inputbox label {
-    position: absolute;
-    top: 50%;
-    right: 45px;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    transition: all var(--transition-speed) ease;
+  position: absolute;
+  top: 50%;
+  right: 45px;
+  transform: translateY(-50%);
+  color: #ddd;
+  font-size: 0.9rem;
+  transition: 0.3s ease;
 }
 
 .inputbox input:focus ~ label,
-.inputbox input:not(:placeholder-shown) ~ label {
-    right: 15px;
-    top: -10px;
-    font-size: 0.75rem;
-    color: var(--text-light);
+.inputbox input:valid ~ label {
+  right: 15px;
+  top: -10px;
+  font-size: 0.75rem;
+  color: #fff;
 }
 
 .inputbox ion-icon {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.2rem;
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #ddd;
 }
 
 .toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.8);
-    cursor: pointer;
-    transition: var(--transition-speed);
-    font-size: 1.2rem;
-    z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: auto;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #ddd;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1.2rem;
+  z-index: 2;
 }
 
 .toggle-password:hover {
-    color: var(--text-light);
-    transform: translateY(-50%) scale(1.1);
+  color: #fff;
 }
 
 .toggle-password.active {
-    color: var(--success-color);
+  color: var(--success-color);
 }
 
 button {
-    width: 100%;
-    padding: 10px;
-    background: var(--primary-color);
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--text-light);
-    margin-top: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    transition: all var(--transition-speed) ease;
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 button:hover {
-    background: #1557b3;
-    transform: translateY(-2px);
+  background: #ddd;
 }
 
 .register {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .register p {
-    font-size: 0.9rem;
-    margin: 10px 0;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin: 10px 0;
+  text-align: center;
 }
 
-.register a {
-    color: var(--text-light);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition-speed);
+.register p a {
+  color: #fff;
+  font-size: 0.85rem;
+  text-decoration: none;
 }
 
-.register a:hover {
-    text-decoration: underline;
-    opacity: 0.9;
+.register p a:hover {
+  text-decoration: underline;
 }
 
 #verification-section {
-    display: none;
-    margin-top: 20px;
+  display: none;
+  margin-top: 20px;
 }
 
 .verification-box {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
 }
 
 .verification-box h2 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: var(--text-light);
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #fff;
 }
 
 .verification-box p {
-    font-size: 1rem;
-    margin-bottom: 15px;
-    color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #ddd;
+}
+
+.inputbox input {
+  width: calc(100% - 20px);
+}
+
+button#verify-code {
+  margin-top: 10px;
+  width: 100%;
 }
 
 #countdown {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-top: 10px;
-    text-align: center;
+  font-size: 1rem;
+  color: #ddd;
+  margin-top: 10px;
 }
 
 #resend-code {
-    display: none;
-    margin-top: 10px;
+  display: none;
+  margin-top: 10px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .form-box {
     width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+  }
 }
 
 .notification {
@@ -227,11 +245,12 @@ button:hover {
     backdrop-filter: blur(15px);
     border-radius: 20px;
     padding: min(5vw, 40px);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     transform: scale(0.5) rotate(15deg);
     animation: cardEntry 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
 
+/* Responsive Icon Styles */
 .success-icon, .error-icon {
     display: none;
     width: var(--icon-size);
@@ -239,6 +258,7 @@ button:hover {
     margin: 0 auto min(5vw, 20px);
 }
 
+/* Common Icon Animations */
 .outer-circle {
     fill: none;
     stroke-width: 3;
@@ -255,22 +275,26 @@ button:hover {
     animation: drawMark calc(var(--animation-duration) * 0.8) ease-out 0.3s forwards;
 }
 
+/* Success Specific Styles */
 .success-icon .outer-circle { stroke: var(--success-color); }
 .success-icon .checkmark { stroke: var(--success-color); }
 
+/* Error Specific Styles */
 .error-icon .outer-circle { stroke: var(--error-color); }
 .error-icon .cross { stroke: var(--error-color); }
 
+/* Text Styles */
 .notification-text {
     text-align: center;
     font-size: min(5vw, 20px);
-    color: var(--text-dark);
+    color: #333;
     margin: 0;
     opacity: 0;
     transform: translateY(20px);
     animation: textAppear 0.4s ease-out 0.8s forwards;
 }
 
+/* Keyframe Animations */
 @keyframes cardEntry {
     0% { transform: scale(0.5) rotate(15deg); }
     60% { transform: scale(1.1) rotate(-5deg); }
@@ -295,6 +319,7 @@ button:hover {
     }
 }
 
+/* Special Effects */
 .notification-card::after {
     content: '';
     position: absolute;
@@ -312,26 +337,7 @@ button:hover {
     100% { transform: scale(2); opacity: 0; }
 }
 
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-
-    .form-box {
-        width: 100%;
-        max-width: 320px;
-        margin: 0 auto;
-    }
-
-    h1 {
-        font-size: 1.6rem;
-    }
-
-    button {
-        font-size: 0.9rem;
-    }
-}
-
+/* Media Queries for Extra Small Devices */
 @media (max-width: 480px) {
     :root {
         --icon-size: 25vw;
@@ -347,6 +353,7 @@ button:hover {
     }
 }
 
+/* Media Queries for Landscape Orientation */
 @media (orientation: landscape) and (max-height: 500px) {
     .notification {
         top: 30%;
