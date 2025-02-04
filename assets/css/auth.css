@@ -41,7 +41,7 @@ body {
   transition: all 0.3s ease;
 }
 
-h2 {
+h1 {
   color: #fff;
   font-size: 1.8rem;
   margin-bottom: 20px;
@@ -63,6 +63,7 @@ h2 {
   font-size: 1rem;
   outline: none;
   transition: all 0.3s ease;
+  padding-right: 40px; /* إضافة مساحة للأيقونة */
 }
 
 .inputbox input:focus {
@@ -96,23 +97,25 @@ h2 {
   color: #ddd;
 }
 
-.forget {
-  margin: 10px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.forget ion-icon {
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  left: auto;
+  right: 10px;
+  transform: translateY(-50%);
   color: #ddd;
-  font-size: 1rem;
-}
-
-.forget label {
-  font-size: 0.85rem;
   cursor: pointer;
-  color: #ddd;
+  transition: 0.3s;
+  font-size: 1.2rem;
+  z-index: 2;
+}
+
+.toggle-password:hover {
+  color: #fff;
+}
+
+.toggle-password.active {
+  color: var(--success-color);
 }
 
 button {
@@ -211,7 +214,7 @@ button#verify-code {
     margin: 0 auto;
   }
 
-  h2 {
+  h1 {
     font-size: 1.6rem;
   }
 
