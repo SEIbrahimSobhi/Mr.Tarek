@@ -102,12 +102,12 @@
     </div>
   </section>
 
-  <script type="module">
+ <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-  // التهيئة
+  // التهيئة الأساسية
   const firebaseConfig = {
     apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
     authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -120,12 +120,12 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  emailjs.init("K0gXc0-X0CONTIkX_");
+  emailjs.init("K0gXc0-X0CONTIkX_"); // نقل التهيئة خارج النطاق النمطي
 
   // متغيرات التطبيق
   let verificationCode = null;
   let countdownInterval = null;
-  const tempUserKey = 'tempUserData';
+  const tempUserKey = 'tempUserData_v2';
 
   // دوال المساعدة
   const showNotification = (type, message) => {
@@ -140,11 +140,11 @@
 
   const validateInputs = (inputs) => {
     try {
-      if (!validateArabicName(inputs.username)) throw 'اسم المستخدم غير صالح';
-      if (!validateArabicName(inputs.studentName)) throw 'اسم الطالب غير صالح';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputs.email)) throw 'بريد إلكتروني غير صالح';
-      if (!/^\+?[0-9]{10,15}$/.test(inputs.phone)) throw 'رقم هاتف غير صالح';
-      if (inputs.password.length < 8) throw 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+      if (!validateArabicName(inputs.username)) throw 'اسم المستخدم يجب أن يكون عربي (3-30 حرف)';
+      if (!validateArabicName(inputs.studentName)) throw 'اسم الطالب يجب أن يكون عربي (3-30 حرف)';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputs.email)) throw 'صيغة البريد الإلكتروني غير صحيحة';
+      if (!/^\+?[0-9]{10,15}$/.test(inputs.phone)) throw 'رقم الهاتف يجب أن يحتوي على 10-15 رقم';
+      if (inputs.password.length < 8) throw 'كلمة المرور يجب ألا تقل عن 8 أحرف';
       return true;
     } catch (error) {
       showNotification('error', error);
@@ -179,13 +179,14 @@
       });
       return true;
     } catch (error) {
-      console.error('Email Error:', error);
-      throw 'فشل إرسال رمز التحقق، حاول لاحقاً';
+      console.error('فشل الإرسال:', error);
+      throw 'تعذر إرسال الرمز، يرجى المحاولة لاحقًا';
     }
   };
 
   // أحداث النموذج
   document.addEventListener('DOMContentLoaded', () => {
+    // استعادة البيانات المحفوظة
     const savedData = localStorage.getItem(tempUserKey);
     if (savedData) {
       const { email, code } = JSON.parse(savedData);
@@ -196,6 +197,7 @@
       startCountdown(180);
     }
 
+    // حدث إرسال النموذج
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const inputs = {
@@ -210,11 +212,15 @@
 
       try {
         await sendVerificationCode(inputs.email);
+        
+        // حفظ البيانات بدون كلمة المرور
         localStorage.setItem(tempUserKey, JSON.stringify({
           ...inputs,
-          code: verificationCode
+          code: verificationCode,
+          password: null // إزالة كلمة المرور لأسباب أمنية
         }));
         
+        // تبديل الواجهات
         document.getElementById('register-form').style.display = 'none';
         document.getElementById('verification-section').style.display = 'block';
         startCountdown(180);
@@ -224,21 +230,24 @@
       }
     });
 
+    // حدث التحقق من الرمز
     document.getElementById('verify-code').addEventListener('click', async () => {
       const enteredCode = document.getElementById('verification-code').value.trim();
       const storedData = JSON.parse(localStorage.getItem(tempUserKey));
 
       if (enteredCode !== verificationCode?.toString()) {
-        return showNotification('error', 'رمز التحقق غير صحيح');
+        return showNotification('error', '⚠️ الرمز المدخل غير صحيح');
       }
 
       try {
+        // إنشاء الحساب مع استعادة كلمة المرور من النموذج
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           storedData.email,
-          storedData.password
+          document.getElementById('password').value // استرجاع كلمة المرور مباشرة
         );
 
+        // حفظ البيانات في Firestore
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           username: storedData.username,
           studentName: storedData.studentName,
@@ -248,30 +257,33 @@
           emailVerified: true
         });
 
+        // التنظيف النهائي
         localStorage.removeItem(tempUserKey);
         window.location.href = 'index.html';
       } catch (error) {
-        showNotification('error', `خطأ في إنشاء الحساب: ${error.code}`);
+        showNotification('error', `❌ خطأ في الإنشاء: ${error.code}`);
       }
     });
 
+    // إعادة إرسال الرمز
     document.getElementById('resend-code').addEventListener('click', async () => {
       try {
-        await sendVerificationCode(JSON.parse(localStorage.getItem(tempUserKey)).email);
+        const storedData = JSON.parse(localStorage.getItem(tempUserKey));
+        await sendVerificationCode(storedData.email);
         startCountdown(180);
-        showNotification('success', 'تم إعادة إرسال الرمز');
+        showNotification('success', 'تم إعادة إرسال الرمز بنجاح');
       } catch (error) {
         showNotification('error', error);
       }
     });
-  });
 
-  // إدارة كلمة المرور
-  document.querySelector('.toggle-password').addEventListener('click', (e) => {
-    const passwordInput = document.getElementById('password');
-    const isHidden = passwordInput.type === 'password';
-    passwordInput.type = isHidden ? 'text' : 'password';
-    e.target.setAttribute('name', isHidden ? 'eye-off-outline' : 'eye-outline');
+    // إدارة عرض كلمة المرور
+    document.querySelector('.toggle-password').addEventListener('click', (e) => {
+      const passwordInput = document.getElementById('password');
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      e.target.setAttribute('name', isHidden ? 'eye-off-outline' : 'eye-outline');
+    });
   });
 </script>
 </body>
