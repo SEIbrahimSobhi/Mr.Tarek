@@ -81,6 +81,11 @@
         return false;
       }
 
+      if (!inputs.studentName.match(/^[\u0600-\u06FF\s]{3,30}$/)) {
+        showNotification("error", "اسم الطالب غير صالح");
+        return false;
+      }
+
       if (!emailRegex.test(inputs.email)) {
         showNotification("error", "البريد الإلكتروني غير صالح");
         return false;
@@ -123,7 +128,14 @@
 
         try {
           verificationCode = verificationCode || Math.floor(100000 + Math.random() * 900000);
-          tempUserData = { ...inputs, verificationCode };
+          tempUserData = {
+           username: inputs.username,
+           studentName: inputs.studentName,
+           phone: inputs.phone,
+           email: inputs.email,
+           password: inputs.password,
+           verificationCode
+          };
           localStorage.setItem('tempUser', JSON.stringify(tempUserData));
 
           await sendVerificationEmail(inputs.email, verificationCode);
@@ -288,10 +300,10 @@ document.querySelector('.toggle-password').addEventListener('keypress', function
 
     // نظام الإشعارات
     function showNotification(type, message, duration = 3000) {
-      const notification = document.getElementById('notification');
+    const notification = document.getElementById('notification');
       notification.className = `notification ${type}`;
       notification.textContent = message;
-      notification.hidden = false;
+      notification.style.display = 'block';
 
       setTimeout(() => {
         notification.hidden = true;
