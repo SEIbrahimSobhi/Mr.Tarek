@@ -140,8 +140,6 @@
 
   const validateInputs = (inputs) => {
     try {
-      if (!validateArabicName(inputs.username)) throw 'اسم المستخدم يجب أن يكون عربي (3-30 حرف)';
-      if (!validateArabicName(inputs.studentName)) throw 'اسم الطالب يجب أن يكون عربي (3-30 حرف)';
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputs.email)) throw 'صيغة البريد الإلكتروني غير صحيحة';
       if (!/^\+?[0-9]{10,15}$/.test(inputs.phone)) throw 'رقم الهاتف يجب أن يحتوي على 10-15 رقم';
       if (inputs.password.length < 8) throw 'كلمة المرور يجب ألا تقل عن 8 أحرف';
