@@ -157,16 +157,9 @@
             text-decoration: underline;
         }
 
-       #verification-section {
-         display: none;
-         opacity: 0;
-         transition: all 0.3s ease-in-out;
-         margin-top: 20px;
-        }
-
-        #verification-section.active {
-          display: block;
-          opacity: 1;
+        #verification-section {
+            display: none;
+            margin-top: 20px;
         }
 
         .verification-box {
