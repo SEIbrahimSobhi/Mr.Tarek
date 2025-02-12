@@ -240,36 +240,27 @@
         </form>
 
         <!-- قسم التحقق -->
-        <div id="verification-section" style="display: none;" aria-live="polite">
-          <div class="verification-box">
-            <h2>تأكيد البريد الإلكتروني</h2>
-            <p id="verification-instruction">تم إرسال رمز التحقق إلى بريدك الإلكتروني</p>
-            
-<div class="inputbox" role="group" aria-labelledby="code-label">
-  <input 
-    type="text" 
-    id="verification-code"
-    inputmode="numeric"
-    pattern="\d{6}"
-    aria-describedby="code-instruction"
-    required
-    aria-required="true"
-    autocomplete="one-time-code"
-  >
-  <label id="code-label" for="verification-code">رمز التحقق</label>
-</div>
-
-            <button id="verify-code">تحقق</button>
-            <p id="countdown" aria-live="off">صلاحية الرمز: 3:00</p>
-            <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
-          </div>
-        </div>
+<div id="verification-section">
+                    <div class="verification-box">
+                        <h2>تأكيد البريد الإلكتروني</h2>
+                        <div class="inputbox">
+                            <input type="text" id="verification-code" placeholder="رمز التحقق" required>
+                        </div>
+                        <button id="verify-code">تحقق</button>
+                        <p id="countdown">صلاحية الرمز: 3:00</p>
+                        <button id="resend-code" style="display: none;">إعادة إرسال الرمز</button>
+                    </div>
+                </div>
 
         <!-- نظام الإشعارات -->
-        <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
-      </div>
-    </div>
-  </section>
+        <div id="notification" class="notification">
+                    <div class="notification-card">
+                        <p class="notification-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
   <script>
     // إدارة حالة التحميل
@@ -299,15 +290,16 @@ document.querySelector('.toggle-password').addEventListener('keypress', function
 
     // نظام الإشعارات
 function showNotification(type, message, duration = 3000) {
-    const notification = document.getElementById('notification');
-      notification.className = `notification ${type}`;
-      notification.textContent = message;
-      notification.style.display = 'block';
-
-      setTimeout(() => {
-        notification.hidden = true;
-      }, duration);
-    }
+            const notification = document.getElementById('notification');
+            const notificationText = document.querySelector('.notification-text');
+            
+            notificationText.textContent = message;
+            notification.classList.add('active', type);
+            
+            setTimeout(() => {
+                notification.classList.remove('active', type);
+            }, duration);
+        }
   </script>
 </body>
 </html>
