@@ -17,7 +17,7 @@
     <div class="form-box">
       <div class="form-value">
         <form id="login-form">
-          <h2>تسجيل الدخول</h2>
+          <h1>تسجيل الدخول</h1>
           <div class="inputbox">
             <ion-icon name="mail-outline"></ion-icon>
             <input type="email" id="email" required>
@@ -104,51 +104,6 @@
     }
   });
 </script>
-
-  <script>
-    // Show/Hide password functionality
-    const showPasswordCheckbox = document.getElementById('show-password');
-    const passwordInput = document.getElementById('password');
-
-    showPasswordCheckbox.addEventListener('change', () => {
-      if (showPasswordCheckbox.checked) {
-        passwordInput.type = 'text';
-      } else {
-        passwordInput.type = 'password';
-      }
-    });
-  </script>
-
-  <script>
-    const showNotification = (message, type = "success", duration = 3000) => {
-      const notificationContainer = document.getElementById("notification");
-      const notificationMessage = document.getElementById("notification-message");
-      const successIcon = document.getElementById("success-icon");
-      const errorIcon = document.getElementById("error-icon");
-
-      // تغيير النص بناءً على الرسالة
-      notificationMessage.textContent = message;
-
-      // إظهار الأيقونات بناءً على النوع
-      if (type === "success") {
-        successIcon.classList.remove("hidden");
-        errorIcon.classList.add("hidden");
-      } else {
-        successIcon.classList.add("hidden");
-        errorIcon.classList.remove("hidden");
-      }
-
-      // عرض الرسالة
-      notificationContainer.classList.remove("hidden");
-      notificationContainer.classList.add("show");
-
-      // إخفاء الرسالة بعد مدة
-      setTimeout(() => {
-        notificationContainer.classList.remove("show");
-        notificationContainer.classList.add("hidden");
-      }, duration);
-    };
-  </script>
 
     <script>
     // إدارة حالة التحميل
