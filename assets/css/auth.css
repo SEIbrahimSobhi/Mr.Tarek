@@ -157,18 +157,63 @@
             text-decoration: underline;
         }
 
-        #verification-section {
-            display: none;
-            margin-top: 20px;
-        }
+        /* تحديث أنماط قسم التأكيد */
+#verification-section {
+  margin-top: 30px;
+  animation: fadeIn 0.5s ease-out;
+}
 
-        .verification-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
-        }
+.verification-box {
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.verification-box h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#verification-instruction {
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+#verification-code {
+  width: 100%;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.2rem;
+  text-align: center;
+  letter-spacing: 5px;
+}
+
+#countdown {
+  color: #ffd700;
+  text-align: center;
+  margin: 15px 0;
+  font-size: 1.1rem;
+}
+
+#resend-code {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.8);
+  padding: 10px 20px;
+}
+
+/* إضافة حركة ظهور القسم */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
         .notification {
             position: fixed;
