@@ -23,16 +23,18 @@
             <input type="email" id="email" required>
             <label for="email">الإيميل</label>
           </div>
-          <div class="inputbox">
-            <ion-icon name="lock-closed-outline"></ion-icon>
-            <input type="password" id="password" required>
-            <label for="password">كلمة المرور</label>
-          </div>
-          <div class="forget">
-            <label>
-              <input type="checkbox" id="show-password"> إظهار كلمة المرور
-            </label>
-          </div>
+          <div class="inputbox" role="group" aria-labelledby="password-label">
+    <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
+     <input type="password" id="password" required aria-required="true">
+     <label id="password-label" for="password">كلمة المرور</label>
+     <ion-icon 
+       name="eye-outline" 
+        class="toggle-password"
+        aria-label="إظهار كلمة المرور"
+         role="button"
+         tabindex="0"
+        ></ion-icon>
+      </div>
           <div class="button-box">
             <button type="submit">تسجيل دخول</button>
             <div class="register">
@@ -40,18 +42,7 @@
             </div>
           </div>
         </form>
-        <div id="notification" class="notification hidden">
-          <p id="notification-message"></p>
-          <div class="icon">
-            <div id="success-icon" class="circle hidden">
-              <span>✔</span>
-            </div>
-            <div id="error-icon" class="circle hidden">
-              <span>❌</span>
-            </div>
-          </div>
-        </div>
-      </div>
+     <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
     </div>
   </section>
   
@@ -157,6 +148,45 @@
         notificationContainer.classList.add("hidden");
       }, duration);
     };
+  </script>
+
+    <script>
+    // إدارة حالة التحميل
+    function toggleLoading(state) {
+      const btn = document.querySelector('button[type="submit"]');
+      btn.ariaBusy = state;
+      btn.querySelector('.btn-text').hidden = state;
+      btn.querySelector('.loader').hidden = !state;
+    }
+
+    // إظهار/إخفاء كلمة المرور
+document.querySelector('.toggle-password').addEventListener('click', function(e) {
+  const passwordInput = document.getElementById('password');
+  const isPassword = passwordInput.type === 'password';
+  
+  passwordInput.type = isPassword ? 'text' : 'password';
+  this.classList.toggle('active');
+  this.setAttribute('name', isPassword ? 'eye-off-outline' : 'eye-outline');
+});
+
+// إضافة دعم للضغط على مفتاح Enter للأيقونة
+document.querySelector('.toggle-password').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    this.click();
+  }
+});
+
+    // نظام الإشعارات
+function showNotification(type, message, duration = 3000) {
+    const notification = document.getElementById('notification');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      notification.style.display = 'block';
+
+      setTimeout(() => {
+        notification.hidden = true;
+      }, duration);
+    }
   </script>
 </body>
 </html>
