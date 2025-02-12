@@ -76,16 +76,6 @@
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const phoneRegex = /^\+?[0-9]{10,15}$/;
 
-      if (!inputs.username.match(/^[\u0600-\u06FF\s]{3,30}$/)) {
-        showNotification("error", "اسم المستخدم غير صالح");
-        return false;
-      }
-
-      if (!inputs.studentName.match(/^[\u0600-\u06FF\s]{3,30}$/)) {
-        showNotification("error", "اسم الطالب غير صالح");
-        return false;
-      }
-
       if (!emailRegex.test(inputs.email)) {
         showNotification("error", "البريد الإلكتروني غير صالح");
         return false;
@@ -305,18 +295,16 @@ document.querySelector('.toggle-password').addEventListener('keypress', function
 });
 
     // نظام الإشعارات
-function showNotification(message, type = 'info') {
-  const notification = document.getElementById('notification');
-  const messageElement = notification.querySelector('.notification-message');
-  
-  notification.className = `notification ${type}`;
-  messageElement.textContent = message;
-  
-  notification.classList.add('active');
-  setTimeout(() => {
-    notification.classList.remove('active');
-  }, 3000);
-}
+function showNotification(type, message, duration = 3000) {
+    const notification = document.getElementById('notification');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      notification.style.display = 'block';
+
+      setTimeout(() => {
+        notification.hidden = true;
+      }, duration);
+    }
   </script>
 </body>
 </html>
