@@ -17,13 +17,9 @@
   <!-- استبدال سطر تحميل EmailJS بـ -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="text/javascript">
-  emailjs.init('K0gXc0-X0CONTIkX_', {
-    blockHeadless: true,
-    limitRate: {
-      id: 'mr-tarek',
-      throttle: 5000,
-    }
-  });
+      (function() {
+      emailjs.init("K0gXc0-X0CONTIkX_");
+    })();
 </script>
   
   <script type="module">
@@ -309,7 +305,7 @@ function showNotification(type, message, duration = 3000) {
       notification.style.display = 'block';
 
       setTimeout(() => {
-        notification.hidden = false;
+        notification.hidden = true;
       }, duration);
     }
   </script>
