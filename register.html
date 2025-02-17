@@ -103,199 +103,196 @@
     </section>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تكوين Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-        authDomain: "mr-tarek-2e40f.firebaseapp.com",
-        projectId: "mr-tarek-2e40f",
-        storageBucket: "mr-tarek-2e40f.appspot.com",
-        messagingSenderId: "807997869740",
-        appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+// تكوين Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+    authDomain: "mr-tarek-2e40f.firebaseapp.com",
+    projectId: "mr-tarek-2e40f",
+    storageBucket: "mr-tarek-2e40f.appspot.com",
+    messagingSenderId: "807997869740",
+    appId: "1:807997869740:web:8eca7473d24693bf861909"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    let countdownInterval;
-    let verificationCode;
-    let tempUserData = JSON.parse(localStorage.getItem('tempUser')) || {};
+let countdownInterval;
+let verificationCode;
+let tempUserData = {}; // تخزين مؤقت في الذاكرة فقط
 
-    // دالة التحقق من المدخلات
-    const validateInputs = (inputs) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneRegex = /^\+?[0-9]{10,15}$/;
+// دالة التحقق من المدخلات
+const validateInputs = (inputs) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\+?[0-9]{10,15}$/;
 
-        if (!inputs.username.match(/^[\u0600-\u06FF\s]{3,30}$/)) {
-            showNotification("error", "اسم المستخدم غير صالح");
-            return false;
+    if (!emailRegex.test(inputs.email)) {
+        showNotification("error", "البريد الإلكتروني غير صالح");
+        return false;
+    }
+
+    if (!phoneRegex.test(inputs.phone)) {
+        showNotification("error", "رقم الهاتف يجب أن يحتوي 10-15 رقم");
+        return false;
+    }
+
+    if (inputs.password.length < 8) {
+        showNotification("error", "كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+        return false;
+    }
+
+    return true;
+};
+
+const startCountdown = (duration) => {
+    const countdownElement = document.getElementById("countdown");
+    let remainingTime = duration;
+
+    clearInterval(countdownInterval);
+
+    countdownInterval = setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        if (remainingTime <= 0) {
+            clearInterval(countdownInterval);
+            showNotification("error", "انتهت صلاحية الرمز");
+            document.getElementById("resend-code").style.display = "block";
         }
 
-        if (!emailRegex.test(inputs.email)) {
-            showNotification("error", "البريد الإلكتروني غير صالح");
-            return false;
+        remainingTime--;
+    }, 1000);
+};
+
+const sendVerificationEmail = async (email, code) => {
+    try {
+        await emailjs.send("service_4de4l3i", "template_gqjxtul", { 
+            email: email,
+            verification_code: code 
+        });
+    } catch (error) {
+        console.error("فشل إرسال البريد:", error);
+        throw new Error("فشل إرسال البريد الإلكتروني");
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const bcrypt = window.dcodeIO?.bcrypt;
+
+    // إضافة زر الرجوع الديناميكي
+    const backLink = document.createElement('a');
+    backLink.href = '#';
+    backLink.textContent = 'العودة إلى التسجيل';
+    backLink.style.cssText = 'display:block; text-align:center; margin-top:15px; color:#666; cursor:pointer;';
+    backLink.addEventListener('click', () => {
+        document.getElementById("register-form").style.display = "block";
+        document.getElementById("verification-section").style.display = "none";
+        document.getElementById("register-form").reset();
+        tempUserData = {};
+    });
+    document.getElementById("verification-section").appendChild(backLink);
+
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        toggleLoading(true);
+
+        const inputs = {
+            username: document.getElementById("username").value.trim(),
+            studentName: document.getElementById("student-name").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value
+        };
+
+        if (!Object.values(inputs).every(Boolean)) {
+            showNotification("error", "يرجى ملء جميع البيانات");
+            toggleLoading(false);
+            return;
         }
 
-        if (!phoneRegex.test(inputs.phone)) {
-            showNotification("error", "رقم الهاتف يجب أن يحتوي 10-15 رقم");
-            return false;
+        if (!validateInputs(inputs)) {
+            toggleLoading(false);
+            return;
         }
 
-        if (inputs.password.length < 8) {
-            showNotification("error", "كلمة المرور يجب أن تكون 8 أحرف على الأقل");
-            return false;
-        }
-
-        return true;
-    };
-
-    const startCountdown = (duration) => {
-        const countdownElement = document.getElementById("countdown");
-        let remainingTime = duration;
-
-        clearInterval(countdownInterval);
-
-        countdownInterval = setInterval(() => {
-            const minutes = Math.floor(remainingTime / 60);
-            const seconds = remainingTime % 60;
-            countdownElement.textContent = `صلاحية الرمز: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-            if (remainingTime <= 0) {
-                clearInterval(countdownInterval);
-                showNotification("error", "انتهت صلاحية الرمز");
-                document.getElementById("resend-code").style.display = "block";
-            }
-
-            remainingTime--;
-        }, 1000);
-    };
-
-    const sendVerificationEmail = async (email, code) => {
         try {
-            await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-                email: email,
-                verification_code: code
-            });
-        } catch (error) {
-            console.error("فشل إرسال البريد:", error);
-            throw new Error("فشل إرسال البريد الإلكتروني");
-        }
-    };
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
+            const hashedPassword = bcrypt.hashSync(inputs.password, bcrypt.genSaltSync(10));
+            
+            tempUserData = {
+                ...inputs,
+                password: hashedPassword,
+                verificationCode
+            };
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const bcrypt = window.dcodeIO?.bcrypt;
-
-        // استعادة البيانات المؤقتة
-        if (tempUserData.email) {
-            document.getElementById("email").value = tempUserData.email;
+            await sendVerificationEmail(inputs.email, verificationCode);
+            
+            showNotification("success", "تم إرسال رمز التحقق");
             document.getElementById("register-form").style.display = "none";
             document.getElementById("verification-section").style.display = "block";
             startCountdown(180);
+        } catch (error) {
+            showNotification("error", error.message);
+        } finally {
+            toggleLoading(false);
         }
-
-        document.getElementById("register-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            toggleLoading(true);
-
-            const inputs = {
-                username: document.getElementById("username").value.trim(),
-                studentName: document.getElementById("student-name").value.trim(),
-                phone: document.getElementById("phone").value.trim(),
-                email: document.getElementById("email").value.trim(),
-                password: document.getElementById("password").value
-            };
-
-            if (!Object.values(inputs).every(Boolean)) {
-                showNotification("error", "يرجى ملء جميع البيانات");
-                toggleLoading(false);
-                return;
-            }
-
-            if (!validateInputs(inputs)) {
-                toggleLoading(false);
-                return;
-            }
-
-            try {
-                verificationCode = Math.floor(100000 + Math.random() * 900000);
-                const hashedPassword = bcrypt.hashSync(inputs.password, bcrypt.genSaltSync(10));
-
-                tempUserData = {
-                    ...inputs,
-                    password: hashedPassword,
-                    verificationCode
-                };
-
-                localStorage.setItem('tempUser', JSON.stringify(tempUserData));
-                await sendVerificationEmail(inputs.email, verificationCode);
-
-                showNotification("success", "تم إرسال رمز التحقق");
-                document.getElementById("register-form").style.display = "none";
-                document.getElementById("verification-section").style.display = "block";
-                startCountdown(180);
-            } catch (error) {
-                showNotification("error", error.message);
-            } finally {
-                toggleLoading(false);
-            }
-        });
-
-        document.getElementById("verify-code").addEventListener("click", async () => {
-            const enteredCode = document.getElementById("verification-code").value.trim();
-
-            if (enteredCode !== tempUserData.verificationCode?.toString()) {
-                showNotification("error", "رمز التحقق غير صحيح");
-                return;
-            }
-
-            try {
-                const userCredential = await createUserWithEmailAndPassword(
-                    auth,
-                    tempUserData.email,
-                    tempUserData.password
-                );
-
-                await setDoc(doc(db, "users", userCredential.user.uid), {
-                    ...tempUserData,
-                    emailVerified: true,
-                    createdAt: new Date().toISOString()
-                });
-
-                localStorage.removeItem('tempUser');
-                showNotification("success", "تم إنشاء الحساب بنجاح");
-                setTimeout(() => window.location.href = "index.html", 2000);
-            } catch (error) {
-                showNotification("error", "فشل إنشاء الحساب: " + error.message);
-            }
-        });
-
-        document.getElementById("resend-code").addEventListener("click", async () => {
-            try {
-                verificationCode = Math.floor(100000 + Math.random() * 900000);
-                tempUserData.verificationCode = verificationCode;
-                localStorage.setItem('tempUser', JSON.stringify(tempUserData));
-
-                await sendVerificationEmail(tempUserData.email, verificationCode);
-                showNotification("success", "تم إعادة إرسال الرمز");
-                startCountdown(180);
-                document.getElementById("resend-code").style.display = "none";
-            } catch (error) {
-                showNotification("error", error.message);
-            }
-        });
     });
 
-    function toggleLoading(state) {
-        const btn = document.querySelector('button[type="submit"]');
-        btn.ariaBusy = state;
-        btn.disabled = state;
-        btn.querySelector('.btn-text').hidden = state;
-        btn.querySelector('.loader').hidden = !state;
-    }
+    document.getElementById("verify-code").addEventListener("click", async () => {
+        const enteredCode = document.getElementById("verification-code").value.trim();
+
+        if (enteredCode !== tempUserData.verificationCode?.toString()) {
+            showNotification("error", "رمز التحقق غير صحيح");
+            return;
+        }
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                tempUserData.email,
+                tempUserData.password
+            );
+
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                ...tempUserData,
+                emailVerified: true,
+                createdAt: new Date().toISOString()
+            });
+
+            showNotification("success", "تم إنشاء الحساب بنجاح");
+            setTimeout(() => window.location.href = "index.html", 2000);
+        } catch (error) {
+            showNotification("error", "فشل إنشاء الحساب: " + error.message);
+        }
+    });
+
+    document.getElementById("resend-code").addEventListener("click", async () => {
+        try {
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
+            tempUserData.verificationCode = verificationCode;
+            
+            await sendVerificationEmail(tempUserData.email, verificationCode);
+            showNotification("success", "تم إعادة إرسال الرمز");
+            startCountdown(180);
+            document.getElementById("resend-code").style.display = "none";
+        } catch (error) {
+            showNotification("error", error.message);
+        }
+    });
+});
+
+function toggleLoading(state) {
+    const btn = document.querySelector('button[type="submit"]');
+    btn.ariaBusy = state;
+    btn.disabled = state;
+    btn.querySelector('.btn-text').hidden = state;
+    btn.querySelector('.loader').hidden = !state;
+}
 </script>
 
     <!-- الأيقونات ونظام الإشعارات -->
