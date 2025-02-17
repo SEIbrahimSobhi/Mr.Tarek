@@ -286,6 +286,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+    function showNotification(type, message) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.hidden = false;
+
+    setTimeout(() => {
+        notification.hidden = true;
+    }, 3000);
+}
+
+
 function toggleLoading(state) {
     const btn = document.querySelector('button[type="submit"]');
     btn.ariaBusy = state;
