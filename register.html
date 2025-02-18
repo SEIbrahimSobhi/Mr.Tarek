@@ -181,7 +181,6 @@ const sendVerificationEmail = async (email, code) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    const bcrypt = window.dcodeIO?.bcrypt;
 
     // إضافة زر الرجوع الديناميكي
     const backLink = document.createElement('a');
@@ -225,7 +224,6 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
             
             tempUserData = {
                 ...inputs,
-                password: hashedPassword,
                 verificationCode
             };
 
