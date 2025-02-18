@@ -12,7 +12,6 @@
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 
     <!-- تهيئة EmailJS -->
     <script type="text/javascript">
@@ -197,17 +196,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     document.getElementById("verification-section").appendChild(backLink);
 
-    document.getElementById("register-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        toggleLoading(true);
+document.getElementById("register-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    toggleLoading(true);
 
-        const inputs = {
-            username: document.getElementById("username").value.trim(),
-            studentName: document.getElementById("student-name").value.trim(),
-            phone: document.getElementById("phone").value.trim(),
-            email: document.getElementById("email").value.trim(),
-            password: document.getElementById("password").value
-        };
+    const inputs = {
+        username: document.getElementById("username").value.trim(),
+        studentName: document.getElementById("student-name").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value
+    };
+
 
         if (!Object.values(inputs).every(Boolean)) {
             showNotification("error", "يرجى ملء جميع البيانات");
@@ -222,7 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             verificationCode = Math.floor(100000 + Math.random() * 900000);
-            const hashedPassword = bcrypt.hashSync(inputs.password, bcrypt.genSaltSync(10));
             
             tempUserData = {
                 ...inputs,
@@ -259,10 +258,13 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             await setDoc(doc(db, "users", userCredential.user.uid), {
-                ...tempUserData,
-                emailVerified: true,
-                createdAt: new Date().toISOString()
-            });
+            username: tempUserData.username,
+            studentName: tempUserData.studentName,
+            phone: tempUserData.phone,
+            email: tempUserData.email,
+            emailVerified: true,
+            createdAt: new Date().toISOString()
+        });
 
             showNotification("success", "تم إنشاء الحساب بنجاح");
             setTimeout(() => window.location.href = "index.html", 2000);
