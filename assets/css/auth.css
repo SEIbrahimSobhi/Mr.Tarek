@@ -1,217 +1,655 @@
-        :root {
-            --success-color: #4CAF50;
-            --error-color: #f44336;
-            --animation-duration: 0.4s;
-            --card-width: min(90vw, 400px);
-            --icon-size: min(20vw, 100px);
-        }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+/* ===================================
+   متغيرات جذرية
+=================================== */
+:root {
+  --card-width: 300px;
+  --card-widtha: min(90vw, 400px);
+}
 
-        body {
-            background: url('hero-bg.jpg') no-repeat center/cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+/* ===================================
+   إعادة التهيئة الأساسية
+=================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Tajawal', sans-serif;
+}
 
-        .form-box {
-            width: 360px;
-            max-width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            padding: 20px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-            margin: 0 auto;
-        }
+body {
+  background-color: #080c14;
+  color: #fff;
+  direction: rtl;
+  overflow-x: hidden;
+}
 
-        h1 {
-            color: #fff;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+/* ===================================
+   إشعار النجاح/الخطأ (Notifications)
+=================================== */
+.notification-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: #fff;
+  border-radius: 16px;
+  padding: 2rem 3rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1000;
+  text-align: center;
+  min-width: 320px;
+  max-width: 90%;
+  pointer-events: auto;
+  user-select: none;
+  will-change: transform, opacity;
+}
 
-        .inputbox {
-            position: relative;
-            margin-bottom: 20px;
-        }
+.notification-center.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
 
-        .inputbox input {
-            width: 100%;
-            padding: 12px 15px 12px 40px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding-right: 40px;
-        }
+/* تحسينات الوصولية */
+.notification-center[aria-hidden="false"] {
+  display: block;
+}
 
-        .inputbox input:focus {
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 8px rgba(255,255,255,0.3);
-        }
+.notification-center[aria-hidden="true"] {
+  display: none;
+}
 
-        .inputbox label {
-            position: absolute;
-            top: 50%;
-            right: 45px;
-            transform: translateY(-50%);
-            color: #ddd;
-            font-size: 0.9rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-        }
+.notification-icon {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1.5rem;
+}
 
-        .inputbox input:focus ~ label,
-        .inputbox input:not(:placeholder-shown) ~ label {
-            right: 15px;
-            top: -10px;
-            font-size: 0.75rem;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+.notification-icon svg {
+  width: 100%;
+  height: 100%;
+}
 
-        .inputbox ion-icon {
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            color: #ddd;
-            transition: 0.3s;
-        }
+.notification-icon circle {
+  stroke-dasharray: 188;
+  stroke-dashoffset: 188;
+  transition: stroke-dashoffset 1.2s ease-out;
+}
 
-        .toggle-password {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            color: #ddd;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1.2rem;
-            z-index: 2;
-        }
+.notification-icon ion-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 2.8rem;
+  opacity: 0;
+  transition: all 0.3s ease-out 0.4s;
+}
 
-        .toggle-password:hover {
-            color: #fff;
-            transform: translateY(-50%) scale(1.1);
-        }
+.notification-center.active .notification-icon circle {
+  stroke-dashoffset: 0;
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #fff;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #333;
-            margin-top: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+.notification-center.active .notification-icon ion-icon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
 
-        button:hover {
-            background: #f8f9fa;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-        }
+.notification-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
 
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-        }
+.notification-message {
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
 
-        .register {
-            margin-top: 20px;
-        }
+/* ألوان الإشعارات */
+.notification-success .notification-icon circle {
+  stroke: #22c55e;
+}
 
-        .register p {
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.8);
-            text-align: center;
-        }
+.notification-success .notification-icon ion-icon {
+  color: #22c55e;
+}
 
-        .register a {
-            color: #fff;
-            text-decoration: none;
-            transition: 0.3s;
-        }
+.notification-error .notification-icon circle {
+  stroke: #ef4444;
+}
 
-        .register a:hover {
-            text-decoration: underline;
-        }
+.notification-error .notification-icon ion-icon {
+  color: #ef4444;
+}
 
-        #verification-section {
-            display: none;
-            margin-top: 20px;
-        }
+/* ===================================
+   طبقة التعتيم على الصورة (Overlay)
+   - تُضاف على كلٍ من صور الموبايل والديسكتوب
+=================================== */
+.mobile-image-container::after,
+.desktop-image-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4); /* طبقة داكنة */
+  pointer-events: none;
+  z-index: 1; /* أعلى الصورة */
+}
 
-        .verification-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
-        }
+/* ===================================
+   صورة الموبايل (للشاشات الصغيرة)
+=================================== */
+.mobile-image-container {
+  position: relative;
+  text-align: center;
+  margin: 20px 0;
+}
 
-        .notification {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease-out;
-            width: var(--card-width);
-        }
+.mobile-image-container img {
+  width: 100%;
+  height: 345px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 0; /* لكي تظهر الطبقة فوق الصورة */
+}
 
-        .notification.active {
-            opacity: 1;
-            visibility: visible;
-        }
+/* إخفاء صورة الموبايل على الشاشات الكبيرة */
+@media (min-width: 992px) {
+  .mobile-image-container {
+    display: none;
+  }
+}
 
-        .notification-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: min(5vw, 40px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            transform: scale(0.5) rotate(15deg);
-            animation: cardEntry 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-        }
+/* ===================================
+   صورة الديسكتوب (للشاشات الكبيرة)
+=================================== */
+.desktop-image-container {
+  position: relative;
+  display: none;
+}
 
-        @keyframes cardEntry {
-            0% { transform: scale(0.5) rotate(15deg); opacity: 0; }
-            60% { transform: scale(1.1) rotate(-5deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); }
-        }
+@media (min-width: 992px) {
+  .desktop-image-container {
+    display: block;
+    width: 40.33%;
+    position: relative;
+  }
+  .desktop-image-container img {
+    width: 100%;
+    height: 145vh;
+    object-fit: cover;
+    position: relative;
+    z-index: 0;
+  }
+}
 
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            .form-box {
-                width: 100%;
-                max-width: 320px;
-            }
-            h1 {
-                font-size: 1.6rem;
-            }
-        }
+/* ===================================
+   الحاوية الرئيسية (للكمبيوتر)
+   تقسيم الصفحة إلى عمودين
+=================================== */
+.main-desktop {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===================================
+   قسم النموذج (Form)
+=================================== */
+.form-container {
+  width: 100%;
+  padding: 20px;
+  margin: 20px;
+}
+
+@media (min-width: 992px) {
+  .form-container {
+    width: 52.67%;
+  }
+}
+
+.form-wrapper {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+/* ===================================
+   رأس النموذج (العنوان + النص)
+=================================== */
+.form-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-header h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.form-header h1 span.white {
+  color: #fff;
+}
+
+.form-header h1 span.blue {
+  color: #3498db;
+}
+
+.form-header p {
+  font-size: 15px;
+  color: #ccc;
+}
+
+/* ===================================
+   الحقول
+=================================== */
+.row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.row .form-group {
+  flex: 1;
+  position: relative;
+}
+
+/* الحقول الكاملة العرض */
+.form-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.row.small-gap {
+  margin-bottom: 10px;
+}
+
+/* تصميم الحقول (خط سفلي + حركة عند التركيز) */
+.form-control,
+.governorate-select {
+  width: 100%;
+  padding: 12px;
+  padding-right: 50px; /* زيادة المسافة لمنع التصاق النص بالأيقونة */
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #555;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  text-align: right;
+  transition: border-bottom-color 0.3s, transform 0.3s;
+}
+
+.form-control:focus,
+.governorate-select:focus {
+  border-bottom-color: #3498db;
+  transform: scale(1.02);
+}
+
+.form-control::placeholder,
+.governorate-select::placeholder {
+  color: transparent;
+}
+
+/* التسمية العائمة (Label) */
+.form-label {
+  position: absolute;
+  right: 50px; /* موازاة مع الـ padding-right */
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.2s ease;
+  color: #aaa;
+  pointer-events: none;
+  font-size: 20px;
+}
+
+.form-control:focus ~ .form-label,
+.form-control:not(:placeholder-shown) ~ .form-label,
+.governorate-select:focus ~ .form-label,
+.governorate-select:not(:placeholder-shown) ~ .form-label {
+  top: 0;
+  transform: translateY(-100%);
+  font-size: 15px;
+  color: #3498db;
+}
+
+/* أيقونات الحقول */
+.form-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  font-size: 16px;
+}
+
+.form-control:focus ~ .form-icon,
+.form-control:not(:placeholder-shown) ~ .form-icon {
+  color: #3498db;
+  transform: translateY(-55%);
+}
+
+/* ===================================
+   القائمة المنسدلة (Select) للمحافظات
+=================================== */
+.governorate-select-wrapper {
+  position: relative;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.governorate-select {
+  width: 100%;
+  padding: 12px 50px 12px 15px;
+  border: 2px solid #374151;
+  border-radius: 8px;
+  background-color: #111827;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  text-align: right;
+  direction: rtl;
+}
+
+/* تحسين شكل زر "اختر محافظة" */
+.governorate-select:hover {
+  border-color: #3b82f6;
+}
+
+.governorate-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  transform: none;
+}
+
+.governorate-select-wrapper .form-label {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  background: transparent;
+  font-size: 14px;
+}
+
+.governorate-select:focus + .form-label,
+.governorate-select:valid + .form-label {
+  top: -10px;
+  font-size: 12px;
+  color: #3b82f6;
+  background: linear-gradient(to bottom, #111827 50%, transparent 50%);
+}
+
+/* سهم الاختيار */
+.governorate-select-wrapper::after {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #fff transparent transparent transparent;
+  transition: transform 0.3s ease;
+}
+
+/* شريط التمرير */
+.governorate-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.governorate-select::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.governorate-select::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 4px;
+}
+
+/* تحسينات خيارات القائمة */
+.governorate-select option {
+  font-size: 16px;
+  padding: 16px 20px;
+  line-height: 1.6;
+  border-bottom: 1px solid #2d3748;
+  transition: all 0.2s ease;
+  direction: rtl;
+  text-align: right;
+}
+
+.governorate-select option:hover {
+  background: #3b82f6 !important;
+  color: #fff !important;
+  transform: scale(1.02);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.governorate-select option:checked {
+  background: #1d4ed8 !important;
+  font-weight: bold;
+  position: relative;
+}
+
+.governorate-select option:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* ===================================
+   الأزرار (إنشاء حساب / فيديو)
+=================================== */
+.submit-btn {
+  width: 180px;
+  padding: 16px 0;
+  background-color: #007aff;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  margin-right: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background-color: rgba(0, 122, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn:active {
+  border-color: #1d4ed8;
+  color: #1d4ed8;
+  background-color: rgba(29, 78, 216, 0.05);
+  transform: translateY(0);
+}
+
+.video-btn {
+  width: 180px;
+  padding: 16px 0;
+  background-color: #f39c12;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.video-btn:hover {
+  border-color: #f59e0b;
+  color: #f59e0b;
+  background-color: rgba(243, 156, 18, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.video-btn:active {
+  border-color: #d97706;
+  color: #d97706;
+  background-color: rgba(217, 119, 6, 0.05);
+  transform: translateY(0);
+}
+
+/* تأثير الإضاءة الداخلية للأزرار */
+.submit-btn::before,
+.video-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover::before {
+  border-color: #3b82f6;
+}
+
+.video-btn:hover::before {
+  border-color: #f59e0b;
+}
+
+/* ===================================
+   رابط تسجيل الدخول
+=================================== */
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.login-link span {
+  color: #6b7280;
+  margin-right: 5px;
+}
+
+.login-link a {
+  color: #f1c40f;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ===================================
+   تذييل الصفحة (Footer)
+=================================== */
+footer {
+  text-align: center;
+  padding: 10px;
+  background: transparent;
+  color: #666;
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+/* ===================================
+   تحسينات للشاشات الصغيرة (أقل من 768px)
+   بدون تغيير على الشاشات الكبيرة
+=================================== */
+@media (max-width: 768px) {
+  /* جعل القسم الرئيسي عمودي */
+  .main-desktop {
+    flex-direction: column;
+  }
+
+  /* جعل صورة الموبايل أصغر قليلاً وتوضع أعلى الصفحة */
+  .mobile-image-container {
+    margin: 10px auto;
+  }
+  .mobile-image-container img {
+    height: 250px; /* تصغير ارتفاع الصورة */
+    border-radius: 8px;
+  }
+
+  /* الحقول تحت بعضها */
+  .row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* تكبير حجم حاوية النموذج وتوسيطها */
+  .form-container {
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  /* تقليل حجم العنوان والنص أسفل العنوان (كان كبيرًا جدًا) */
+  .form-header h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .form-header p {
+    font-size: 14px;
+  }
+
+  /* تقليل حجم الحقول قليلاً */
+  .form-control,
+  .governorate-select {
+    font-size: 15px;
+    padding: 12px;
+    padding-right: 50px; /* الحفاظ على مسافة للأيقونة */
+  }
+
+  /* تقليل حجم التسمية العائمة (Label) */
+  .form-label {
+    font-size: 16px;
+  }
+
+  /* الأزرار بعرض كامل مع تقليل حجم الخط */
+  .submit-btn,
+  .video-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 14px 0;
+  }
+
+  /* تكبير/تصغير رابط تسجيل الدخول */
+  .login-link {
+    font-size: 14px;
+  }
+
+  /* تكبير/تصغير حجم التذييل */
+  footer {
+    font-size: 12px;
+  }
+
+  /* تحسين شكل زر "اختر محافظة" وقائمته */
+  .governorate-select {
+    font-size: 15px;
+    padding: 12px 50px 12px 20px;
+    border-radius: 8px;
+  }
+  .governorate-select-wrapper .form-label {
+    font-size: 14px;
+  }
+}
