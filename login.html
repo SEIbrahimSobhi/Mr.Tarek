@@ -127,7 +127,7 @@
       if (!identifier.includes('@')) {
         const usersRef = collection(db, "users"); // تأكد أن "users" هو اسم مجموعة المستخدمين لديك
         const q = query(usersRef, where("username", "==", identifier));
-        const querySnapshot = await getDoc(q);
+        const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
           showNotification("اسم المستخدم غير موجود. الرجاء التحقق من بياناتك.", "error");
