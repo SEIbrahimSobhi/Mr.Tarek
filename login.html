@@ -97,7 +97,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
   // تهيئة Firebase
   const firebaseConfig = {
@@ -122,7 +122,6 @@
     }
     createNotification(type, message) {
       const notification = document.createElement('div');
-      // تعيين كلاس بناءً على نوع الإشعار (يمكنك تعديل هذه الكلاسات لتتناسب مع CSS الخاص بك)
       notification.className = `notification-center notification-${type}`;
       notification.innerHTML = `
         <div class="notification-icon">
@@ -134,12 +133,10 @@
         <h3 class="notification-title">${type === 'success' ? 'عملية ناجحة' : 'خطأ في التنفيذ'}</h3>
         <p class="notification-message">${message}</p>
       `;
-      // عند النقر على الإشعار يتم إخفاؤه
       notification.addEventListener('click', () => this.dismiss());
       return notification;
     }
     showNotification(type, message, duration = 3000) {
-      // إذا كان هناك إشعار نشط بالفعل يتم إضافته إلى قائمة الانتظار
       if (this.isActive) {
         this.queue.push({ type, message, duration });
         return;
@@ -147,17 +144,14 @@
       this.isActive = true;
       this.currentNotification = this.createNotification(type, message);
       document.body.appendChild(this.currentNotification);
-      // تأخير بسيط لإضافة كلاس "active" لتفعيل تأثير CSS
       setTimeout(() => {
         this.currentNotification.classList.add('active');
       }, 50);
-      // بعد المدة المحددة يتم إخفاء الإشعار
       setTimeout(() => this.dismiss(), duration);
     }
     dismiss() {
       if (!this.currentNotification) return;
       this.currentNotification.classList.remove('active');
-      // بعد انتهاء تأثير الإخفاء يتم إزالة الإشعار من DOM
       setTimeout(() => {
         if (this.currentNotification && this.currentNotification.parentElement) {
           this.currentNotification.remove();
@@ -175,7 +169,6 @@
     }
   }
   const notificationSystem = new NotificationManager();
-  // الدالة المستخدمة لعرض الإشعارات في أماكن الكود المختلفة
   function showNotification(type, message, duration) {
     notificationSystem.showNotification(type, message, duration);
   }
@@ -185,15 +178,22 @@
   document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const identifier = document.getElementById('login-email').value; // استخدام id الصحيح للبريد الإلكتروني
-    const password = document.getElementById('login-password').value;
+    // إزالة الفراغات من المدخلات
+    const identifier = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    // التحقق من أن المدخلات غير فارغة
+    if (!identifier || !password) {
+      showNotification("error", "يرجى إدخال البريد الإلكتروني/اسم المستخدم وكلمة المرور.", 3000);
+      return;
+    }
 
     try {
       let email = identifier;
 
-      // إذا كان الإدخال ليس بريدًا إلكترونيًا، البحث في قاعدة البيانات عن اسم المستخدم
+      // إذا كان الإدخال لا يحتوي على '@' نفترض أنه اسم مستخدم، فنبحث عن البريد الإلكتروني في Firestore
       if (!identifier.includes('@')) {
-        const usersRef = collection(db, "users"); // تأكد أن "users" هو اسم مجموعة المستخدمين لديك
+        const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", identifier));
         const querySnapshot = await getDocs(q);
 
@@ -202,11 +202,13 @@
           return;
         }
 
-        // الحصول على البريد الإلكتروني للمستخدم
         querySnapshot.forEach((doc) => {
           email = doc.data().email;
         });
       }
+
+      // عرض قيمة البريد الإلكتروني للتأكد من صحتها (يمكنك إزالة هذا السجل بعد التأكد)
+      console.log("البريد الإلكتروني المستخدم:", email);
 
       // تسجيل الدخول باستخدام البريد الإلكتروني
       await signInWithEmailAndPassword(auth, email, password);
@@ -214,7 +216,6 @@
       window.location.href = 'index.html';
     } catch (error) {
       console.error(error);
-      // عرض رسالة عند حدوث خطأ في تسجيل الدخول
       showNotification("error", "حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", 3000);
     }
   });
