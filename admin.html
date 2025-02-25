@@ -5,151 +5,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة تحكم المسؤول</title>
   <style>
-    /* إعادة تعيين بعض الأنماط الافتراضية */
+    /* إعادة تعيين الأنماط الافتراضية */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7fc;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
       color: #333;
       direction: rtl;
-      text-align: right;
+      line-height: 1.6;
+      padding-bottom: 50px;
     }
-
     header {
-      background-color: #4a90e2;
+      background: #4a90e2;
       color: #fff;
-      padding: 20px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-
     nav {
       display: flex;
       justify-content: center;
-      margin: 20px 0;
+      margin: 1rem 0;
+      flex-wrap: wrap;
     }
-
     nav button {
-      background-color: #fff;
-      border: none;
-      padding: 10px 20px;
-      margin: 0 10px;
-      border-radius: 5px;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
       cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      transition: background 0.3s, border-color 0.3s;
     }
-
     nav button.active {
-      background-color: #4a90e2;
+      background: #4a90e2;
       color: #fff;
+      border-color: #4a90e2;
     }
-
-    nav button:hover {
-      background-color: #d0e6f7;
-    }
-
     .container {
       width: 95%;
       max-width: 1200px;
-      margin: 0 auto;
+      margin: auto;
     }
-
     h2 {
-      margin-bottom: 10px;
+      margin-bottom: 0.5rem;
       color: #4a90e2;
     }
-
     .bulk-actions {
-      margin-bottom: 10px;
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
+      margin-bottom: 0.5rem;
+      text-align: right;
     }
-
     .bulk-actions button {
-      padding: 8px 16px;
-      background-color: #4a90e2;
-      color: #fff;
+      padding: 0.5rem 1rem;
+      margin: 0 0.3rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
+      background: #4a90e2;
+      color: #fff;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background 0.3s;
     }
-
     .bulk-actions button:hover {
-      background-color: #3a78c2;
+      background: #357abd;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      margin-bottom: 1.5rem;
     }
-
     th, td {
-      padding: 12px;
+      padding: 0.75rem;
       border: 1px solid #ddd;
       text-align: center;
     }
-
     th {
-      background-color: #f7f7f7;
+      background: #f7f7f7;
     }
-
     tr:nth-child(even) {
-      background-color: #f9f9f9;
+      background: #fafafa;
     }
-
     .action-btn {
-      padding: 6px 12px;
+      padding: 0.4rem 0.8rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
-      margin: 2px;
-      transition: background-color 0.3s;
-      font-size: 14px;
+      font-size: 0.9rem;
+      margin: 0 2px;
     }
-
     .accept-btn {
-      background-color: #4CAF50;
+      background: #28a745;
       color: #fff;
     }
-
     .accept-btn:hover {
-      background-color: #45a045;
+      background: #218838;
     }
-
-    .reject-btn {
-      background-color: #f44336;
+    .reject-btn, .delete-btn {
+      background: #dc3545;
       color: #fff;
     }
-
-    .reject-btn:hover {
-      background-color: #e53935;
+    .reject-btn:hover, .delete-btn:hover {
+      background: #c82333;
     }
-
-    .delete-btn {
-      background-color: #f44336;
-      color: #fff;
+    /* تفاصيل السطر الإضافي */
+    .details-row {
+      background: #e9f3ff;
     }
-
-    .delete-btn:hover {
-      background-color: #e53935;
+    .details-cell {
+      padding: 1rem;
+      text-align: right;
+      font-size: 0.9rem;
+      color: #555;
     }
-
-    .section {
-      display: none;
+    .expand-icon {
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: transform 0.3s;
+      display: inline-block;
     }
-
-    .section.active {
-      display: block;
+    .rotate {
+      transform: rotate(90deg);
+    }
+    /* استجابة الشاشة */
+    @media (max-width: 768px) {
+      th, td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+      }
+      nav button {
+        font-size: 0.9rem;
+      }
+      .bulk-actions {
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -157,19 +148,17 @@
   <header>
     <h1>لوحة تحكم المسؤول</h1>
   </header>
-
   <nav>
     <button id="pendingTab" class="active">طلبات التسجيل المعلقة</button>
     <button id="activatedTab">الحسابات المفعلة</button>
   </nav>
-
   <div class="container">
     <!-- قسم طلبات التسجيل المعلقة -->
-    <section id="pendingSection" class="section active">
+    <section id="pendingSection">
       <h2>طلبات التسجيل المعلقة</h2>
       <div class="bulk-actions">
-        <button id="acceptSelected">قبول المحدد</button>
-        <button id="rejectSelected">رفض المحدد</button>
+        <button id="acceptSelectedPending">قبول المحدد</button>
+        <button id="rejectSelectedPending">رفض المحدد</button>
       </div>
       <table id="pendingTable">
         <thead>
@@ -179,21 +168,20 @@
             <th>الاسم الكامل</th>
             <th>البريد الإلكتروني</th>
             <th>الهاتف</th>
-            <th>معلومات إضافية</th>
+            <th>التفاصيل</th>
             <th>الإجراءات</th>
           </tr>
         </thead>
         <tbody>
-          <!-- ستملأ البيانات ديناميكيًا -->
+          <!-- سيتم ملء البيانات ديناميكيًا -->
         </tbody>
       </table>
     </section>
-
     <!-- قسم الحسابات المفعلة -->
-    <section id="activatedSection" class="section">
+    <section id="activatedSection" style="display: none;">
       <h2>الحسابات المفعلة</h2>
       <div class="bulk-actions">
-        <button id="deleteSelected">حذف المحدد</button>
+        <button id="deleteSelectedActivated">حذف المحدد</button>
       </div>
       <table id="activatedTable">
         <thead>
@@ -203,20 +191,20 @@
             <th>الاسم الكامل</th>
             <th>البريد الإلكتروني</th>
             <th>الهاتف</th>
-            <th>معلومات إضافية</th>
+            <th>التفاصيل</th>
             <th>الإجراءات</th>
           </tr>
         </thead>
         <tbody>
-          <!-- ستملأ البيانات ديناميكيًا -->
+          <!-- سيتم ملء البيانات ديناميكيًا -->
         </tbody>
       </table>
     </section>
   </div>
 
-  <!-- تضمين سكريبت المسؤول -->
+  <!-- سكريبت المسؤول -->
   <script type="module">
-    // استيراد وحدات Firebase المطلوبة
+    // استيراد وحدات Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
     import { 
@@ -237,7 +225,7 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // التحقق من صلاحية المستخدم (المسؤول)
+    // التحقق من صلاحية المسؤول
     onAuthStateChanged(auth, async (user) => {
       if (user && user.email === 'seebrahemsobhy@gmail.com') {
         console.log('مرحبًا يا مسؤول!');
@@ -258,18 +246,42 @@
     pendingTab.addEventListener('click', () => {
       pendingTab.classList.add('active');
       activatedTab.classList.remove('active');
-      pendingSection.classList.add('active');
-      activatedSection.classList.remove('active');
+      pendingSection.style.display = 'block';
+      activatedSection.style.display = 'none';
     });
 
     activatedTab.addEventListener('click', () => {
       activatedTab.classList.add('active');
       pendingTab.classList.remove('active');
-      activatedSection.classList.add('active');
-      pendingSection.classList.remove('active');
+      activatedSection.style.display = 'block';
+      pendingSection.style.display = 'none';
     });
 
-    // دالة لجلب طلبات التسجيل المعلقة من مجموعة pending_users
+    // دالة لإنشاء صف التفاصيل
+    function createDetailsRow(detailsHtml) {
+      const detailsRow = document.createElement('tr');
+      detailsRow.classList.add('details-row');
+      const detailsCell = document.createElement('td');
+      detailsCell.colSpan = 7;
+      detailsCell.classList.add('details-cell');
+      detailsCell.innerHTML = detailsHtml;
+      detailsRow.appendChild(detailsCell);
+      return detailsRow;
+    }
+
+    // دالة لتبديل عرض تفاصيل المستخدم
+    function toggleDetails(row, detailsHtml) {
+      if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
+        row.parentNode.removeChild(row.nextElementSibling);
+        row.querySelector('.expand-icon').classList.remove('rotate');
+      } else {
+        const detailsRow = createDetailsRow(detailsHtml);
+        row.parentNode.insertBefore(detailsRow, row.nextElementSibling);
+        row.querySelector('.expand-icon').classList.add('rotate');
+      }
+    }
+
+    // جلب طلبات التسجيل المعلقة من مجموعة "pending_users"
     async function fetchPendingUsers() {
       try {
         const pendingSnapshot = await getDocs(collection(db, 'pending_users'));
@@ -284,12 +296,21 @@
             <td>${data.fullName}</td>
             <td>${data.email}</td>
             <td>${data.phone}</td>
-            <td>${data.additionalInfo || 'N/A'}</td>
+            <td><span class="expand-icon">&#9654;</span></td>
             <td>
               <button class="action-btn accept-btn" onclick="acceptUser('${docSnap.id}')">قبول</button>
               <button class="action-btn reject-btn" onclick="rejectUser('${docSnap.id}')">رفض</button>
             </td>
           `;
+          row.querySelector('.expand-icon').addEventListener('click', () => {
+            const detailsHtml = `
+              <strong>رقم هاتف الأب:</strong> ${data.fatherPhone}<br/>
+              <strong>رقم هاتف الأم:</strong> ${data.motherPhone}<br/>
+              <strong>المحافظة:</strong> ${data.governorate}<br/>
+              <strong>رمز التحقق:</strong> ${data.verificationCode}
+            `;
+            toggleDetails(row, detailsHtml);
+          });
           pendingTableBody.appendChild(row);
         });
       } catch (error) {
@@ -297,7 +318,7 @@
       }
     }
 
-    // دالة لجلب الحسابات المفعلة من مجموعة users
+    // جلب الحسابات المفعلة من مجموعة "users"
     async function fetchActivatedUsers() {
       try {
         const activatedSnapshot = await getDocs(collection(db, 'users'));
@@ -312,11 +333,20 @@
             <td>${data.fullName}</td>
             <td>${data.email}</td>
             <td>${data.phone}</td>
-            <td>${data.additionalInfo || 'N/A'}</td>
+            <td><span class="expand-icon">&#9654;</span></td>
             <td>
               <button class="action-btn delete-btn" onclick="deleteActivatedUser('${docSnap.id}')">حذف</button>
             </td>
           `;
+          row.querySelector('.expand-icon').addEventListener('click', () => {
+            const detailsHtml = `
+              <strong>رقم هاتف الأب:</strong> ${data.fatherPhone}<br/>
+              <strong>رقم هاتف الأم:</strong> ${data.motherPhone}<br/>
+              <strong>المحافظة:</strong> ${data.governorate}<br/>
+              ${data.activatedAt ? `<strong>تاريخ التفعيل:</strong> ${data.activatedAt}` : ''}
+            `;
+            toggleDetails(row, detailsHtml);
+          });
           activatedTableBody.appendChild(row);
         });
       } catch (error) {
@@ -326,7 +356,7 @@
 
     // العمليات الفردية
 
-    // قبول طلب التسجيل: يتم نقل بيانات المستخدم من pending_users إلى users ثم حذف الطلب
+    // قبول المستخدم: نقل بيانات المستخدم من "pending_users" إلى "users"
     window.acceptUser = async function(userId) {
       try {
         const pendingDocRef = doc(db, 'pending_users', userId);
@@ -349,7 +379,7 @@
       }
     };
 
-    // رفض طلب التسجيل: حذف الوثيقة من pending_users
+    // رفض المستخدم: حذف وثيقة من "pending_users"
     window.rejectUser = async function(userId) {
       try {
         const pendingDocRef = doc(db, 'pending_users', userId);
@@ -362,7 +392,7 @@
       }
     };
 
-    // حذف حساب مفعّل من مجموعة users
+    // حذف المستخدم من الحسابات المفعلة
     window.deleteActivatedUser = async function(userId) {
       try {
         await deleteDoc(doc(db, 'users', userId));
@@ -374,9 +404,8 @@
       }
     };
 
-    // الإجراءات الجماعية (Bulk Actions)
-
-    document.getElementById('acceptSelected').addEventListener('click', async () => {
+    // الإجراءات الجماعية
+    document.getElementById('acceptSelectedPending').addEventListener('click', async () => {
       const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
       const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
       for (const id of ids) {
@@ -384,7 +413,7 @@
       }
     });
 
-    document.getElementById('rejectSelected').addEventListener('click', async () => {
+    document.getElementById('rejectSelectedPending').addEventListener('click', async () => {
       const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
       const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
       for (const id of ids) {
@@ -392,7 +421,7 @@
       }
     });
 
-    document.getElementById('deleteSelected').addEventListener('click', async () => {
+    document.getElementById('deleteSelectedActivated').addEventListener('click', async () => {
       const checkboxes = document.querySelectorAll('.activated-checkbox:checked');
       const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
       for (const id of ids) {
@@ -400,7 +429,7 @@
       }
     });
 
-    // تفعيل وظيفة "تحديد الكل" لكل جدول
+    // وظيفة "تحديد الكل" لكل جدول
     document.getElementById('selectAllPending').addEventListener('change', function() {
       const checked = this.checked;
       document.querySelectorAll('.pending-checkbox').forEach(cb => cb.checked = checked);
@@ -419,7 +448,7 @@
       notif.style.bottom = '20px';
       notif.style.right = '20px';
       notif.style.padding = '10px 20px';
-      notif.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
+      notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
       notif.style.color = '#fff';
       notif.style.borderRadius = '5px';
       notif.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
