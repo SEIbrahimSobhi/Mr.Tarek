@@ -160,15 +160,32 @@
     }
 
     // نظام الإشعارات
-function showNotification(type, message, duration = 3000) {
-    const notification = document.getElementById('notification');
-      notification.className = `notification ${type}`;
-      notification.textContent = message;
-      notification.style.display = 'block';
-
-      setTimeout(() => {
-        notification.hidden = true;
-      }, duration);
+    function showNotification(message, type, duration = 3000) {
+      const notification = document.getElementById('notification');
+      if (!notification) {
+        // إنشاء عنصر إشعار مؤقت في حال عدم وجوده
+        const tempNotification = document.createElement('div');
+        tempNotification.id = 'notification';
+        tempNotification.className = `notification ${type}`;
+        tempNotification.textContent = message;
+        tempNotification.style.position = 'fixed';
+        tempNotification.style.top = '20px';
+        tempNotification.style.right = '20px';
+        tempNotification.style.padding = '10px 20px';
+        tempNotification.style.backgroundColor = type === 'success' ? 'green' : 'red';
+        tempNotification.style.color = '#fff';
+        document.body.appendChild(tempNotification);
+        setTimeout(() => {
+          tempNotification.remove();
+        }, duration);
+      } else {
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notification.style.display = 'block';
+        setTimeout(() => {
+          notification.hidden = true;
+        }, duration);
+      }
     }
   </script>
 </body>
