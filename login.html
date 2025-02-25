@@ -100,12 +100,12 @@
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تهيئة Firebase
+    // تهيئة Firebase - تأكد من أن الإعدادات صحيحة
     const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
       projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.firebasestorage.app",
+      storageBucket: "mr-tarek-2e40f.appspot.com", // تم تصحيح قيمة storageBucket هنا
       messagingSenderId: "807997869740",
       appId: "1:807997869740:web:8eca7473d24693bf861909"
     };
@@ -145,7 +145,6 @@
         this.isActive = true;
         this.currentNotification = this.createNotification(type, message);
         document.body.appendChild(this.currentNotification);
-        // تأخير بسيط لتفعيل تأثير CSS
         setTimeout(() => {
           this.currentNotification.classList.add('active');
         }, 50);
