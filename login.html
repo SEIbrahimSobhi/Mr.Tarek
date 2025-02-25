@@ -159,13 +159,6 @@
       btn.querySelector('.loader').hidden = !state;
     }
 
-// إضافة دعم للضغط على مفتاح Enter للأيقونة
-document.querySelector('.toggle-password').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    this.click();
-  }
-});
-
     // نظام الإشعارات
 function showNotification(type, message, duration = 3000) {
     const notification = document.getElementById('notification');
