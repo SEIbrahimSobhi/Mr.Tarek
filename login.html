@@ -144,6 +144,7 @@
       this.isActive = true;
       this.currentNotification = this.createNotification(type, message);
       document.body.appendChild(this.currentNotification);
+      // تأخير بسيط لتفعيل تأثير CSS
       setTimeout(() => {
         this.currentNotification.classList.add('active');
       }, 50);
@@ -178,11 +179,11 @@
   document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // إزالة الفراغات من المدخلات
+    // إزالة الفراغات الزائدة من المدخلات
     const identifier = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value.trim();
 
-    // التحقق من أن المدخلات غير فارغة
+    // التحقق من أن الحقول غير فارغة
     if (!identifier || !password) {
       showNotification("error", "يرجى إدخال البريد الإلكتروني/اسم المستخدم وكلمة المرور.", 3000);
       return;
@@ -191,7 +192,7 @@
     try {
       let email = identifier;
 
-      // إذا كان الإدخال لا يحتوي على '@' نفترض أنه اسم مستخدم، فنبحث عن البريد الإلكتروني في Firestore
+      // إذا كان الإدخال لا يحتوي على '@' فنعتبره اسم مستخدم ونبحث عن البريد الإلكتروني في Firestore
       if (!identifier.includes('@')) {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", identifier));
@@ -202,25 +203,26 @@
           return;
         }
 
+        // الحصول على البريد الإلكتروني من المستندات المسترجعة
         querySnapshot.forEach((doc) => {
           email = doc.data().email;
         });
       }
 
-      // عرض قيمة البريد الإلكتروني للتأكد من صحتها (يمكنك إزالة هذا السجل بعد التأكد)
       console.log("البريد الإلكتروني المستخدم:", email);
+      console.log("كلمة المرور:", password);
 
-      // تسجيل الدخول باستخدام البريد الإلكتروني
+      // محاولة تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
       await signInWithEmailAndPassword(auth, email, password);
       showNotification("success", "تم تسجيل الدخول بنجاح!", 3000);
       window.location.href = 'index.html';
     } catch (error) {
-      console.error(error);
+      console.error("Login error:", error);
       showNotification("error", "حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", 3000);
     }
   });
 
-  // إدارة حالة التحميل (إن وُجدت عناصر للتحميل)
+  // إدارة حالة التحميل (إن وُجدت عناصر تحميل)
   function toggleLoading(state) {
     const btn = document.querySelector('button[type="submit"]');
     if (btn) {
