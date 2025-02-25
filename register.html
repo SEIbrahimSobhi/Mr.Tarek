@@ -245,12 +245,11 @@
   </div>
 </footer>
 <script type="module">
-  // استيراد وحدات Firebase
+  // استيراد وحدات Firebase المطلوبة
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-  // تهيئة إعدادات Firebase
+  // إعدادات Firebase
   const firebaseConfig = {
       apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
       authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -260,14 +259,14 @@
       appId: "1:807997869740:web:8eca7473d24693bf861909"
   };
 
+  // تهيئة التطبيق وقاعدة البيانات
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // متغيرات عامة
+  // متغيرات عامة لتخزين بيانات المستخدم مؤقتًا والإجابة الصحيحة للمسألة
   let countdownInterval;
-  let tempUserData = {};  // لتخزين بيانات المستخدم مؤقتًا
-  let correctMathAnswer;  // الإجابة الصحيحة للمسألة الرياضية
+  let tempUserData = {};
+  let correctMathAnswer;
 
   // ==================== نظام الإشعارات ====================
   class NotificationManager {
@@ -326,7 +325,7 @@
   }
   // ==================== نهاية نظام الإشعارات ====================
 
-  // دالة توليد مسألة رياضية بسيطة
+  // دالة لتوليد مسألة رياضية بسيطة للتحقق من أن المستخدم ليس بوت
   function generateMathProblem() {
     const num1 = Math.floor(Math.random() * 10) + 1;
     const num2 = Math.floor(Math.random() * 10) + 1;
@@ -337,7 +336,7 @@
     }
   }
 
-  // دالة تبديل حالة التحميل (تعطيل/تمكين زر الإرسال)
+  // دالة لتبديل حالة زر التحميل (تعطيل/تمكين الزر)
   function toggleLoading(state) {
     const submitBtn = document.querySelector('button[type="submit"]');
     if (submitBtn) {
@@ -345,12 +344,12 @@
     }
   }
 
-  // دالة إرسال رمز التحقق عبر البريد باستخدام EmailJS
+  // دالة لإرسال رمز التحقق عبر البريد الإلكتروني باستخدام EmailJS
   async function sendVerificationEmail(email, code) {
     try {
-      await emailjs.send("service_4de4l3i", "template_gqjxtul", {
+      await emailjs.send("service_4de4l3i", "template_gqjxtul", { 
           email: email,
-          verification_code: code
+          verification_code: code 
       });
     } catch (error) {
       console.error("فشل إرسال البريد:", error);
@@ -358,7 +357,7 @@
     }
   }
 
-  // دالة بدء العد التنازلي لصلاحية الرمز (إن وُجد عنصر بالـ id "countdown")
+  // دالة بدء العد التنازلي لصلاحية رمز التحقق (إذا وُجد عنصر بعدد الثواني)
   function startCountdown(duration) {
     const countdownElement = document.getElementById("countdown");
     if (!countdownElement) return;
@@ -380,30 +379,30 @@
     }, 1000);
   }
 
-  // حدث تنفيذ عند تحميل الصفحة
+  // عند تحميل الصفحة
   document.addEventListener("DOMContentLoaded", () => {
-    // توليد مسألة رياضية جديدة عند التحميل
+    // توليد مسألة رياضية جديدة
     generateMathProblem();
 
-    // حدث إرسال نموذج التسجيل
+    // عند إرسال نموذج التسجيل
     document.getElementById("signup-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       toggleLoading(true);
 
-      // جمع البيانات من النموذج
-      const firstName      = document.getElementById("first-name").value.trim();
-      const secondName     = document.getElementById("second-name").value.trim();
-      const thirdName      = document.getElementById("third-name").value.trim();
-      const lastName       = document.getElementById("last-name").value.trim();
-      const username       = document.getElementById("username").value.trim();
-      const phone          = document.getElementById("phone").value.trim();
-      const fatherPhone    = document.getElementById("father-phone").value.trim();
-      const motherPhone    = document.getElementById("mother-phone").value.trim();
-      const governorate    = document.getElementById("governorate").value;
-      const email          = document.getElementById("email").value.trim();
-      const password       = document.getElementById("password").value;
-      const confirmPassword= document.getElementById("confirm-password").value;
-      const mathAnswer     = parseInt(document.getElementById("math-answer").value.trim());
+      // جمع بيانات النموذج
+      const firstName       = document.getElementById("first-name").value.trim();
+      const secondName      = document.getElementById("second-name").value.trim();
+      const thirdName       = document.getElementById("third-name").value.trim();
+      const lastName        = document.getElementById("last-name").value.trim();
+      const username        = document.getElementById("username").value.trim();
+      const phone           = document.getElementById("phone").value.trim();
+      const fatherPhone     = document.getElementById("father-phone").value.trim();
+      const motherPhone     = document.getElementById("mother-phone").value.trim();
+      const governorate     = document.getElementById("governorate").value;
+      const email           = document.getElementById("email").value.trim();
+      const password        = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+      const mathAnswer      = parseInt(document.getElementById("math-answer").value.trim());
 
       // التحقق من ملء جميع الحقول
       if (!firstName || !secondName || !thirdName || !lastName || !username ||
@@ -422,7 +421,7 @@
         return;
       }
 
-      // التحقق من صحة البريد الإلكتروني باستخدام تعبير منتظم
+      // التحقق من صحة البريد الإلكتروني
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         showNotification("error", "البريد الإلكتروني غير صالح");
@@ -438,7 +437,7 @@
         return;
       }
 
-      // التحقق من طول كلمة المرور وتطابقها مع تأكيدها
+      // التحقق من طول كلمة المرور وتطابقها
       if (password.length < 8) {
         showNotification("error", "كلمة المرور يجب أن تكون 8 أحرف على الأقل");
         toggleLoading(false);
@@ -450,13 +449,13 @@
         return;
       }
 
-      // دمج الأسماء الكاملة
+      // دمج الاسم الكامل
       const fullName = `${firstName} ${secondName} ${thirdName} ${lastName}`;
 
       // توليد رمز تحقق عشوائي (6 أرقام)
       const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-      // حفظ بيانات المستخدم مؤقتاً
+      // تخزين بيانات المستخدم مؤقتاً
       tempUserData = {
         username,
         fullName,
@@ -465,7 +464,7 @@
         motherPhone,
         governorate,
         email,
-        password,
+        password,  // تنبيه: تخزين كلمة المرور بنص عادي غير آمن في البيئات الإنتاجية.
         verificationCode
       };
 
@@ -474,7 +473,6 @@
         await sendVerificationEmail(email, verificationCode);
         showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
       } catch (error) {
-        console.error(error);
         showNotification("error", error.message);
         toggleLoading(false);
         return;
@@ -482,19 +480,17 @@
         toggleLoading(false);
       }
 
-      // إخفاء صفحة التسجيل وإظهار صفحة تأكيد البريد الإلكتروني
+      // إخفاء صفحة التسجيل وعرض صفحة تأكيد البريد الإلكتروني
       document.getElementById("registration-page").style.display = "none";
       document.getElementById("email-confirmation-page").style.display = "block";
 
-      // في حال تواجد عنصر العد التنازلي، بدء العد (اختياري)
+      // بدء العد التنازلي إذا وُجد العنصر المخصص لذلك
       if (document.getElementById("countdown")) {
         startCountdown(180);
       }
-      // يمكن عرض رمز التحقق لأغراض الاختبار (ثم إزالته في الإنتاج)
-      // document.getElementById("display-code").innerText = "كود التأكيد: " + verificationCode;
     });
 
-    // حدث تأكيد البريد الإلكتروني
+    // عند الضغط على زر تأكيد البريد الإلكتروني
     document.getElementById("confirm-btn").addEventListener("click", async () => {
       const userCode = document.getElementById("confirmation-code").value.trim();
       if (userCode !== tempUserData.verificationCode.toString()) {
@@ -503,10 +499,9 @@
       }
 
       try {
-        // إنشاء المستخدم باستخدام Firebase
-        const userCredential = await createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password);
-        // حفظ بيانات إضافية في Firestore
-        await setDoc(doc(db, "users", userCredential.user.uid), {
+        // بدلاً من إنشاء الحساب وتفعيله مباشرةً، يتم حفظ بيانات التسجيل
+        // في مجموعة "pending_users" لمراجعة المسؤولين.
+        await addDoc(collection(db, "pending_users"), {
           username: tempUserData.username,
           fullName: tempUserData.fullName,
           phone: tempUserData.phone,
@@ -514,23 +509,22 @@
           motherPhone: tempUserData.motherPhone,
           governorate: tempUserData.governorate,
           email: tempUserData.email,
+          password: tempUserData.password,  // يُفضل تشفير كلمة المرور في الإنتاج.
           emailVerified: true,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          accountStatus: "pending"  // الحالة: في انتظار الموافقة.
         });
-        showNotification("success", "تم إنشاء الحساب بنجاح");
-        // الانتقال إلى صفحة حالة الحساب بعد تأخير بسيط
-        setTimeout(() => {
-          document.getElementById("email-confirmation-page").style.display = "none";
-          document.getElementById("account-status-page").style.display = "block";
-          // عرض اسم المستخدم في صفحة حالة الحساب
-          document.getElementById("display-name").innerText = tempUserData.username;
-        }, 2000);
+        showNotification("success", "تم إرسال طلب إنشاء الحساب للمراجعة. سيتم تفعيل الحساب وإعلامك عند الموافقة.");
+        // إخفاء صفحة تأكيد البريد وعرض صفحة حالة الحساب
+        document.getElementById("email-confirmation-page").style.display = "none";
+        document.getElementById("account-status-page").style.display = "block";
+        document.getElementById("display-name").innerText = tempUserData.username;
       } catch (error) {
-        showNotification("error", "فشل إنشاء الحساب: " + error.message);
+        showNotification("error", "فشل إرسال طلب الحساب: " + error.message);
       }
     });
 
-    // (اختياري) إعادة إرسال رمز التحقق إذا وُجد زر برقم id "resend-code"
+    // (اختياري) إعادة إرسال رمز التحقق
     const resendBtn = document.getElementById("resend-code");
     if (resendBtn) {
       resendBtn.addEventListener("click", async () => {
