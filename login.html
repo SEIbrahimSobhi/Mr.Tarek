@@ -96,147 +96,131 @@
     </div>
   </footer>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تهيئة Firebase - تأكد من أن الإعدادات صحيحة
-    const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com", // تم تصحيح قيمة storageBucket هنا
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+  // إعدادات Firebase - تأكد من مطابقتها لإعدادات مشروعك
+  const firebaseConfig = {
+    apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+    authDomain: "mr-tarek-2e40f.firebaseapp.com",
+    projectId: "mr-tarek-2e40f",
+    storageBucket: "mr-tarek-2e40f.firebasestorage.app",
+    messagingSenderId: "807997869740",
+    appId: "1:807997869740:web:8eca7473d24693bf861909",
+    measurementId: "G-K9HZRGMPKK"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // ==================== نظام الإشعارات ====================
-    class NotificationManager {
-      constructor() {
-        this.queue = [];
-        this.isActive = false;
-        this.currentNotification = null;
-      }
-      createNotification(type, message) {
-        const notification = document.createElement('div');
-        notification.className = `notification-center notification-${type}`;
-        notification.innerHTML = `
-          <div class="notification-icon">
-            <svg viewBox="0 0 64 64">
-              <circle cx="32" cy="32" r="30" fill="none" stroke-width="3"></circle>
-            </svg>
-            <ion-icon name="${type === 'success' ? 'checkmark' : 'close'}-outline"></ion-icon>
-          </div>
-          <h3 class="notification-title">${type === 'success' ? 'عملية ناجحة' : 'خطأ في التنفيذ'}</h3>
-          <p class="notification-message">${message}</p>
-        `;
-        notification.addEventListener('click', () => this.dismiss());
-        return notification;
-      }
-      showNotification(type, message, duration = 3000) {
-        if (this.isActive) {
-          this.queue.push({ type, message, duration });
-          return;
-        }
-        this.isActive = true;
-        this.currentNotification = this.createNotification(type, message);
-        document.body.appendChild(this.currentNotification);
-        setTimeout(() => {
-          this.currentNotification.classList.add('active');
-        }, 50);
-        setTimeout(() => this.dismiss(), duration);
-      }
-      dismiss() {
-        if (!this.currentNotification) return;
-        this.currentNotification.classList.remove('active');
-        setTimeout(() => {
-          if (this.currentNotification && this.currentNotification.parentElement) {
-            this.currentNotification.remove();
-          }
-          this.isActive = false;
-          this.currentNotification = null;
-          this.processQueue();
-        }, 400);
-      }
-      processQueue() {
-        if (this.queue.length > 0) {
-          const next = this.queue.shift();
-          this.showNotification(next.type, next.message, next.duration);
-        }
-      }
+  // نظام الإشعارات كما هو موجود لديك
+  class NotificationManager {
+    constructor() {
+      this.queue = [];
+      this.isActive = false;
+      this.currentNotification = null;
     }
-    const notificationSystem = new NotificationManager();
-    function showNotification(type, message, duration) {
-      notificationSystem.showNotification(type, message, duration);
+    createNotification(type, message) {
+      const notification = document.createElement('div');
+      notification.className = `notification-center notification-${type}`;
+      notification.innerHTML = `
+        <div class="notification-icon">
+          <svg viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="30" fill="none" stroke-width="3"></circle>
+          </svg>
+          <ion-icon name="${type === 'success' ? 'checkmark' : 'close'}-outline"></ion-icon>
+        </div>
+        <h3 class="notification-title">${type === 'success' ? 'عملية ناجحة' : 'خطأ في التنفيذ'}</h3>
+        <p class="notification-message">${message}</p>
+      `;
+      notification.addEventListener('click', () => this.dismiss());
+      return notification;
     }
-    // ==================== نهاية نظام الإشعارات ====================
-
-    // الحدث الخاص بتسجيل الدخول
-    document.getElementById('login-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      // إزالة الفراغات الزائدة من المدخلات
-      const identifier = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-
-      // التحقق من أن الحقول غير فارغة
-      if (!identifier || !password) {
-        showNotification("error", "يرجى إدخال البريد الإلكتروني/رقم الهاتف وكلمة المرور.", 3000);
+    showNotification(type, message, duration = 3000) {
+      if (this.isActive) {
+        this.queue.push({ type, message, duration });
         return;
       }
-
-      try {
-        let email = identifier;
-
-        /* 
-           إذا كان الإدخال يحتوي على '@' نعتبره بريدًا إلكترونيًا.
-           أما إذا لم يحتوي على '@' فيُفترض أنه رقم هاتف، لذا نقوم بالبحث عنه في Firestore
-           باستخدام الحقل "phone".
-        */
-        if (!identifier.includes('@')) {
-          const usersRef = collection(db, "users");
-          const q = query(usersRef, where("phone", "==", identifier));
-          const querySnapshot = await getDocs(q);
-
-          if (querySnapshot.empty) {
-            showNotification("error", "رقم الهاتف غير مسجل. الرجاء التحقق من بياناتك.", 3000);
-            return;
-          }
-
-          // الحصول على البريد الإلكتروني من المستندات المسترجعة
-          querySnapshot.forEach((doc) => {
-            email = doc.data().email;
-          });
+      this.isActive = true;
+      this.currentNotification = this.createNotification(type, message);
+      document.body.appendChild(this.currentNotification);
+      setTimeout(() => {
+        this.currentNotification.classList.add('active');
+      }, 50);
+      setTimeout(() => this.dismiss(), duration);
+    }
+    dismiss() {
+      if (!this.currentNotification) return;
+      this.currentNotification.classList.remove('active');
+      setTimeout(() => {
+        if (this.currentNotification && this.currentNotification.parentElement) {
+          this.currentNotification.remove();
         }
-
-        console.log("البريد الإلكتروني المستخدم:", email);
-        console.log("كلمة المرور:", password);
-
-        // محاولة تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
-        await signInWithEmailAndPassword(auth, email, password);
-        showNotification("success", "تم تسجيل الدخول بنجاح!", 3000);
-        window.location.href = 'index.html';
-      } catch (error) {
-        console.error("Login error:", error);
-        showNotification("error", "حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", 3000);
-      }
-    });
-
-    // إدارة حالة التحميل (إن وُجدت عناصر تحميل)
-    function toggleLoading(state) {
-      const btn = document.querySelector('button[type="submit"]');
-      if (btn) {
-        btn.ariaBusy = state;
-        const btnText = btn.querySelector('.btn-text');
-        const loader = btn.querySelector('.loader');
-        if (btnText) btnText.hidden = state;
-        if (loader) loader.hidden = !state;
+        this.isActive = false;
+        this.currentNotification = null;
+        this.processQueue();
+      }, 400);
+    }
+    processQueue() {
+      if (this.queue.length > 0) {
+        const next = this.queue.shift();
+        this.showNotification(next.type, next.message, next.duration);
       }
     }
-  </script>
+  }
+  const notificationSystem = new NotificationManager();
+  function showNotification(type, message, duration) {
+    notificationSystem.showNotification(type, message, duration);
+  }
+
+  // حدث تسجيل الدخول
+  document.getElementById('login-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const identifier = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    if (!identifier || !password) {
+      showNotification("error", "يرجى إدخال البريد الإلكتروني/رقم الهاتف وكلمة المرور.", 3000);
+      return;
+    }
+
+    try {
+      let email = identifier;
+
+      if (!identifier.includes('@')) {
+        // البحث عن البريد الإلكتروني باستخدام رقم الهاتف
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("phone", "==", identifier));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          showNotification("error", "رقم الهاتف غير مسجل. الرجاء التحقق من بياناتك.", 3000);
+          return;
+        }
+
+        querySnapshot.forEach((doc) => {
+          email = doc.data().email;
+        });
+      }
+
+      // تأكد من أن البريد الإلكتروني ليس فارغاً ويظهر في الـ console
+      console.log("البريد الإلكتروني المستخدم:", email);
+      console.log("كلمة المرور:", password);
+
+      // يمكنك تحويل البريد الإلكتروني إلى حروف صغيرة للتأكد من تطابقه مع ما هو مسجل
+      email = email.toLowerCase();
+
+      await signInWithEmailAndPassword(auth, email, password);
+      showNotification("success", "تم تسجيل الدخول بنجاح!", 3000);
+      window.location.href = 'index.html';
+    } catch (error) {
+      console.error("Login error:", error);
+      showNotification("error", "حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", 3000);
+    }
+  });
+</script>
 </body>
 </html>
