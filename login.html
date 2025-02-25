@@ -94,71 +94,73 @@
     <p>Copy Right 2024 © By <strong class="px-1 sitename">Ebrahem Sobhy</strong> <span> All Rights Reserved</span></p>
   </div>
 </footer>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, query, collection, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, query, collection, where } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-    // تهيئة Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.firebasestorage.app",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+  // تهيئة Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
+    authDomain: "mr-tarek-2e40f.firebaseapp.com",
+    projectId: "mr-tarek-2e40f",
+    storageBucket: "mr-tarek-2e40f.firebasestorage.app",
+    messagingSenderId: "807997869740",
+    appId: "1:807997869740:web:8eca7473d24693bf861909"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // الحدث الخاص بتسجيل الدخول
-    document.getElementById('login-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
+  // الحدث الخاص بتسجيل الدخول
+  document.getElementById('login-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-      const identifier = document.getElementById('login-email').value;  // استخدام id الصحيح للبريد الإلكتروني
-      const password = document.getElementById('login-password').value;
+    const identifier = document.getElementById('login-email').value; // استخدام id الصحيح للبريد الإلكتروني
+    const password = document.getElementById('login-password').value;
 
-      try {
-        let email = identifier;
+    try {
+      let email = identifier;
 
-        // إذا كان الإدخال ليس بريدًا إلكترونيًا، البحث في قاعدة البيانات عن اسم المستخدم
-        if (!identifier.includes('@')) {
-          const usersRef = collection(db, "users"); // تأكد أن "users" هو اسم مجموعة المستخدمين
-          const q = query(usersRef, where("username", "==", identifier));
-          const querySnapshot = await getDoc(q);
+      // إذا كان الإدخال ليس بريدًا إلكترونيًا، البحث في قاعدة البيانات عن اسم المستخدم
+      if (!identifier.includes('@')) {
+        const usersRef = collection(db, "users"); // تأكد أن "users" هو اسم مجموعة المستخدمين لديك
+        const q = query(usersRef, where("username", "==", identifier));
+        const querySnapshot = await getDoc(q);
 
-          if (querySnapshot.empty) {
-            showNotification("اسم المستخدم غير موجود. الرجاء التحقق من بياناتك.", "error");
-            return;
-          }
-
-          // الحصول على البريد الإلكتروني للمستخدم
-          querySnapshot.forEach((doc) => {
-            email = doc.data().email;
-          });
+        if (querySnapshot.empty) {
+          showNotification("اسم المستخدم غير موجود. الرجاء التحقق من بياناتك.", "error");
+          return;
         }
 
-        // تسجيل الدخول باستخدام البريد الإلكتروني
-        await signInWithEmailAndPassword(auth, email, password);
-        showNotification("تم تسجيل الدخول بنجاح!", "success");
-        window.location.href = 'index.html';
-      } catch (error) {
-        // عرض رسالة عامة عند حدوث خطأ
-        showNotification("حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", "error");
+        // الحصول على البريد الإلكتروني للمستخدم
+        querySnapshot.forEach((doc) => {
+          email = doc.data().email;
+        });
       }
-    });
-  </script>
 
-    <script>
-    // إدارة حالة التحميل
-    function toggleLoading(state) {
-      const btn = document.querySelector('button[type="submit"]');
-      btn.ariaBusy = state;
-      btn.querySelector('.btn-text').hidden = state;
-      btn.querySelector('.loader').hidden = !state;
+      // تسجيل الدخول باستخدام البريد الإلكتروني
+      await signInWithEmailAndPassword(auth, email, password);
+      showNotification("تم تسجيل الدخول بنجاح!", "success");
+      window.location.href = 'index.html';
+    } catch (error) {
+      // عرض رسالة عامة عند حدوث خطأ
+      showNotification("حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", "error");
     }
+  });
+
+  // إدارة حالة التحميل
+  function toggleLoading(state) {
+    const btn = document.querySelector('button[type="submit"]');
+    if (btn) {
+      btn.ariaBusy = state;
+      const btnText = btn.querySelector('.btn-text');
+      const loader = btn.querySelector('.loader');
+      if (btnText) btnText.hidden = state;
+      if (loader) loader.hidden = !state;
+    }
+  }
 
   // ==================== نظام الإشعارات ====================
   class NotificationManager {
@@ -215,8 +217,7 @@
   function showNotification(type, message, duration) {
     notificationSystem.showNotification(type, message, duration);
   }
-      }
   // ==================== نهاية نظام الإشعارات ====================
-  </script>
+</script>
 </body>
 </html>
