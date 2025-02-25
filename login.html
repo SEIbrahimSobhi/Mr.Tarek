@@ -176,51 +176,50 @@
   }
 
   // حدث تسجيل الدخول
-  document.getElementById('login-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
+document.getElementById('login-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-    const identifier = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value.trim();
+  const identifier = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value.trim();
 
-    if (!identifier || !password) {
-      showNotification("error", "يرجى إدخال البريد الإلكتروني/رقم الهاتف وكلمة المرور.", 3000);
-      return;
-    }
+  if (!identifier || !password) {
+    showNotification("error", "يرجى إدخال البريد الإلكتروني/رقم الهاتف وكلمة المرور.", 3000);
+    return;
+  }
 
-    try {
-      let email = identifier;
+  try {
+    let email = identifier;
 
-      if (!identifier.includes('@')) {
-        // البحث عن البريد الإلكتروني باستخدام رقم الهاتف
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("phone", "==", identifier));
-        const querySnapshot = await getDocs(q);
+    if (!identifier.includes('@')) {
+      // البحث عن البريد الإلكتروني باستخدام رقم الهاتف
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("phone", "==", identifier));
+      const querySnapshot = await getDocs(q);
 
-        if (querySnapshot.empty) {
-          showNotification("error", "رقم الهاتف غير مسجل. الرجاء التحقق من بياناتك.", 3000);
-          return;
-        }
-
-        querySnapshot.forEach((doc) => {
-          email = doc.data().email;
-        });
+      if (querySnapshot.empty) {
+        showNotification("error", "رقم الهاتف غير مسجل. الرجاء التحقق من بياناتك.", 3000);
+        return;
       }
 
-      // تأكد من أن البريد الإلكتروني ليس فارغاً ويظهر في الـ console
-      console.log("البريد الإلكتروني المستخدم:", email);
-      console.log("كلمة المرور:", password);
-
-      // يمكنك تحويل البريد الإلكتروني إلى حروف صغيرة للتأكد من تطابقه مع ما هو مسجل
-      email = email.toLowerCase();
-
-      await signInWithEmailAndPassword(auth, email, password);
-      showNotification("success", "تم تسجيل الدخول بنجاح!", 3000);
-      window.location.href = 'index.html';
-    } catch (error) {
-      console.error("Login error:", error);
-      showNotification("error", "حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", 3000);
+      querySnapshot.forEach((doc) => {
+        email = doc.data().email;
+      });
     }
-  });
+
+    // عرض القيم في الـ console للتأكد
+    console.log("البريد الإلكتروني المستخدم:", email);
+    console.log("كلمة المرور المستخدمة:", password);
+
+    email = email.toLowerCase(); // للتأكد من تطابق البريد مع السجلات
+
+    await signInWithEmailAndPassword(auth, email, password);
+    showNotification("success", "تم تسجيل الدخول بنجاح!", 3000);
+    window.location.href = 'index.html';
+  } catch (error) {
+    console.error("Login error:", error);
+    showNotification("error", "حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", 3000);
+  }
+});
 </script>
 </body>
 </html>
