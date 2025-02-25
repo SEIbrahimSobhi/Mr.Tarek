@@ -13,69 +13,66 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome -->
+  <!-- استدعاء Font Awesome للأيقونات -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- مكتبات الاشعارات -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<!-- ايقونة الموقع -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+<!--   مكتبات الاشعارات   -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-  <!-- Mobile Image -->
-  <div class="mobile-image-container">
+  <!-- صورة الموبايل (للشاشات الصغيرة فقط) -->
+<div class="mobile-image-container">
+  <img src="assets/img/register.jpeg" alt="صورة المنصة">
+  <div class="overlay"></div>
+</div>
+<!-- الحاوية الرئيسية للشاشات الكبيرة -->
+<div class="main-desktop">
+  <!-- صورة الديسكتوب (للشاشات الكبيرة فقط) -->
+  <div class="desktop-image-container">
     <img src="assets/img/register.jpeg" alt="صورة المنصة">
     <div class="overlay"></div>
   </div>
-
-  <!-- Desktop Container -->
-  <div class="main-desktop">
-    <!-- Desktop Image -->
-    <div class="desktop-image-container">
-      <img src="assets/img/register.jpeg" alt="صورة المنصة">
-      <div class="overlay"></div>
-    </div>
-
-    <!-- Form Container -->
-    <div class="form-container">
-      <div class="form-wrapper" id="login-page">
-        <div class="form-header">
-          <h1><span class="white">تسجيل</span> <span class="blue">الدخول</span></h1>
-          <p>أدخل بياناتك لتسجيل الدخول إلى حسابك.</p>
-        </div>
-
-        <form id="login-form">
-          <!-- Identifier Field -->
-          <div class="form-group">
-            <input type="text" id="login-identifier" class="form-control" placeholder=" " required>
-            <i class="form-icon fas fa-user"></i>
-            <label for="login-identifier" class="form-label">رقم الهاتف أو البريد الإلكتروني</label>
-          </div>
-
-          <!-- Password Field -->
-          <div class="form-group">
-            <input type="password" id="login-password" class="form-control" placeholder=" " required>
-            <i class="form-icon fas fa-lock"></i>
-            <label for="login-password" class="form-label">كلمة المرور</label>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="row" style="justify-content: center; gap: 20px; margin-bottom: 20px;">
-            <button type="submit" class="submit-btn">
-              <span class="btn-text">تسجيل الدخول</span>
-              <div class="loader" hidden></div>
-            </button>
-          </div>
-
-          <!-- Registration Link -->
-          <div class="login-link">
-            <span>لا تملك حساب؟</span>
-            <a href="register.html">أنشئ حسابك الآن!</a>
-          </div>
-        </form>
+  <!-- قسم النموذج -->
+  <div class="form-container">
+    <!-- صفحة تسجيل الدخول -->
+    <div class="form-wrapper" id="login-page">
+      <div class="form-header">
+        <h1>
+            <span class="white">تسجيل</span> <span class="blue">الدخول:</span>
+        </h1>
+        <p>أدخل بياناتك لتسجيل الدخول إلى حسابك.</p>
       </div>
+      <form id="login-form">
+        <!-- حقل البريد الإلكتروني -->
+        <div class="form-group">
+          <input type="email" id="login-email" class="form-control" placeholder=" " required>
+          <i class="form-icon fas fa-envelope"></i>
+          <label for="login-email" class="form-label">البريد الإلكتروني</label>
+        </div>
+        <!-- حقل كلمة المرور -->
+        <div class="form-group">
+          <input type="password" id="login-password" class="form-control" placeholder=" " required>
+          <i class="form-icon fas fa-lock"></i>
+          <label for="login-password" class="form-label">كلمة المرور</label>
+        </div>
+        <!-- زر تسجيل الدخول -->
+        <div class="row" style="justify-content: center; gap: 20px; margin-bottom: 20px;">
+          <button type="submit" class="submit-btn">تسجيل الدخول</button>
+        </div>
+        <!-- رابط إنشاء حساب جديد -->
+        <div class="login-link">
+          <span>لا تملك حساب؟</span>
+          <a href="register.html">أنشئ حسابك الآن!</a>
+        </div>
+          <p class="success-message" id="success-message"></p>
+      </form>
     </div>
   </div>
-
-  <footer>
+</div>
+    <footer>
   <div class="footer-top">
     <div class="footer-brand">
       <img src="assets/img/favicon.png" alt="Logo">
@@ -97,12 +94,12 @@
     <p>Copy Right 2024 © By <strong class="px-1 sitename">Ebrahem Sobhy</strong> <span> All Rights Reserved</span></p>
   </div>
 </footer>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
   import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
+  // تهيئة Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
     authDomain: "mr-tarek-2e40f.firebaseapp.com",
@@ -116,7 +113,6 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  
   // ==================== نظام الإشعارات ====================
   class NotificationManager {
     constructor() {
@@ -173,93 +169,69 @@
       }
     }
   }
-
   const notificationSystem = new NotificationManager();
-
-  function showNotification(type, message, duration = 3000) {
+  function showNotification(type, message, duration) {
     notificationSystem.showNotification(type, message, duration);
   }
+  // ==================== نهاية نظام الإشعارات ====================
 
-  function isPhoneNumber(input) {
-    // تحقق من أن الإدخال رقم هاتف (أرقام فقط مع بداية + اختيارية)
-    return /^\+?[0-9]{8,15}$/.test(input);
-  }
+  // الحدث الخاص بتسجيل الدخول
+  document.getElementById('login-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-  async function getEmailFromPhone(phone) {
-    try {
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("phone", "==", phone));
-      const snapshot = await getDocs(q);
-
-      if (snapshot.empty) {
-        showNotification("error", "رقم الهاتف غير مسجل");
-        return null;
-      }
-
-      return snapshot.docs[0].data().email;
-    } catch (error) {
-      console.error("Firestore error:", error);
-      showNotification("error", "خطأ في استرجاع البيانات");
-      return null;
-    }
-  }
-
-  document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    toggleLoading(true);
-
-    const identifier = document.getElementById('login-identifier').value.trim();
+    // إزالة الفراغات الزائدة من المدخلات
+    const identifier = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value.trim();
 
+    // التحقق من أن الحقول غير فارغة
     if (!identifier || !password) {
-      showNotification("error", "يرجى ملء جميع الحقول");
-      toggleLoading(false);
+      showNotification("error", "يرجى إدخال البريد الإلكتروني/اسم المستخدم وكلمة المرور.", 3000);
       return;
     }
 
     try {
       let email = identifier;
 
-      // إذا كان الإدخال رقم هاتف
-      if (isPhoneNumber(identifier)) {
-        email = await getEmailFromPhone(identifier);
-        if (!email) return;
+      // إذا كان الإدخال لا يحتوي على '@' فنعتبره اسم مستخدم ونبحث عن البريد الإلكتروني في Firestore
+      if (!identifier.includes('@')) {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("username", "==", identifier));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          showNotification("error", "اسم المستخدم غير موجود. الرجاء التحقق من بياناتك.", 3000);
+          return;
+        }
+
+        // الحصول على البريد الإلكتروني من المستندات المسترجعة
+        querySnapshot.forEach((doc) => {
+          email = doc.data().email;
+        });
       }
 
-      // تسجيل الدخول
+      console.log("البريد الإلكتروني المستخدم:", email);
+      console.log("كلمة المرور:", password);
+
+      // محاولة تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
       await signInWithEmailAndPassword(auth, email, password);
-      showNotification("success", "تم تسجيل الدخول بنجاح");
-      setTimeout(() => window.location.href = 'index.html', 1500);
-      
+      showNotification("success", "تم تسجيل الدخول بنجاح!", 3000);
+      window.location.href = 'index.html';
     } catch (error) {
       console.error("Login error:", error);
-      let message = "خطأ في تسجيل الدخول";
-      
-      switch (error.code) {
-        case 'auth/invalid-credential':
-          message = "بيانات الاعتماد غير صحيحة";
-          break;
-        case 'auth/user-not-found':
-          message = "الحساب غير موجود";
-          break;
-        case 'auth/wrong-password':
-          message = "كلمة المرور غير صحيحة";
-          break;
-      }
-      
-      showNotification("error", message);
-    } finally {
-      toggleLoading(false);
+      showNotification("error", "حدثت مشكلة أثناء تسجيل الدخول. يرجى التحقق من بياناتك والمحاولة مرة أخرى.", 3000);
     }
   });
 
+  // إدارة حالة التحميل (إن وُجدت عناصر تحميل)
   function toggleLoading(state) {
     const btn = document.querySelector('button[type="submit"]');
-    if (!btn) return;
-    
-    btn.disabled = state;
-    btn.querySelector('.btn-text').hidden = state;
-    btn.querySelector('.loader').hidden = !state;
+    if (btn) {
+      btn.ariaBusy = state;
+      const btnText = btn.querySelector('.btn-text');
+      const loader = btn.querySelector('.loader');
+      if (btnText) btnText.hidden = state;
+      if (loader) loader.hidden = !state;
+    }
   }
 </script>
 </body>
