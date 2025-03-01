@@ -207,19 +207,20 @@
     // استيراد وحدات Firebase
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-    import { 
-      getFirestore, collection, getDocs, getDoc, doc, deleteDoc, setDoc 
+    import {
+      getFirestore, collection, getDocs, getDoc, doc, deleteDoc, setDoc
     } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
     // إعدادات Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+  apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
+  authDomain: "project-hema.firebaseapp.com",
+  projectId: "project-hema",
+  storageBucket: "project-hema.firebasestorage.app",
+  messagingSenderId: "1079729179279",
+  appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
+  measurementId: "G-YFSTXKFQ9E"
+};
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
