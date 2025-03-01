@@ -248,20 +248,23 @@
   // استيراد وحدات Firebase المطلوبة
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
   // إعدادات Firebase
   const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
+    apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
+    authDomain: "project-hema.firebaseapp.com",
+    projectId: "project-hema",
+    storageBucket: "project-hema.firebasestorage.app",
+    messagingSenderId: "1079729179279",
+    appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
+    measurementId: "G-YFSTXKFQ9E"
   };
 
-  // تهيئة التطبيق وقاعدة البيانات
+  // تهيئة التطبيق وقاعدة البيانات والمصادقة
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
   // متغيرات عامة لتخزين بيانات المستخدم مؤقتًا والإجابة الصحيحة للمسألة
   let countdownInterval;
@@ -273,6 +276,7 @@
     constructor() {
       this.queue = [];
       this.isActive = false;
+      this.currentNotification = null;
     }
     createNotification(type, message) {
       const notification = document.createElement('div');
@@ -309,6 +313,7 @@
       setTimeout(() => {
         this.currentNotification.remove();
         this.isActive = false;
+        this.currentNotification = null;
         this.processQueue();
       }, 400);
     }
@@ -347,9 +352,9 @@
   // دالة لإرسال رمز التحقق عبر البريد الإلكتروني باستخدام EmailJS
   async function sendVerificationEmail(email, code) {
     try {
-      await emailjs.send("service_4de4l3i", "template_gqjxtul", { 
+      await emailjs.send("service_4de4l3i", "template_gqjxtul", {
           email: email,
-          verification_code: code 
+          verification_code: code
       });
     } catch (error) {
       console.error("فشل إرسال البريد:", error);
@@ -499,22 +504,32 @@
       }
 
       try {
-        // بدلاً من إنشاء الحساب وتفعيله مباشرةً، يتم حفظ بيانات التسجيل
-        // في مجموعة "pending_users" لمراجعة المسؤولين.
-        await addDoc(collection(db, "pending_users"), {
-          username: tempUserData.username,
-          fullName: tempUserData.fullName,
-          phone: tempUserData.phone,
-          fatherPhone: tempUserData.fatherPhone,
-          motherPhone: tempUserData.motherPhone,
-          governorate: tempUserData.governorate,
-          email: tempUserData.email,
-          password: tempUserData.password,  // يُفضل تشفير كلمة المرور في الإنتاج.
-          emailVerified: true,
-          createdAt: new Date().toISOString(),
-          accountStatus: "pending"  // الحالة: في انتظار الموافقة.
-        });
-        showNotification("success", "تم إرسال طلب إنشاء الحساب للمراجعة. سيتم تفعيل الحساب وإعلامك عند الموافقة.");
+        // إنشاء حساب المستخدم في Firebase Authentication
+        await createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password)
+          .then(async (userCredential) => {
+            const user = userCredential.user;
+            console.log("تم إنشاء حساب Firebase Auth:", user.uid);
+            // يمكن إضافة بيانات المستخدم إلى مجموعة "pending_users" لمراجعة المسؤولين
+            await addDoc(collection(db, "pending_users"), {
+              uid: user.uid,  // ربط الحساب بمعرّف المستخدم في Auth
+              username: tempUserData.username,
+              fullName: tempUserData.fullName,
+              phone: tempUserData.phone,
+              fatherPhone: tempUserData.fatherPhone,
+              motherPhone: tempUserData.motherPhone,
+              governorate: tempUserData.governorate,
+              email: tempUserData.email,
+              emailVerified: true,
+              createdAt: new Date().toISOString(),
+              accountStatus: "pending"  // الحالة: في انتظار الموافقة
+            });
+          })
+          .catch((error) => {
+            console.error("خطأ في إنشاء الحساب:", error);
+            throw new Error("فشل إنشاء الحساب. " + error.message);
+          });
+
+        showNotification("success", "تم إنشاء الحساب وإرسال طلب المراجعة للمسؤولين. سيتم تفعيل حسابك عند الموافقة.");
         // إخفاء صفحة تأكيد البريد وعرض صفحة حالة الحساب
         document.getElementById("email-confirmation-page").style.display = "none";
         document.getElementById("account-status-page").style.display = "block";
