@@ -247,7 +247,7 @@
 <script type="module">
   // استيراد وحدات Firebase المطلوبة
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getFirestore, collection, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
   // إعدادات Firebase
@@ -266,7 +266,7 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  // متغيرات عامة لتخزين بيانات المستخدم مؤقتًا والإجابة الصحيحة للمسألة
+  // متغيرات عامة لتخزين بيانات المستخدم مؤقتاً والإجابة الصحيحة للمسألة
   let countdownInterval;
   let tempUserData = {};
   let correctMathAnswer;
@@ -505,36 +505,30 @@
 
       try {
         // إنشاء حساب المستخدم في Firebase Authentication
-        await createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password)
-          .then(async (userCredential) => {
-            const user = userCredential.user;
-            console.log("تم إنشاء حساب Firebase Auth:", user.uid);
-            // يمكن إضافة بيانات المستخدم إلى مجموعة "pending_users" لمراجعة المسؤولين
-            await addDoc(collection(db, "pending_users"), {
-              uid: user.uid,  // ربط الحساب بمعرّف المستخدم في Auth
-              username: tempUserData.username,
-              fullName: tempUserData.fullName,
-              phone: tempUserData.phone,
-              fatherPhone: tempUserData.fatherPhone,
-              motherPhone: tempUserData.motherPhone,
-              governorate: tempUserData.governorate,
-              email: tempUserData.email,
-              emailVerified: true,
-              createdAt: new Date().toISOString(),
-              accountStatus: "pending"  // الحالة: في انتظار الموافقة
-            });
-          })
-          .catch((error) => {
-            console.error("خطأ في إنشاء الحساب:", error);
-            throw new Error("فشل إنشاء الحساب. " + error.message);
-          });
-
+        const userCredential = await createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password);
+        const user = userCredential.user;
+        console.log("تم إنشاء حساب Firebase Auth:", user.uid);
+        // إنشاء وثيقة في مجموعة "pending_users" باستخدام uid المستخدم كمُعرف للوثيقة
+        await setDoc(doc(db, "pending_users", user.uid), {
+          uid: user.uid,  // ربط الحساب بمعرّف المستخدم في Auth
+          username: tempUserData.username,
+          fullName: tempUserData.fullName,
+          phone: tempUserData.phone,
+          fatherPhone: tempUserData.fatherPhone,
+          motherPhone: tempUserData.motherPhone,
+          governorate: tempUserData.governorate,
+          email: tempUserData.email,
+          emailVerified: true,
+          createdAt: new Date().toISOString(),
+          accountStatus: "pending"  // الحالة: في انتظار الموافقة
+        });
         showNotification("success", "تم إنشاء الحساب وإرسال طلب المراجعة للمسؤولين. سيتم تفعيل حسابك عند الموافقة.");
         // إخفاء صفحة تأكيد البريد وعرض صفحة حالة الحساب
         document.getElementById("email-confirmation-page").style.display = "none";
         document.getElementById("account-status-page").style.display = "block";
         document.getElementById("display-name").innerText = tempUserData.username;
       } catch (error) {
+        console.error("خطأ في إنشاء الحساب:", error);
         showNotification("error", "فشل إرسال طلب الحساب: " + error.message);
       }
     });
