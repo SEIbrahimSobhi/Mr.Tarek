@@ -96,19 +96,19 @@
 </footer>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-  import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import { getFirestore, query, collection, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-  // تهيئة Firebase
+  // إعدادات Firebase
   const firebaseConfig = {
-  apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
-  authDomain: "project-hema.firebaseapp.com",
-  projectId: "project-hema",
-  storageBucket: "project-hema.firebasestorage.app",
-  messagingSenderId: "1079729179279",
-  appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
-  measurementId: "G-YFSTXKFQ9E"
-};
+    apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
+    authDomain: "project-hema.firebaseapp.com",
+    projectId: "project-hema",
+    storageBucket: "project-hema.firebasestorage.app",
+    messagingSenderId: "1079729179279",
+    appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
+    measurementId: "G-YFSTXKFQ9E"
+  };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -145,7 +145,6 @@
       this.isActive = true;
       this.currentNotification = this.createNotification(type, message);
       document.body.appendChild(this.currentNotification);
-      // تأخير بسيط لتفعيل تأثير CSS
       setTimeout(() => {
         this.currentNotification.classList.add('active');
       }, 50);
@@ -180,11 +179,9 @@
   document.getElementById('login-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // إزالة الفراغات الزائدة من المدخلات
     const identifier = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value.trim();
 
-    // التحقق من أن الحقول غير فارغة
     if (!identifier || !password) {
       showNotification("error", "يرجى إدخال البريد الإلكتروني/اسم المستخدم وكلمة المرور.", 3000);
       return;
@@ -192,19 +189,15 @@
 
     try {
       let email = identifier;
-
-      // إذا كان الإدخال لا يحتوي على '@' فنعتبره اسم مستخدم ونبحث عن البريد الإلكتروني في Firestore
+      // إذا لم يحتوي الإدخال على '@' نعتبره اسم مستخدم ونبحث عن البريد الإلكتروني في مجموعة "users"
       if (!identifier.includes('@')) {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", identifier));
         const querySnapshot = await getDocs(q);
-
         if (querySnapshot.empty) {
           showNotification("error", "اسم المستخدم غير موجود. الرجاء التحقق من بياناتك.", 3000);
           return;
         }
-
-        // الحصول على البريد الإلكتروني من المستندات المسترجعة
         querySnapshot.forEach((doc) => {
           email = doc.data().email;
         });
@@ -213,27 +206,62 @@
       console.log("البريد الإلكتروني المستخدم:", email);
       console.log("كلمة المرور:", password);
 
-      // محاولة تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور
+      // محاولة تسجيل الدخول باستخدام Firebase Auth
       await signInWithEmailAndPassword(auth, email, password);
+      const user = auth.currentUser;
+      console.log("المستخدم الحالي:", user.uid);
+
+      let approved = false;
+      let accountStatus = null;
+
+      // محاولة البحث في مجموعة "users"
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      console.log("بيانات الوثيقة في users:", userDocSnap.exists() ? userDocSnap.data() : "غير موجودة");
+
+      if (userDocSnap.exists()) {
+        accountStatus = userDocSnap.data().accountStatus;
+        console.log("حالة الحساب في users:", accountStatus);
+        if (accountStatus === "approved") {
+          approved = true;
+        }
+      } else {
+        // إذا لم توجد الوثيقة في "users"، نحاول البحث في "pending_users"
+        const pendingQuery = query(collection(db, "pending_users"), where("uid", "==", user.uid));
+        const pendingSnapshot = await getDocs(pendingQuery);
+        if (!pendingSnapshot.empty) {
+          pendingSnapshot.forEach((docSnap) => {
+            console.log("وثيقة من pending_users:", docSnap.data());
+            accountStatus = docSnap.data().accountStatus;
+            console.log("حالة الحساب في pending_users:", accountStatus);
+            if (accountStatus === "approved") {
+              approved = true;
+            }
+          });
+        }
+      }
+
+      if (!approved) {
+        showNotification("error", "حسابك غير مفعل أو معلق. يرجى انتظار الموافقة من المسؤول.");
+        await signOut(auth);
+        return;
+      }
+
       showNotification("success", "تم تسجيل الدخول بنجاح!", 3000);
       window.location.href = 'index.html';
     } catch (error) {
       console.error("Login error:", error);
-      showNotification("error", "الحساب ليس مسجل", 3000);
+      showNotification("error", "بيانات الاعتماد غير صحيحة أو الحساب غير مفعل.", 3000);
     }
   });
 
-  // إدارة حالة التحميل (إن وُجدت عناصر تحميل)
   function toggleLoading(state) {
     const btn = document.querySelector('button[type="submit"]');
     if (btn) {
       btn.ariaBusy = state;
-      const btnText = btn.querySelector('.btn-text');
-      const loader = btn.querySelector('.loader');
-      if (btnText) btnText.hidden = state;
-      if (loader) loader.hidden = !state;
     }
   }
 </script>
+
 </body>
 </html>
