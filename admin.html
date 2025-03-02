@@ -203,260 +203,261 @@
   </div>
 
   <!-- سكريبت المسؤول -->
-  <script type="module">
-    // استيراد وحدات Firebase
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-    import {
-      getFirestore, collection, getDocs, getDoc, doc, deleteDoc, setDoc
-    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+<script type="module">
+  // استيراد وحدات Firebase (الإصدار 9.6.1)
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+  import {
+    getFirestore, collection, getDocs, getDoc, doc, deleteDoc, setDoc
+  } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
-    // إعدادات Firebase
-    const firebaseConfig = {
-  apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
-  authDomain: "project-hema.firebaseapp.com",
-  projectId: "project-hema",
-  storageBucket: "project-hema.firebasestorage.app",
-  messagingSenderId: "1079729179279",
-  appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
-  measurementId: "G-YFSTXKFQ9E"
-};
+  // إعدادات Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
+    authDomain: "project-hema.firebaseapp.com",
+    projectId: "project-hema",
+    storageBucket: "project-hema.firebasestorage.app",
+    messagingSenderId: "1079729179279",
+    appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
+    measurementId: "G-YFSTXKFQ9E"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-    // التحقق من صلاحية المسؤول
-    onAuthStateChanged(auth, async (user) => {
-      if (user && user.email === 'seebrahemsobhy@gmail.com') {
-        console.log('مرحبًا يا مسؤول!');
-        await fetchPendingUsers();
-        await fetchActivatedUsers();
-      } else {
-        alert('تم رفض الوصول.');
-        window.location.href = '/login.html';
-      }
-    });
-
-    // تبديل عرض الأقسام
-    const pendingTab = document.getElementById('pendingTab');
-    const activatedTab = document.getElementById('activatedTab');
-    const pendingSection = document.getElementById('pendingSection');
-    const activatedSection = document.getElementById('activatedSection');
-
-    pendingTab.addEventListener('click', () => {
-      pendingTab.classList.add('active');
-      activatedTab.classList.remove('active');
-      pendingSection.style.display = 'block';
-      activatedSection.style.display = 'none';
-    });
-
-    activatedTab.addEventListener('click', () => {
-      activatedTab.classList.add('active');
-      pendingTab.classList.remove('active');
-      activatedSection.style.display = 'block';
-      pendingSection.style.display = 'none';
-    });
-
-    // دالة لإنشاء صف التفاصيل
-    function createDetailsRow(detailsHtml) {
-      const detailsRow = document.createElement('tr');
-      detailsRow.classList.add('details-row');
-      const detailsCell = document.createElement('td');
-      detailsCell.colSpan = 7;
-      detailsCell.classList.add('details-cell');
-      detailsCell.innerHTML = detailsHtml;
-      detailsRow.appendChild(detailsCell);
-      return detailsRow;
+  // التحقق من صلاحية المسؤول
+  onAuthStateChanged(auth, async (user) => {
+    if (user && user.email === 'seebrahemsobhy@gmail.com') {
+      console.log('مرحبًا يا مسؤول!');
+      await fetchPendingUsers();
+      await fetchActivatedUsers();
+    } else {
+      alert('تم رفض الوصول.');
+      window.location.href = '/login.html';
     }
+  });
 
-    // دالة لتبديل عرض تفاصيل المستخدم
-    function toggleDetails(row, detailsHtml) {
-      if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
-        row.parentNode.removeChild(row.nextElementSibling);
-        row.querySelector('.expand-icon').classList.remove('rotate');
-      } else {
-        const detailsRow = createDetailsRow(detailsHtml);
-        row.parentNode.insertBefore(detailsRow, row.nextElementSibling);
-        row.querySelector('.expand-icon').classList.add('rotate');
-      }
+  // تبديل عرض الأقسام
+  const pendingTab = document.getElementById('pendingTab');
+  const activatedTab = document.getElementById('activatedTab');
+  const pendingSection = document.getElementById('pendingSection');
+  const activatedSection = document.getElementById('activatedSection');
+
+  pendingTab.addEventListener('click', () => {
+    pendingTab.classList.add('active');
+    activatedTab.classList.remove('active');
+    pendingSection.style.display = 'block';
+    activatedSection.style.display = 'none';
+  });
+
+  activatedTab.addEventListener('click', () => {
+    activatedTab.classList.add('active');
+    pendingTab.classList.remove('active');
+    activatedSection.style.display = 'block';
+    pendingSection.style.display = 'none';
+  });
+
+  // دالة لإنشاء صف تفاصيل المستخدم
+  function createDetailsRow(detailsHtml) {
+    const detailsRow = document.createElement('tr');
+    detailsRow.classList.add('details-row');
+    const detailsCell = document.createElement('td');
+    detailsCell.colSpan = 7;
+    detailsCell.classList.add('details-cell');
+    detailsCell.innerHTML = detailsHtml;
+    detailsRow.appendChild(detailsCell);
+    return detailsRow;
+  }
+
+  // دالة تبديل عرض تفاصيل المستخدم
+  function toggleDetails(row, detailsHtml) {
+    if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
+      row.parentNode.removeChild(row.nextElementSibling);
+      row.querySelector('.expand-icon').classList.remove('rotate');
+    } else {
+      const detailsRow = createDetailsRow(detailsHtml);
+      row.parentNode.insertBefore(detailsRow, row.nextElementSibling);
+      row.querySelector('.expand-icon').classList.add('rotate');
     }
+  }
 
-    // جلب طلبات التسجيل المعلقة من مجموعة "pending_users"
-    async function fetchPendingUsers() {
-      try {
-        const pendingSnapshot = await getDocs(collection(db, 'pending_users'));
-        const pendingTableBody = document.querySelector('#pendingTable tbody');
-        pendingTableBody.innerHTML = '';
-        pendingSnapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><input type="checkbox" class="pending-checkbox" data-id="${docSnap.id}" /></td>
-            <td>${data.username}</td>
-            <td>${data.fullName}</td>
-            <td>${data.email}</td>
-            <td>${data.phone}</td>
-            <td><span class="expand-icon">&#9654;</span></td>
-            <td>
-              <button class="action-btn accept-btn" onclick="acceptUser('${docSnap.id}')">قبول</button>
-              <button class="action-btn reject-btn" onclick="rejectUser('${docSnap.id}')">رفض</button>
-            </td>
+  // جلب طلبات التسجيل المعلقة من مجموعة "pending_users"
+  async function fetchPendingUsers() {
+    try {
+      const pendingSnapshot = await getDocs(collection(db, 'pending_users'));
+      const pendingTableBody = document.querySelector('#pendingTable tbody');
+      pendingTableBody.innerHTML = '';
+      pendingSnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="checkbox" class="pending-checkbox" data-id="${docSnap.id}" /></td>
+          <td>${data.username}</td>
+          <td>${data.fullName}</td>
+          <td>${data.email}</td>
+          <td>${data.phone}</td>
+          <td><span class="expand-icon">&#9654;</span></td>
+          <td>
+            <button class="action-btn accept-btn" onclick="acceptUser('${docSnap.id}')">قبول</button>
+            <button class="action-btn reject-btn" onclick="rejectUser('${docSnap.id}')">رفض</button>
+          </td>
+        `;
+        row.querySelector('.expand-icon').addEventListener('click', () => {
+          const detailsHtml = `
+            <strong>رقم هاتف الأب:</strong> ${data.fatherPhone}<br/>
+            <strong>رقم هاتف الأم:</strong> ${data.motherPhone}<br/>
+            <strong>المحافظة:</strong> ${data.governorate}<br/>
+            <strong>رمز التحقق:</strong> ${data.verificationCode}
           `;
-          row.querySelector('.expand-icon').addEventListener('click', () => {
-            const detailsHtml = `
-              <strong>رقم هاتف الأب:</strong> ${data.fatherPhone}<br/>
-              <strong>رقم هاتف الأم:</strong> ${data.motherPhone}<br/>
-              <strong>المحافظة:</strong> ${data.governorate}<br/>
-              <strong>رمز التحقق:</strong> ${data.verificationCode}
-            `;
-            toggleDetails(row, detailsHtml);
-          });
-          pendingTableBody.appendChild(row);
+          toggleDetails(row, detailsHtml);
         });
-      } catch (error) {
-        console.error('خطأ في جلب طلبات التسجيل:', error);
-      }
+        pendingTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('خطأ في جلب طلبات التسجيل:', error);
     }
+  }
 
-    // جلب الحسابات المفعلة من مجموعة "users"
-    async function fetchActivatedUsers() {
-      try {
-        const activatedSnapshot = await getDocs(collection(db, 'users'));
-        const activatedTableBody = document.querySelector('#activatedTable tbody');
-        activatedTableBody.innerHTML = '';
-        activatedSnapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><input type="checkbox" class="activated-checkbox" data-id="${docSnap.id}" /></td>
-            <td>${data.username}</td>
-            <td>${data.fullName}</td>
-            <td>${data.email}</td>
-            <td>${data.phone}</td>
-            <td><span class="expand-icon">&#9654;</span></td>
-            <td>
-              <button class="action-btn delete-btn" onclick="deleteActivatedUser('${docSnap.id}')">حذف</button>
-            </td>
+  // جلب الحسابات المفعلة من مجموعة "users"
+  async function fetchActivatedUsers() {
+    try {
+      const activatedSnapshot = await getDocs(collection(db, 'users'));
+      const activatedTableBody = document.querySelector('#activatedTable tbody');
+      activatedTableBody.innerHTML = '';
+      activatedSnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="checkbox" class="activated-checkbox" data-id="${docSnap.id}" /></td>
+          <td>${data.username}</td>
+          <td>${data.fullName}</td>
+          <td>${data.email}</td>
+          <td>${data.phone}</td>
+          <td><span class="expand-icon">&#9654;</span></td>
+          <td>
+            <button class="action-btn delete-btn" onclick="deleteActivatedUser('${docSnap.id}')">حذف</button>
+          </td>
+        `;
+        row.querySelector('.expand-icon').addEventListener('click', () => {
+          const detailsHtml = `
+            <strong>رقم هاتف الأب:</strong> ${data.fatherPhone}<br/>
+            <strong>رقم هاتف الأم:</strong> ${data.motherPhone}<br/>
+            <strong>المحافظة:</strong> ${data.governorate}<br/>
+            ${data.activatedAt ? `<strong>تاريخ التفعيل:</strong> ${data.activatedAt}` : ''}
           `;
-          row.querySelector('.expand-icon').addEventListener('click', () => {
-            const detailsHtml = `
-              <strong>رقم هاتف الأب:</strong> ${data.fatherPhone}<br/>
-              <strong>رقم هاتف الأم:</strong> ${data.motherPhone}<br/>
-              <strong>المحافظة:</strong> ${data.governorate}<br/>
-              ${data.activatedAt ? `<strong>تاريخ التفعيل:</strong> ${data.activatedAt}` : ''}
-            `;
-            toggleDetails(row, detailsHtml);
-          });
-          activatedTableBody.appendChild(row);
+          toggleDetails(row, detailsHtml);
         });
-      } catch (error) {
-        console.error('خطأ في جلب الحسابات المفعلة:', error);
-      }
+        activatedTableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('خطأ في جلب الحسابات المفعلة:', error);
     }
+  }
 
-    // العمليات الفردية
-
-    // قبول المستخدم: نقل بيانات المستخدم من "pending_users" إلى "users"
-    window.acceptUser = async function(userId) {
-      try {
-        const pendingDocRef = doc(db, 'pending_users', userId);
-        const pendingDocSnap = await getDoc(pendingDocRef);
-        if (pendingDocSnap.exists()) {
-          const data = pendingDocSnap.data();
-          await setDoc(doc(db, 'users', userId), {
-            ...data,
-            accountStatus: 'activated',
-            activatedAt: new Date().toISOString()
-          });
-          await deleteDoc(pendingDocRef);
-          showNotification('success', 'تم قبول المستخدم.');
-          fetchPendingUsers();
-          fetchActivatedUsers();
-        }
-      } catch (error) {
-        console.error('خطأ في قبول المستخدم:', error);
-        showNotification('error', 'حدث خطأ أثناء قبول المستخدم.');
-      }
-    };
-
-    // رفض المستخدم: حذف وثيقة من "pending_users"
-    window.rejectUser = async function(userId) {
-      try {
-        const pendingDocRef = doc(db, 'pending_users', userId);
+  // قبول المستخدم: نقل بيانات المستخدم من "pending_users" إلى "users" مع تحديث حالة الحساب
+  window.acceptUser = async function(userId) {
+    try {
+      const pendingDocRef = doc(db, 'pending_users', userId);
+      const pendingDocSnap = await getDoc(pendingDocRef);
+      if (pendingDocSnap.exists()) {
+        const data = pendingDocSnap.data();
+        // تأكد من تخزين الـ uid في البيانات
+        // هنا ننشئ وثيقة في مجموعة "users" بنفس الـ userId
+        await setDoc(doc(db, 'users', userId), {
+          ...data,
+          accountStatus: 'activated',  // أو "approved" حسب منطق التطبيق
+          activatedAt: new Date().toISOString(),
+          uid: data.uid || userId  // إذا لم يكن الحقل موجوداً، استخدم userId
+        });
         await deleteDoc(pendingDocRef);
-        showNotification('success', 'تم رفض المستخدم.');
+        showNotification('success', 'تم قبول المستخدم.');
         fetchPendingUsers();
-      } catch (error) {
-        console.error('خطأ في رفض المستخدم:', error);
-        showNotification('error', 'حدث خطأ أثناء رفض المستخدم.');
-      }
-    };
-
-    // حذف المستخدم من الحسابات المفعلة
-    window.deleteActivatedUser = async function(userId) {
-      try {
-        await deleteDoc(doc(db, 'users', userId));
-        showNotification('success', 'تم حذف المستخدم.');
         fetchActivatedUsers();
-      } catch (error) {
-        console.error('خطأ في حذف المستخدم:', error);
-        showNotification('error', 'حدث خطأ أثناء حذف المستخدم.');
       }
-    };
-
-    // الإجراءات الجماعية
-    document.getElementById('acceptSelectedPending').addEventListener('click', async () => {
-      const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
-      const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
-      for (const id of ids) {
-        await window.acceptUser(id);
-      }
-    });
-
-    document.getElementById('rejectSelectedPending').addEventListener('click', async () => {
-      const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
-      const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
-      for (const id of ids) {
-        await window.rejectUser(id);
-      }
-    });
-
-    document.getElementById('deleteSelectedActivated').addEventListener('click', async () => {
-      const checkboxes = document.querySelectorAll('.activated-checkbox:checked');
-      const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
-      for (const id of ids) {
-        await window.deleteActivatedUser(id);
-      }
-    });
-
-    // وظيفة "تحديد الكل" لكل جدول
-    document.getElementById('selectAllPending').addEventListener('change', function() {
-      const checked = this.checked;
-      document.querySelectorAll('.pending-checkbox').forEach(cb => cb.checked = checked);
-    });
-
-    document.getElementById('selectAllActivated').addEventListener('change', function() {
-      const checked = this.checked;
-      document.querySelectorAll('.activated-checkbox').forEach(cb => cb.checked = checked);
-    });
-
-    // دالة إشعار بسيطة
-    function showNotification(type, message) {
-      const notif = document.createElement('div');
-      notif.textContent = message;
-      notif.style.position = 'fixed';
-      notif.style.bottom = '20px';
-      notif.style.right = '20px';
-      notif.style.padding = '10px 20px';
-      notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
-      notif.style.color = '#fff';
-      notif.style.borderRadius = '5px';
-      notif.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
-      notif.style.zIndex = 1000;
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
+    } catch (error) {
+      console.error('خطأ في قبول المستخدم:', error);
+      showNotification('error', 'حدث خطأ أثناء قبول المستخدم.');
     }
-  </script>
+  };
+
+  // رفض المستخدم: حذف وثيقة من "pending_users"
+  window.rejectUser = async function(userId) {
+    try {
+      const pendingDocRef = doc(db, 'pending_users', userId);
+      await deleteDoc(pendingDocRef);
+      showNotification('success', 'تم رفض المستخدم.');
+      fetchPendingUsers();
+    } catch (error) {
+      console.error('خطأ في رفض المستخدم:', error);
+      showNotification('error', 'حدث خطأ أثناء رفض المستخدم.');
+    }
+  };
+
+  // حذف المستخدم من الحسابات المفعلة
+  window.deleteActivatedUser = async function(userId) {
+    try {
+      await deleteDoc(doc(db, 'users', userId));
+      showNotification('success', 'تم حذف المستخدم.');
+      fetchActivatedUsers();
+    } catch (error) {
+      console.error('خطأ في حذف المستخدم:', error);
+      showNotification('error', 'حدث خطأ أثناء حذف المستخدم.');
+    }
+  };
+
+  // الإجراءات الجماعية
+  document.getElementById('acceptSelectedPending').addEventListener('click', async () => {
+    const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
+    const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+    for (const id of ids) {
+      await window.acceptUser(id);
+    }
+  });
+
+  document.getElementById('rejectSelectedPending').addEventListener('click', async () => {
+    const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
+    const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+    for (const id of ids) {
+      await window.rejectUser(id);
+    }
+  });
+
+  document.getElementById('deleteSelectedActivated').addEventListener('click', async () => {
+    const checkboxes = document.querySelectorAll('.activated-checkbox:checked');
+    const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+    for (const id of ids) {
+      await window.deleteActivatedUser(id);
+    }
+  });
+
+  // وظيفة "تحديد الكل" لكل جدول
+  document.getElementById('selectAllPending').addEventListener('change', function() {
+    const checked = this.checked;
+    document.querySelectorAll('.pending-checkbox').forEach(cb => cb.checked = checked);
+  });
+
+  document.getElementById('selectAllActivated').addEventListener('change', function() {
+    const checked = this.checked;
+    document.querySelectorAll('.activated-checkbox').forEach(cb => cb.checked = checked);
+  });
+
+  // دالة إشعار بسيطة
+  function showNotification(type, message) {
+    const notif = document.createElement('div');
+    notif.textContent = message;
+    notif.style.position = 'fixed';
+    notif.style.bottom = '20px';
+    notif.style.right = '20px';
+    notif.style.padding = '10px 20px';
+    notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
+    notif.style.color = '#fff';
+    notif.style.borderRadius = '5px';
+    notif.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+    notif.style.zIndex = 1000;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+  }
+</script>
 </body>
 </html>
