@@ -97,7 +97,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-  import { getFirestore, query, collection, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
   // إعدادات Firebase
   const firebaseConfig = {
@@ -214,27 +214,30 @@
       let approved = false;
       let accountStatus = null;
 
-      // محاولة البحث في مجموعة "users"
-      const userDocRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      console.log("بيانات الوثيقة في users:", userDocSnap.exists() ? userDocSnap.data() : "غير موجودة");
-
-      if (userDocSnap.exists()) {
-        accountStatus = userDocSnap.data().accountStatus;
-        console.log("حالة الحساب في users:", accountStatus);
-        if (accountStatus === "approved") {
-          approved = true;
-        }
+      // البحث عن الوثيقة في مجموعة "users" باستخدام استعلام على حقل uid
+      const usersQuery = query(collection(db, "users"), where("uid", "==", user.uid));
+      const usersSnapshot = await getDocs(usersQuery);
+      console.log("عدد الوثائق في users:", usersSnapshot.size);
+      if (!usersSnapshot.empty) {
+        usersSnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          console.log("وثيقة من users:", data);
+          accountStatus = data.accountStatus;
+          if (accountStatus === "approved" || accountStatus === "activated") {
+            approved = true;
+          }
+        });
       } else {
         // إذا لم توجد الوثيقة في "users"، نحاول البحث في "pending_users"
         const pendingQuery = query(collection(db, "pending_users"), where("uid", "==", user.uid));
         const pendingSnapshot = await getDocs(pendingQuery);
+        console.log("عدد الوثائق في pending_users:", pendingSnapshot.size);
         if (!pendingSnapshot.empty) {
           pendingSnapshot.forEach((docSnap) => {
-            console.log("وثيقة من pending_users:", docSnap.data());
-            accountStatus = docSnap.data().accountStatus;
-            console.log("حالة الحساب في pending_users:", accountStatus);
-            if (accountStatus === "approved") {
+            const data = docSnap.data();
+            console.log("وثيقة من pending_users:", data);
+            accountStatus = data.accountStatus;
+            if (accountStatus === "approved" || accountStatus === "activated") {
               approved = true;
             }
           });
@@ -262,6 +265,5 @@
     }
   }
 </script>
-
 </body>
 </html>
