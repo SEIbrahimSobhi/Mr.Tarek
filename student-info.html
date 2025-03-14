@@ -1,155 +1,418 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>معلومات الطالب</title>
- <style>
- body {
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(to bottom, #f0f0f0, #d9d9d9);
-  color: #333;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ملف المستخدم</title>
+  <!-- استدعاء Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      --heading-font: "Nunito", sans-serif;
+      --nav-font: "Poppins", sans-serif;
 
-.student-info-container {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  width: 90%;
-  max-width: 500px;
-  text-align: center;
-}
+      --background-color: #f8f8f8;
+      --default-color: #444444;
+      --heading-color: #2d2d2d;
+      --accent-color: #e43c5c;
+      --surface-color: #ffffff;
+      --contrast-color: #ffffff;
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #444;
-}
+      scroll-behavior: smooth;
+    }
 
-.info-card {
-  background: #f9f9f9;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    body {
+      font-family: var(--default-font);
+      background: linear-gradient(135deg, #f8f8f8, #eaeaea);
+      color: var(--default-color);
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
 
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  padding: 10px;
-  background: #fff;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+    /* رأس الصفحة داخل كبسولة */
+    .header-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: 2px solid var(--accent-color);
+      border-radius: 30px;
+      padding: 0.8rem 1.2rem;
+      margin: 0 auto 2rem;
+      background-color: var(--surface-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      direction: ltr;
+    }
+    .header-pill .header-title {
+      font-family: var(--heading-font);
+      font-size: 1.8rem;
+      color: var(--heading-color);
+      direction: rtl;
+    }
+    .header-pill .header-icon {
+      font-size: 1.8rem;
+      color: var(--accent-color);
+    }
 
-.label {
-  font-weight: bold;
-  color: #666;
-}
+    /* تخطيط المحتوى العام لملف المستخدم */
+    .profile-content {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .profile-card-icon {
+      width: 30%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--accent-color);
+    }
+    .profile-card-icon i {
+      font-size: 8rem !important;
+    }
+    .profile-data {
+      width: 70%;
+      background-color: var(--surface-color);
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
 
-.value {
-  color: #333;
-}
+    .full-name {
+      font-family: var(--heading-font);
+      font-size: 1.8rem;
+      color: var(--heading-color);
+      margin-bottom: 0.3rem;
+    }
+    .full-name-underline {
+      width: 50%;
+      border-top: 2px solid var(--accent-color);
+      margin-bottom: 1.2rem;
+    }
 
-.logout-btn {
-  background: linear-gradient(135deg, #ff5a5f, #c81d25);
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  margin-top: 20px;
-}
+    .detail-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 0.4rem;
+    }
+    .detail-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .detail-label {
+      font-weight: bold;
+      color: var(--heading-color);
+    }
+    .detail-value {
+      color: var(--default-color);
+    }
+    .detail-icon {
+      font-size: 1.3rem;
+      color: var(--accent-color);
+    }
+    /* أيقونة التوثيق للمسؤول */
+    .verified-icon {
+      color: #1DA1F2;
+      margin-left: 5px;
+      font-size: 1rem;
+    }
 
-.logout-btn:hover {
-  background: linear-gradient(135deg, #c81d25, #ff5a5f);
-}
+    .logout-btn, .go-to-admin-btn {
+      display: block;
+      width: 100%;
+      padding: 0.85rem;
+      margin-top: 2rem;
+      text-align: center;
+      background-color: var(--accent-color);
+      color: var(--contrast-color);
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .logout-btn:hover, .go-to-admin-btn:hover {
+      background-color: #c3324b;
+    }
 
-.logout-btn:active {
-  transform: scale(0.95);
-}
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #loading {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    /* استعلامات الوسائط للشاشات الكبيرة */
+    @media screen and (min-width: 1200px) {
+      .container {
+        max-width: 1000px;
+      }
+      .profile-card-icon i {
+        font-size: 12rem !important;
+      }
+    }
+
+    /* استعلامات الوسائط للشاشات الصغيرة */
+    @media screen and (max-width: 768px) {
+      .profile-content {
+        flex-direction: column;
+        align-items: center;
+      }
+      .profile-card-icon {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+      .profile-data {
+        width: 100%;
+      }
+      .header-pill .header-title {
+        font-size: 1.4rem;
+      }
+      .header-pill .header-icon {
+        font-size: 1.4rem;
+      }
+      .full-name {
+        font-size: 1.4rem;
+      }
+      .detail-item {
+        font-size: 0.9rem;
+      }
+      .detail-icon {
+        font-size: 1rem;
+      }
+      .logout-btn, .go-to-admin-btn {
+        font-size: 0.9rem;
+        padding: 0.7rem;
+      }
+      #loading {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="student-info-container">
-    <h1>معلومات الطالب</h1>
-    <div class="info-card">
-      <div class="info-item">
-        <span class="label">اسم المستخدم:</span>
-        <span class="value" id="username">-</span>
-      </div>
-      <div class="info-item">
-        <span class="label">اسم الطالب:</span>
-        <span class="value" id="student-name">-</span>
-      </div>
-      <div class="info-item">
-        <span class="label">رقم الهاتف:</span>
-        <span class="value" id="phone">-</span>
-      </div>
-      <div class="info-item">
-        <span class="label">الإيميل:</span>
-        <span class="value" id="email">-</span>
-      </div>
+  <div class="container fade-in">
+    <!-- رأس الصفحة العامة -->
+    <div class="header-pill">
+      <span class="header-title">ملف المستخدم</span>
+      <i class="fa-solid fa-user-tie header-icon"></i>
     </div>
-    <button class="logout-btn" id="logout-btn">تسجيل الخروج</button>
+
+    <!-- قسم ملف الطالب (يظهر إذا كان المستخدم ليس لديه دور admin) -->
+    <div id="studentProfile" style="display:none;">
+      <div class="profile-content">
+        <div class="profile-card-icon">
+          <i class="fa-solid fa-address-card"></i>
+        </div>
+        <div class="profile-data">
+          <div class="full-name" id="studentName">اسم الطالب الرباعي</div>
+          <div class="full-name-underline"></div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">اسم المستخدم:</span>
+              <span class="detail-value" id="username">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-user detail-icon"></i>
+          </div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">البريد الإلكتروني:</span>
+              <span class="detail-value" id="email">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-envelope detail-icon"></i>
+          </div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">الهاتف:</span>
+              <span class="detail-value" id="phone">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-phone detail-icon"></i>
+          </div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">المحافظة:</span>
+              <span class="detail-value" id="governorate">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-location-dot detail-icon"></i>
+          </div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">هاتف الأب:</span>
+              <span class="detail-value" id="fatherPhone">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-phone-volume detail-icon"></i>
+          </div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">هاتف الأم:</span>
+              <span class="detail-value" id="motherPhone">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-phone-volume detail-icon"></i>
+          </div>
+        </div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">تسجيل خروج</button>
+    </div>
+
+    <!-- قسم ملف المسؤول (يظهر إذا كان المستخدم دوره admin أو بريده من عناوين المسؤولين) -->
+    <div id="adminProfile" style="display:none;">
+      <div class="profile-content">
+        <div class="profile-card-icon">
+          <i class="fa-solid fa-address-card"></i>
+        </div>
+        <div class="profile-data">
+          <div class="full-name" id="adminName">اسم المسؤول الرباعي</div>
+          <div class="full-name-underline"></div>
+          <!-- تفاصيل المسؤول -->
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">اسم المسؤول:</span>
+              <!-- سيتم إضافة أيقونة التوثيق بجانب اسم المسؤول -->
+              <span class="detail-value" id="usernameAdmin">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-user detail-icon"></i>
+          </div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">البريد الإلكتروني:</span>
+              <span class="detail-value" id="emailAdmin">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-envelope detail-icon"></i>
+          </div>
+          <div class="detail-item">
+            <div class="detail-text">
+              <span class="detail-label">الهاتف:</span>
+              <span class="detail-value" id="phoneAdmin">غير متوفر</span>
+            </div>
+            <i class="fa-solid fa-phone detail-icon"></i>
+          </div>
+        </div>
+      </div>
+      <!-- زر للانتقال إلى صفحة الأدمن -->
+      <button class="go-to-admin-btn" id="goToAdminBtn">الانتقال إلى صفحة الأدمن</button>
+      <button class="logout-btn" id="logoutBtn2" style="margin-top:1rem;">تسجيل خروج</button>
+    </div>
+
+    <div id="loading">جاري تحميل بيانات الحساب...</div>
   </div>
 
-  <!-- جافا سكريبت لتحميل البيانات وتسجيل الخروج -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+  import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
-    // تهيئة Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDO4K33SYDaeBgYweqsEXni9QQ863DI_Pc",
-      authDomain: "mr-tarek-2e40f.firebaseapp.com",
-      projectId: "mr-tarek-2e40f",
-      storageBucket: "mr-tarek-2e40f.appspot.com",
-      messagingSenderId: "807997869740",
-      appId: "1:807997869740:web:8eca7473d24693bf861909"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
+    authDomain: "project-hema.firebaseapp.com",
+    projectId: "project-hema",
+    storageBucket: "project-hema.firebasestorage.app",
+    messagingSenderId: "1079729179279",
+    appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
+    measurementId: "G-YFSTXKFQ9E"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // تحميل بيانات المستخدم
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          document.getElementById("username").textContent = data.username || "-";
-          document.getElementById("student-name").textContent = data.studentName || "-";
-          document.getElementById("phone").textContent = data.phone || "-";
-          document.getElementById("email").textContent = data.email || "-";
-        }
-      } else {
-        window.location.href = "login.html";
-      }
-    });
+  // قائمة عناوين البريد الإلكتروني الخاصة بالمسؤولين
+  const adminEmails = [
+    "seebrahemsobhy@gmail.com",
+    "tarekk1552@gmail.com",
+    "ahmedloda255@gmail.com",
+    "admin3@gmail.com"
+  ];
 
-    // تسجيل الخروج
-    document.getElementById("logout-btn").addEventListener("click", async () => {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
       try {
-        await signOut(auth);
-        window.location.href = "login.html";
+        // محاولة جلب بيانات المستخدم من مجموعة "users"
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          const data = userDocSnap.data();
+          // تم إزالة عرض بيانات المستخدم في وحدة التحكم
+
+          // التحقق مما إذا كان البريد من ضمن المسؤولين
+          if (adminEmails.includes(user.email.toLowerCase())) {
+            // عرض قسم المسؤول
+            document.getElementById('adminProfile').style.display = "block";
+            document.getElementById('studentProfile').style.display = "none";
+            document.getElementById('adminName').textContent = data.fullName || 'اسم المسؤول الرباعي';
+            // إضافة أيقونة التوثيق بجانب اسم المسؤول
+            document.getElementById('usernameAdmin').innerHTML = (data.username || 'غير متوفر') + ' <i class="fa-solid fa-circle-check verified-icon"></i>';
+            document.getElementById('emailAdmin').textContent = data.email || 'غير متوفر';
+            document.getElementById('phoneAdmin').textContent = data.phone || 'غير متوفر';
+          } else {
+            // حساب طالب
+            document.getElementById('studentProfile').style.display = "block";
+            document.getElementById('adminProfile').style.display = "none";
+            document.getElementById('studentName').textContent = data.fullName || 'اسم الطالب الرباعي';
+            document.getElementById('username').textContent = data.username || 'غير متوفر';
+            document.getElementById('email').textContent = data.email || 'غير متوفر';
+            document.getElementById('phone').textContent = data.phone || 'غير متوفر';
+            document.getElementById('governorate').textContent = data.governorate || 'غير متوفر';
+            document.getElementById('fatherPhone').textContent = data.fatherPhone || 'غير متوفر';
+            document.getElementById('motherPhone').textContent = data.motherPhone || 'غير متوفر';
+          }
+          document.getElementById('loading').style.display = 'none';
+        } else {
+          document.getElementById('loading').textContent = 'لم يتم العثور على بيانات الحساب.';
+        }
       } catch (error) {
-        console.error("خطأ أثناء تسجيل الخروج:", error.message);
-        alert("حدث خطأ أثناء تسجيل الخروج.");
+        console.error('خطأ في جلب بيانات الحساب:', error);
+        document.getElementById('loading').textContent = 'حدث خطأ أثناء تحميل البيانات.';
       }
-    });
-  </script>
+    } else {
+      window.location.href = '/login.html';
+    }
+  });
+
+  // زر تسجيل الخروج لقسم الطالب
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    try {
+      await signOut(auth);
+      window.location.href = '/login.html';
+    } catch (error) {
+      console.error('خطأ في تسجيل الخروج:', error);
+    }
+  });
+
+  // زر تسجيل الخروج لقسم المسؤول
+  document.getElementById('logoutBtn2').addEventListener('click', async () => {
+    try {
+      await signOut(auth);
+      window.location.href = '/login.html';
+    } catch (error) {
+      console.error('خطأ في تسجيل الخروج:', error);
+    }
+  });
+
+  // زر الانتقال إلى صفحة الأدمن
+  document.getElementById('goToAdminBtn').addEventListener('click', () => {
+    window.location.href = '/admin.html';
+  });
+</script>
 </body>
 </html>
