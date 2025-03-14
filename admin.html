@@ -4,308 +4,276 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة تحكم المسؤول</title>
-  <style>/* ──────────────────────────────── */
-/* تعريف المتغيرات الأساسية (CSS Variables) */
-/* ──────────────────────────────── */
-:root {
-  --primary-color: #3a86ff;
-  --secondary-color: #ff006e;
-  --accent-color: #8338ec;
-  --light-bg: #f7f7f7;
-  --text-color: #333;
-  --header-gradient: linear-gradient(135deg, #3a86ff, #8338ec);
-  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* ──────────────────────────────── */
-/* إعادة تعيين الأنماط العامة */
-/* ──────────────────────────────── */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* ──────────────────────────────── */
-/* تنسيق الجسم العام */
-/* ──────────────────────────────── */
-body {
-  font-family: 'Cairo', 'Segoe UI', sans-serif;
-  background-color: var(--light-bg);
-  color: var(--text-color);
-  direction: rtl;
-  line-height: 1.6;
-  padding: 20px;
-}
-
-/* ──────────────────────────────── */
-/* رأس الصفحة */
-/* ──────────────────────────────── */
-header {
-  background: var(--header-gradient);
-  color: #fff;
-  text-align: center;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: var(--box-shadow);
-  margin-bottom: 30px;
-}
-
-/* ──────────────────────────────── */
-/* شريط التنقل */
-/* ──────────────────────────────── */
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-}
-
-nav button {
-  background: #fff;
-  border: 2px solid var(--primary-color);
-  padding: 12px 25px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
-  font-weight: bold;
-}
-
-nav button:hover,
-nav button.active {
-  background: var(--primary-color);
-  color: #fff;
-  transform: scale(1.05);
-}
-
-/* ──────────────────────────────── */
-/* الحاوية الرئيسية */
-/* ──────────────────────────────── */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: var(--box-shadow);
-}
-
-/* ──────────────────────────────── */
-/* عناوين الأقسام */
-/* ──────────────────────────────── */
-h2 {
-  margin-bottom: 20px;
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 5px;
-}
-
-/* ──────────────────────────────── */
-/* تنسيق الجداول */
-/* ──────────────────────────────── */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-th,
-td {
-  padding: 12px 15px;
-  text-align: center;
-  border: 1px solid #e0e0e0;
-}
-
-th {
-  background: #f1f1f1;
-  font-weight: bold;
-}
-
-tr:nth-child(even) {
-  background: #fafafa;
-}
-
-/* ──────────────────────────────── */
-/* أزرار الإجراءات */
-/* ──────────────────────────────── */
-.action-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin: 0 2px;
-  transition: background 0.3s ease;
-}
-
-.accept-btn {
-  background: #28a745;
-  color: #fff;
-}
-
-.accept-btn:hover {
-  background: #218838;
-}
-
-.reject-btn,
-.delete-btn {
-  background: #dc3545;
-  color: #fff;
-}
-
-.reject-btn:hover,
-.delete-btn:hover {
-  background: #c82333;
-}
-
-/* ──────────────────────────────── */
-/* إجراءات مجمعة */
-/* ──────────────────────────────── */
-.bulk-actions {
-  text-align: right;
-  margin-bottom: 15px;
-}
-
-.bulk-actions button {
-  padding: 10px 18px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 4px;
-  background: var(--primary-color);
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.bulk-actions button:hover {
-  background: #357abd;
-}
-
-/* ──────────────────────────────── */
-/* تفاصيل السطر */
-/* ──────────────────────────────── */
-.details-row {
-  background: #e0f7fa;
-}
-
-.details-cell {
-  padding: 15px;
-  text-align: right;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.expand-icon {
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: transform 0.3s ease;
-  display: inline-block;
-}
-
-.expand-icon.rotate {
-  transform: rotate(90deg);
-}
-
-/* ──────────────────────────────── */
-/* تنسيق نموذج الإرسال */
-/* ──────────────────────────────── */
-form {
-  max-width: 600px;
-  margin: 0 auto;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: var(--box-shadow);
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: var(--primary-color);
-}
-
-.form-group input[type="text"],
-.form-group input[type="date"],
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: border-color 0.3s ease;
-}
-
-.form-group input[type="text"]:focus,
-.form-group input[type="date"]:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--primary-color);
-  outline: none;
-}
-
-.form-group input[type="file"] {
-  border: none;
-}
-
-form button[type="submit"] {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-form button[type="submit"]:hover {
-  background: #357abd;
-}
-
-/* ──────────────────────────────── */
-/* تنسيق الإشعارات */
-/* ──────────────────────────────── */
-.notification {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 15px 25px;
-  border-radius: 8px;
-  box-shadow: var(--box-shadow);
-  color: #fff;
-  background: var(--primary-color);
-  z-index: 1000;
-}
-
-/* ──────────────────────────────── */
-/* استجابة الشاشة (Responsive) */
-/* ──────────────────────────────── */
-@media (max-width: 768px) {
-  th,
-  td {
-    padding: 10px 12px;
-    font-size: 0.85rem;
-  }
-
-  nav button {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-
-  .bulk-actions {
-    text-align: center;
-  }
-}
-
+  <style>
+    /* تصميم مُحسن للوحة تحكم المسؤول */
+    body {
+      font-family: 'Tajawal', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eef2f7;
+      direction: rtl;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      background: #f8f9fa;
+      padding: 0.5rem;
+      border-bottom: 1px solid #ddd;
+    }
+    nav button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #ddd;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+      border-radius: 4px;
+    }
+    nav button.active,
+    nav button:hover {
+      background: #007bff;
+      color: #fff;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    h2 {
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      color: #007bff;
+    }
+    .bulk-actions {
+      margin-bottom: 1rem;
+      text-align: right;
+    }
+    .bulk-actions button {
+      padding: 0.4rem 0.8rem;
+      margin-left: 0.5rem;
+      background: #007bff;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .bulk-actions button:hover {
+      background: #0056b3;
+    }
+    .show-all-btn {
+      display: inline-block;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .show-all-btn:hover {
+      background: #218838;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+    table thead {
+      background: #007bff;
+    }
+    table thead th {
+      color: #fff;
+      padding: 0.75rem;
+      border: 1px solid #0062cc;
+    }
+    table tbody tr {
+      background: #fafafa;
+      transition: background 0.3s;
+    }
+    table tbody tr:nth-child(even) {
+      background: #f1f1f1;
+    }
+    table tbody tr:hover {
+      background: #e9ecef;
+    }
+    table th, table td {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    /* عمود التفاصيل بدون عنوان */
+    table thead th:nth-child(6) {
+      /* لا يوجد نص */
+    }
+    .expand-icon {
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .expand-icon.rotate {
+      transform: rotate(90deg);
+    }
+    .details-row {
+      background: #f9f9f9;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    .details-cell {
+      text-align: left;
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid #ddd;
+    }
+    /* تنسيق تفاصيل المستخدمين باستخدام Flex مع انميشن */
+    .details-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .detail-item {
+      flex: 1 1 45%;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      animation: slideIn 0.5s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideIn {
+      from { transform: translateX(20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    /* أيقونة التوثيق للمسؤول */
+    .verified-icon {
+      color: #1DA1F2;
+      margin-left: 5px;
+      font-size: 1rem;
+    }
+    /* تنسيق أيقونات الإجراءات داخل مستطيل منفصل لكل أيقونة (أفقي) */
+    .action-container {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: center;
+    }
+    .action-box {
+      width: 2.5rem;
+      height: 2.5rem;
+      line-height: 2.5rem;
+      text-align: center;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      background: #f7f7f7;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .action-box:hover {
+      background: rgba(0,0,0,0.05);
+      transform: scale(1.1);
+    }
+    .action-icon {
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .action-box.accept {
+      border-color: #28a745;
+      color: #28a745;
+    }
+    .action-box.reject {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+    .action-box.delete {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #333;
+      color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
+      font-size: 1rem;
+    }
+    /* أنماط النافذة (modal) للتأكيد */
+    #confirmationModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    #confirmationModal .modal-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    #confirmationModal .modal-content {
+      position: relative;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 2100;
+    }
+    #confirmationModal .modal-content p {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    #confirmationModal .modal-content button {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #confirmationModal .modal-content button#confirmRejectBtn {
+      background: #dc3545;
+      color: #fff;
+    }
+    #confirmationModal .modal-content button#cancelRejectBtn {
+      background: #6c757d;
+      color: #fff;
+    }
   </style>
+  <!-- تضمين مكتبة EmailJS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    // تهيئة EmailJS الأساسي
+    emailjs.init("YOUR_PRIMARY_USER_ID");
+  </script>
+  <!-- تضمين FontAwesome للأيقونات -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <header>
@@ -314,9 +282,12 @@ form button[type="submit"]:hover {
   <nav>
     <button id="pendingTab" class="active">طلبات التسجيل المعلقة</button>
     <button id="activatedTab">الحسابات المفعلة</button>
-    <button id="sendTab">إرسال الواجبات/الامتحانات</button>
   </nav>
-  <div class="container">
+  <main class="container">
+    <!-- زر عرض كافة التفاصيل -->
+    <div style="text-align: right; margin-bottom: 1rem;">
+      <button id="showAllDetailsBtn" class="show-all-btn">عرض كافة التفاصيل</button>
+    </div>
     <!-- قسم طلبات التسجيل المعلقة -->
     <section id="pendingSection">
       <h2>طلبات التسجيل المعلقة</h2>
@@ -332,7 +303,7 @@ form button[type="submit"]:hover {
             <th>الاسم الكامل</th>
             <th>البريد الإلكتروني</th>
             <th>الهاتف</th>
-            <th>التفاصيل</th>
+            <th></th> <!-- عمود التفاصيل بدون عنوان -->
             <th>الإجراءات</th>
           </tr>
         </thead>
@@ -355,7 +326,7 @@ form button[type="submit"]:hover {
             <th>الاسم الكامل</th>
             <th>البريد الإلكتروني</th>
             <th>الهاتف</th>
-            <th>التفاصيل</th>
+            <th></th> <!-- عمود التفاصيل بدون عنوان -->
             <th>الإجراءات</th>
           </tr>
         </thead>
@@ -364,62 +335,29 @@ form button[type="submit"]:hover {
         </tbody>
       </table>
     </section>
-    <!-- قسم إرسال الواجبات/الامتحانات -->
-    <section id="sendSection" style="display: none;">
-      <h2>إرسال الواجبات / الامتحانات</h2>
-      <form id="sendForm">
-        <div class="form-group">
-          <label for="taskType">نوع العملية:</label>
-          <select id="taskType" required>
-            <option value="">اختر النوع</option>
-            <option value="assignment">واجب</option>
-            <option value="exam">امتحان</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="taskTitle">العنوان:</label>
-          <input type="text" id="taskTitle" placeholder="أدخل العنوان" required />
-        </div>
-        <div class="form-group">
-          <label for="taskDescription">الوصف:</label>
-          <textarea id="taskDescription" rows="4" placeholder="أدخل الوصف" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="taskDueDate">تاريخ الإرسال:</label>
-          <input type="date" id="taskDueDate" required />
-        </div>
-        <div class="form-group">
-          <label for="taskFile">ملف مرفق (اختياري):</label>
-          <input type="file" id="taskFile" accept="image/*,application/pdf" />
-        </div>
-        <button type="submit">إرسال</button>
-      </form>
-    </section>
+  </main>
+
+  <!-- نافذة التأكيد (Modal) عند الضغط على أيقونة الرفض -->
+  <div id="confirmationModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <p>هل أنت متأكد من رفض المستخدم؟</p>
+      <button id="confirmRejectBtn">نعم، ارفض</button>
+      <button id="cancelRejectBtn">إلغاء</button>
+    </div>
   </div>
 
   <!-- سكريبت المسؤول -->
   <script type="module">
-    // استيراد وحدات Firebase (الإصدار 9.6.1)
+    // admin-tasks.js
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-    import {
-      getFirestore,
-      collection,
-      getDocs,
-      getDoc,
-      doc,
-      deleteDoc,
-      setDoc
-    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-    import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-functions.js';
-    import {
-      getStorage,
-      ref,
-      uploadBytes,
-      getDownloadURL
-    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
+    import { getFirestore, collection, getDocs, getDoc, doc, deleteDoc, setDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+    import { getFunctions } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-functions.js';
+    import { getStorage } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
+    import * as XLSX from 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
 
-    // إعدادات Firebase
+    // إعدادات Firebase (نفس الإعدادات)
     const firebaseConfig = {
       apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
       authDomain: "project-hema.firebaseapp.com",
@@ -434,6 +372,22 @@ form button[type="submit"]:hover {
     const db = getFirestore(app);
     const auth = getAuth(app);
     const functions = getFunctions(app);
+    const storage = getStorage(app);
+
+    // قائمة حسابات المسؤول
+    const adminEmails = [
+      "seebrahemsobhy@gmail.com",
+      "tarekk1552@gmail.com",
+      "ahmedloda255@gmail.com",
+      "admin3@gmail.com"
+    ];
+
+    // متغير لتخزين معرّف المستخدم المرشح للرفض
+    let rejectCandidateId = null;
+
+    // متغيرات لتتبع حالة زر "عرض كافة التفاصيل" لكل جدول
+    let allDetailsShownPending = false;
+    let allDetailsShownActivated = false;
 
     // التحقق من صلاحية المسؤول
     onAuthStateChanged(auth, async (user) => {
@@ -450,39 +404,28 @@ form button[type="submit"]:hover {
     // تبديل عرض الأقسام
     const pendingTab = document.getElementById('pendingTab');
     const activatedTab = document.getElementById('activatedTab');
-    const sendTab = document.getElementById('sendTab');
     const pendingSection = document.getElementById('pendingSection');
     const activatedSection = document.getElementById('activatedSection');
-    const sendSection = document.getElementById('sendSection');
 
     pendingTab.addEventListener('click', () => {
       pendingTab.classList.add('active');
       activatedTab.classList.remove('active');
-      sendTab.classList.remove('active');
       pendingSection.style.display = 'block';
       activatedSection.style.display = 'none';
-      sendSection.style.display = 'none';
+      document.getElementById('showAllDetailsBtn').textContent = "عرض كافة التفاصيل";
+      allDetailsShownPending = false;
     });
 
     activatedTab.addEventListener('click', () => {
       activatedTab.classList.add('active');
       pendingTab.classList.remove('active');
-      sendTab.classList.remove('active');
       activatedSection.style.display = 'block';
       pendingSection.style.display = 'none';
-      sendSection.style.display = 'none';
+      document.getElementById('showAllDetailsBtn').textContent = "عرض كافة التفاصيل";
+      allDetailsShownActivated = false;
     });
 
-    sendTab.addEventListener('click', () => {
-      sendTab.classList.add('active');
-      pendingTab.classList.remove('active');
-      activatedTab.classList.remove('active');
-      sendSection.style.display = 'block';
-      pendingSection.style.display = 'none';
-      activatedSection.style.display = 'none';
-    });
-
-    // دالة لإظهار إشعار بسيط
+    // دالة إشعار بسيطة
     function showNotification(type, message) {
       const notif = document.createElement('div');
       notif.textContent = message;
@@ -492,19 +435,19 @@ form button[type="submit"]:hover {
       setTimeout(() => notif.remove(), 3000);
     }
 
-    // دالة لإنشاء صف تفاصيل المستخدم
+    // دالة لإنشاء صف تفاصيل المستخدم مع تنسيق Flex و انميشن
     function createDetailsRow(detailsHtml) {
       const detailsRow = document.createElement('tr');
       detailsRow.classList.add('details-row');
       const detailsCell = document.createElement('td');
       detailsCell.colSpan = 7;
       detailsCell.classList.add('details-cell');
-      detailsCell.innerHTML = detailsHtml;
+      detailsCell.innerHTML = `<div class="details-content">${detailsHtml}</div>`;
       detailsRow.appendChild(detailsCell);
       return detailsRow;
     }
 
-    // دالة تبديل عرض تفاصيل المستخدم
+    // دالة تبديل عرض تفاصيل المستخدم مع انميشن
     function toggleDetails(row, detailsHtml) {
       if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
         row.parentNode.removeChild(row.nextElementSibling);
@@ -514,6 +457,63 @@ form button[type="submit"]:hover {
         row.parentNode.insertBefore(detailsRow, row.nextElementSibling);
         row.querySelector('.expand-icon').classList.add('rotate');
       }
+    }
+
+    // زر "عرض كافة التفاصيل" لتبديل حالة كافة الصفوف في القسم الحالي
+    document.getElementById('showAllDetailsBtn').addEventListener('click', () => {
+      if (pendingSection.style.display !== 'none') {
+        const rows = document.querySelectorAll('#pendingTable tbody tr');
+        rows.forEach((row) => {
+          const expandIcon = row.querySelector('.expand-icon');
+          if (expandIcon) {
+            if (!allDetailsShownPending) {
+              if (!row.nextElementSibling || !row.nextElementSibling.classList.contains('details-row')) {
+                expandIcon.click();
+              }
+            } else {
+              if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
+                expandIcon.click();
+              }
+            }
+          }
+        });
+        allDetailsShownPending = !allDetailsShownPending;
+        document.getElementById('showAllDetailsBtn').textContent = allDetailsShownPending ? "إخفاء كافة التفاصيل" : "عرض كافة التفاصيل";
+      } else if (activatedSection.style.display !== 'none') {
+        const rows = document.querySelectorAll('#activatedTable tbody tr');
+        rows.forEach((row) => {
+          const expandIcon = row.querySelector('.expand-icon');
+          if (expandIcon) {
+            if (!allDetailsShownActivated) {
+              if (!row.nextElementSibling || !row.nextElementSibling.classList.contains('details-row')) {
+                expandIcon.click();
+              }
+            } else {
+              if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
+                expandIcon.click();
+              }
+            }
+          }
+        });
+        allDetailsShownActivated = !allDetailsShownActivated;
+        document.getElementById('showAllDetailsBtn').textContent = allDetailsShownActivated ? "إخفاء كافة التفاصيل" : "عرض كافة التفاصيل";
+      }
+    });
+
+    // دالة فرز الحسابات: المسؤول أولاً، ثم الطلاب بترتيب أبجدي باللغة العربية
+    function sortActivatedDocs(docs) {
+      return docs.sort((a, b) => {
+        const aData = a.data();
+        const bData = b.data();
+        const aIsAdmin = adminEmails.includes(aData.email);
+        const bIsAdmin = adminEmails.includes(bData.email);
+        if (aIsAdmin && !bIsAdmin) return -1;
+        if (!aIsAdmin && bIsAdmin) return 1;
+        if (aIsAdmin && bIsAdmin) {
+          return aData.username.localeCompare(bData.username, "ar");
+        }
+        return aData.fullName.localeCompare(bData.fullName, "ar");
+      });
     }
 
     // جلب طلبات التسجيل المعلقة من مجموعة "pending_users"
@@ -533,16 +533,22 @@ form button[type="submit"]:hover {
             <td>${data.phone || ''}</td>
             <td><span class="expand-icon">&#9654;</span></td>
             <td>
-              <button class="action-btn accept-btn" onclick="acceptUser('${docSnap.id}')">قبول</button>
-              <button class="action-btn reject-btn" onclick="rejectUser('${docSnap.id}')">رفض</button>
+              <div class="action-container">
+                <div class="action-box accept">
+                  <i class="fa-solid fa-check action-icon"></i>
+                </div>
+                <div class="action-box reject">
+                  <i class="fa-solid fa-xmark action-icon" onclick="confirmReject('${docSnap.id}')"></i>
+                </div>
+              </div>
             </td>
           `;
           row.querySelector('.expand-icon').addEventListener('click', () => {
             const detailsHtml = `
-              <strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}<br/>
-              <strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}<br/>
-              <strong>المحافظة:</strong> ${data.governorate || 'غير متوفر'}<br/>
-              <strong>رمز التحقق:</strong> ${data.verificationCode || 'غير متوفر'}
+              <div class="detail-item"><strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}</div>
+              <div class="detail-item"><strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}</div>
+              <div class="detail-item"><strong>المحافظة:</strong> ${data.verificationCode ? data.verificationCode : 'غير متوفر'}</div>
+              <div class="detail-item"><strong>رمز التحقق:</strong> ${data.verificationCode || 'غير متوفر'}</div>
             `;
             toggleDetails(row, detailsHtml);
           });
@@ -553,35 +559,55 @@ form button[type="submit"]:hover {
       }
     }
 
-    // جلب الحسابات المفعلة من مجموعة "users"
+    // جلب الحسابات المفعلة من مجموعة "users" وفرزها بحيث تظهر المسؤولين في الأعلى وعدم عرض رمز السهم للمسؤولين
     async function fetchActivatedUsers() {
       try {
         const activatedSnapshot = await getDocs(collection(db, 'users'));
+        let docs = [];
+        activatedSnapshot.forEach((docSnap) => {
+          docs.push(docSnap);
+        });
+        docs = sortActivatedDocs(docs);
         const activatedTableBody = document.querySelector('#activatedTable tbody');
         activatedTableBody.innerHTML = '';
-        activatedSnapshot.forEach((docSnap) => {
+        docs.forEach((docSnap) => {
           const data = docSnap.data();
+          const isAdmin = adminEmails.includes(data.email);
+          const usernameDisplay = isAdmin
+            ? `${data.username} <i class="fa-solid fa-circle-check verified-icon"></i>`
+            : data.username;
+          const detailsCell = isAdmin ? '' : '<span class="expand-icon">&#9654;</span>';
           const row = document.createElement('tr');
           row.innerHTML = `
             <td><input type="checkbox" class="activated-checkbox" data-id="${docSnap.id}" /></td>
-            <td>${data.username || ''}</td>
+            <td>${usernameDisplay}</td>
             <td>${data.fullName || ''}</td>
             <td>${data.email || ''}</td>
             <td>${data.phone || ''}</td>
-            <td><span class="expand-icon">&#9654;</span></td>
+            <td>${detailsCell}</td>
             <td>
-              <button class="action-btn delete-btn" onclick="deleteActivatedUser('${docSnap.id}')">حذف</button>
+              <div class="action-container">
+                <div class="action-box delete">
+                  <i class="fa-solid fa-trash action-icon" onclick="deleteActivatedUser('${docSnap.id}')"></i>
+                </div>
+              </div>
             </td>
           `;
-          row.querySelector('.expand-icon').addEventListener('click', () => {
-            const detailsHtml = `
-              <strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}<br/>
-              <strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}<br/>
-              <strong>المحافظة:</strong> ${data.governorate || 'غير متوفر'}<br/>
-              ${data.activatedAt ? `<strong>تاريخ التفعيل:</strong> ${data.activatedAt}` : ''}
-            `;
-            toggleDetails(row, detailsHtml);
-          });
+          if (!isAdmin) {
+            const expandIcon = row.querySelector('.expand-icon');
+            if (expandIcon) {
+              expandIcon.addEventListener('click', () => {
+                const detailsHtml = `
+                  <div class="detail-item"><strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}</div>
+                  <div class="detail-item"><strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}</div>
+                  <div class="detail-item"><strong>المحافظة:</strong> ${data.governorate || 'غير متوفر'}</div>
+                  ${data.activatedAt ? `<div class="detail-item"><strong>تاريخ التفعيل:</strong> ${data.activatedAt}</div>` : ''}
+                  <div class="detail-item"><strong>رمز التحقق:</strong> ${data.verificationCode || 'غير متوفر'}</div>
+                `;
+                toggleDetails(row, detailsHtml);
+              });
+            }
+          }
           activatedTableBody.appendChild(row);
         });
       } catch (error) {
@@ -589,18 +615,45 @@ form button[type="submit"]:hover {
       }
     }
 
-    // دالة لحذف المستخدم من Authentication عبر دالة سحابية (يجب إعدادها على Firebase Cloud Functions)
-    async function deleteUserFromAuth(uid) {
+    // دالة مشتركة لإرسال بريد عبر EmailJS باستخدام آلية عداد الرسائل
+    async function sendEmailNotification(serviceIdPrimary, templateIdPrimary, serviceIdAlt, templateIdAlt, params) {
       try {
-        const deleteUser = httpsCallable(functions, 'deleteUserFromAuth');
-        await deleteUser({ uid });
-        console.log('تم حذف المستخدم من Authentication');
+        let serviceId, templateId;
+        if (emailMessagesSent < EMAILJS_LIMIT) {
+          serviceId = serviceIdPrimary;
+          templateId = templateIdPrimary;
+        } else {
+          emailjs.init("YOUR_ALTERNATIVE_USER_ID");
+          serviceId = serviceIdAlt;
+          templateId = templateIdAlt;
+        }
+        await emailjs.send(serviceId, templateId, params);
+        emailMessagesSent++;
+        localStorage.setItem("emailMessagesSent", emailMessagesSent);
       } catch (error) {
-        console.error('خطأ في حذف المستخدم من Authentication:', error);
+        console.error("فشل إرسال البريد:", error);
       }
     }
 
-    // قبول المستخدم: نقل بيانات المستخدم من "pending_users" إلى "users" مع تحديث حالة الحساب
+    // إرسال إشعار قبول الحساب
+    async function sendAcceptNotification(email, username) {
+      await sendEmailNotification(
+        "service_4de4l3i", "template_accept",
+        "service_alt", "template_accept_alt",
+        { email, username }
+      );
+    }
+
+    // إرسال إشعار رفض الحساب
+    async function sendRejectNotification(email, username) {
+      await sendEmailNotification(
+        "service_4de4l3i", "template_reject",
+        "service_alt", "template_reject_alt",
+        { email, username }
+      );
+    }
+
+    // قبول المستخدم: نقل بيانات المستخدم من "pending_users" إلى "users"
     window.acceptUser = async function(userId) {
       try {
         const pendingDocRef = doc(db, 'pending_users', userId);
@@ -615,6 +668,7 @@ form button[type="submit"]:hover {
           });
           await deleteDoc(pendingDocRef);
           showNotification('success', 'تم قبول المستخدم.');
+          await sendAcceptNotification(data.email, data.username);
           fetchPendingUsers();
           fetchActivatedUsers();
         }
@@ -624,7 +678,13 @@ form button[type="submit"]:hover {
       }
     };
 
-    // رفض المستخدم: حذف الوثيقة من "pending_users" وحذف الحساب من Authentication
+    // تعريف الدالة confirmReject وربطها بالنطاق العام (window) ليكون بالإمكان استخدامها في onclick
+    window.confirmReject = function(userId) {
+      rejectCandidateId = userId;
+      document.getElementById('confirmationModal').style.display = 'flex';
+    };
+
+    // رفض المستخدم: حذف الوثيقة من "pending_users" وإرسال إشعار بالرفض
     window.rejectUser = async function(userId) {
       try {
         const pendingDocRef = doc(db, 'pending_users', userId);
@@ -632,11 +692,8 @@ form button[type="submit"]:hover {
         if (pendingDocSnap.exists()) {
           const data = pendingDocSnap.data();
           await deleteDoc(pendingDocRef);
-          // إذا كان هناك uid في البيانات، نقوم بحذف الحساب من Authentication
-          if (data.uid) {
-            await deleteUserFromAuth(data.uid);
-          }
-          showNotification('success', 'تم رفض المستخدم وحذفه من Auth.');
+          showNotification('success', 'تم رفض المستخدم وحذفه.');
+          await sendRejectNotification(data.email, data.username);
           fetchPendingUsers();
         }
       } catch (error) {
@@ -669,7 +726,8 @@ form button[type="submit"]:hover {
       const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
       const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
       for (const id of ids) {
-        await window.rejectUser(id);
+        // نستخدم نافذة التأكيد عند الرفض
+        window.confirmReject(id);
       }
     });
     document.getElementById('deleteSelectedActivated').addEventListener('click', async () => {
@@ -690,49 +748,30 @@ form button[type="submit"]:hover {
       document.querySelectorAll('.activated-checkbox').forEach(cb => cb.checked = checked);
     });
 
-    // التعامل مع إرسال الواجبات/الامتحانات
-    document.getElementById('sendForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const taskType = document.getElementById('taskType').value;
-      const taskTitle = document.getElementById('taskTitle').value;
-      const taskDescription = document.getElementById('taskDescription').value;
-      const taskDueDate = document.getElementById('taskDueDate').value;
-      const taskFile = document.getElementById('taskFile').files[0];
-
-      let fileUrl = '';
-      if (taskFile) {
-        try {
-          const storage = getStorage(app);
-          const storageRef = ref(storage, `assignments/${Date.now()}_${taskFile.name}`);
-          const snapshot = await uploadBytes(storageRef, taskFile);
-          fileUrl = await getDownloadURL(snapshot.ref);
-        } catch (error) {
-          console.error('خطأ في رفع الملف:', error);
-          showNotification('error', 'حدث خطأ أثناء رفع الملف.');
-          return;
-        }
+    // التعامل مع نافذة التأكيد (Modal) للرفض
+    document.getElementById('confirmRejectBtn').addEventListener('click', async () => {
+      if (rejectCandidateId) {
+        await window.rejectUser(rejectCandidateId);
+        rejectCandidateId = null;
       }
+      document.getElementById('confirmationModal').style.display = 'none';
+    });
 
-      try {
-        // إنشاء مستند جديد في مجموعة "assignments"
-        const newTaskRef = doc(collection(db, 'assignments'));
-        const taskData = {
-          type: taskType,
-          title: taskTitle,
-          description: taskDescription,
-          dueDate: taskDueDate,
-          fileUrl: fileUrl,
-          createdAt: new Date().toISOString(),
-          postedBy: auth.currentUser.email
-        };
-        await setDoc(newTaskRef, taskData);
-        showNotification('success', 'تم إرسال الواجب/الامتحان بنجاح.');
-        document.getElementById('sendForm').reset();
-      } catch (error) {
-        console.error('خطأ في إرسال الواجب/الامتحان:', error);
-        showNotification('error', 'حدث خطأ أثناء إرسال الواجب/الامتحان.');
-      }
+    document.getElementById('cancelRejectBtn').addEventListener('click', () => {
+      rejectCandidateId = null;
+      document.getElementById('confirmationModal').style.display = 'none';
     });
   </script>
+
+  <!-- نافذة التأكيد (Modal) عند الضغط على أيقونة الرفض -->
+  <div id="confirmationModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <p>هل أنت متأكد من رفض المستخدم؟</p>
+      <button id="confirmRejectBtn">نعم، ارفض</button>
+      <button id="cancelRejectBtn">إلغاء</button>
+    </div>
+  </div>
+
 </body>
 </html>
