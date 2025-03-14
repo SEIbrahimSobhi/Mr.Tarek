@@ -203,45 +203,28 @@
         });
       }
 
-      console.log("البريد الإلكتروني المستخدم:", email);
-      console.log("كلمة المرور:", password);
+      // تم إزالة عرض بيانات البريد الإلكتروني وكلمة المرور في وحدة التحكم
 
       // محاولة تسجيل الدخول باستخدام Firebase Auth
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
-      console.log("المستخدم الحالي:", user.uid);
+      // تم إزالة عرض بيانات المستخدم الحالي في وحدة التحكم
 
       let approved = false;
       let accountStatus = null;
 
-      // البحث عن الوثيقة في مجموعة "users" باستخدام استعلام على حقل uid
+      // البحث في مجموعة "users" عن المستخدم بناءً على uid
       const usersQuery = query(collection(db, "users"), where("uid", "==", user.uid));
       const usersSnapshot = await getDocs(usersQuery);
-      console.log("عدد الوثائق في users:", usersSnapshot.size);
       if (!usersSnapshot.empty) {
         usersSnapshot.forEach((docSnap) => {
           const data = docSnap.data();
-          console.log("وثيقة من users:", data);
           accountStatus = data.accountStatus;
-          if (accountStatus === "approved" || accountStatus === "activated") {
+          // السماح بتسجيل الدخول إذا كان حساب المستخدم مفعل (active, approved, أو activated)
+          if (accountStatus === "active" || accountStatus === "approved" || accountStatus === "activated") {
             approved = true;
           }
         });
-      } else {
-        // إذا لم توجد الوثيقة في "users"، نحاول البحث في "pending_users"
-        const pendingQuery = query(collection(db, "pending_users"), where("uid", "==", user.uid));
-        const pendingSnapshot = await getDocs(pendingQuery);
-        console.log("عدد الوثائق في pending_users:", pendingSnapshot.size);
-        if (!pendingSnapshot.empty) {
-          pendingSnapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            console.log("وثيقة من pending_users:", data);
-            accountStatus = data.accountStatus;
-            if (accountStatus === "approved" || accountStatus === "activated") {
-              approved = true;
-            }
-          });
-        }
       }
 
       if (!approved) {
