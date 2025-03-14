@@ -10,7 +10,7 @@
 }
 
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
-:root { 
+:root {
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
   --default-color: #444444; /* Default color used for the majority of the text content across the entire website */
   --heading-color: #493c3e; /* Color for headings, subheadings and title throughout the website */
@@ -166,8 +166,7 @@ h6 {
   box-shadow: 0px 0 18px rgba(0, 0, 0, 0.1);
 }
 
-/* Global Header on Scroll
-------------------------------*/
+/* Global Header on Scroll */
 .scrolled .header {
   --background-color: rgba(0, 0, 0, 0.8);
 }
@@ -193,20 +192,20 @@ h6 {
     position: relative;
   }
 
-  .navmenu>ul>li {
+  /* تقليل المسافة بين أزرار القائمة */
+  .navmenu > ul > li {
     white-space: nowrap;
-    padding: 15px 14px;
+    padding: 15px 12px; /* تقليل البادينج الأفقي */
   }
-.navmenu > ul > li:last-child {
-  padding-right: 0;
-  margin-right: -60px; /* تحريك العنصر قليلاً إلى اليسار */
-}
-
+  .navmenu > ul > li:last-child {
+    padding-right: 0;
+    margin-right: -60px; /* يحرك العنصر قليلاً إلى اليسار */
+  }
 
   .navmenu a,
   .navmenu a:focus {
     color: var(--nav-color);
-    font-size: 16px;
+    font-size: 17px;
     padding: 0 2px;
     font-family: var(--nav-font);
     font-weight: 400;
@@ -216,7 +215,7 @@ h6 {
     white-space: nowrap;
     transition: 0.3s;
     position: relative;
-    margin-left: -5px; /* تحريك الرابط قليلاً إلى اليسار */
+    margin-left: -6px; /* يحرك الرابط قليلاً إلى اليسار */
   }
 
   .navmenu a i,
@@ -227,7 +226,7 @@ h6 {
     transition: 0.3s;
   }
 
-  .navmenu>ul>li>a:before {
+  .navmenu > ul > li > a:before {
     content: "";
     position: absolute;
     height: 2px;
@@ -240,13 +239,13 @@ h6 {
   }
 
   .navmenu a:hover:before,
-  .navmenu li:hover>a:before,
+  .navmenu li:hover > a:before,
   .navmenu .active:before {
     visibility: visible;
     width: 100%;
   }
 
-  .navmenu li:hover>a,
+  .navmenu li:hover > a,
   .navmenu .active,
   .navmenu .active:focus {
     color: var(--nav-color);
@@ -285,11 +284,11 @@ h6 {
 
   .navmenu .dropdown ul a:hover,
   .navmenu .dropdown ul .active:hover,
-  .navmenu .dropdown ul li:hover>a {
+  .navmenu .dropdown ul li:hover > a {
     color: var(--nav-dropdown-hover-color);
   }
 
-  .navmenu .dropdown:hover>ul {
+  .navmenu .dropdown:hover > ul {
     opacity: 1;
     top: 100%;
     visibility: visible;
@@ -301,7 +300,7 @@ h6 {
     visibility: hidden;
   }
 
-  .navmenu .dropdown .dropdown:hover>ul {
+  .navmenu .dropdown .dropdown:hover > ul {
     opacity: 1;
     top: 0;
     left: -100%;
@@ -311,13 +310,26 @@ h6 {
 
 /* Mobile Navigation */
 @media (max-width: 1199px) {
+  /* زر القائمة (الهامبرغر) مع حركة دوران */
   .mobile-nav-toggle {
     color: var(--nav-color);
     font-size: 28px;
     line-height: 0;
     margin-right: 10px;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: transform 0.3s, color 0.3s;
+  }
+
+  /* عند تفعيل القائمة يتم تدوير الزر */
+  .mobile-nav-active .mobile-nav-toggle {
+    color: #fff;
+    position: absolute;
+    font-size: 32px;
+    top: 15px;
+    right: 15px;
+    margin-right: 0;
+    transform: rotate(90deg);
+    z-index: 9999;
   }
 
   .navmenu {
@@ -325,20 +337,25 @@ h6 {
     z-index: 9997;
   }
 
+  /* القائمة المنبثقة */
   .navmenu ul {
-    display: none;
-    list-style: none;
-    position: absolute;
-    inset: 60px 20px 20px 20px;
-    padding: 10px 0;
-    margin: 0;
-    border-radius: 6px;
+    display: block;
+    position: fixed;
+    top: 60px;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    width: 80%;
     background-color: var(--nav-mobile-background-color);
-    border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-    box-shadow: none;
-    overflow-y: auto;
-    transition: 0.3s;
+    padding: 20px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
     z-index: 9998;
+  }
+
+  /* عند تفعيل القائمة */
+  .mobile-nav-active .navmenu ul {
+    transform: translateX(0);
   }
 
   .navmenu a,
@@ -403,24 +420,13 @@ h6 {
     background-color: rgba(33, 37, 41, 0.1);
   }
 
-  .navmenu .dropdown>.dropdown-active {
+  .navmenu .dropdown > .dropdown-active {
     display: block;
     background-color: rgba(33, 37, 41, 0.03);
   }
 
-
   .mobile-nav-active {
     overflow: hidden;
-  }
-
-  .mobile-nav-active .mobile-nav-toggle {
-    color: #fff;
-    position: absolute;
-    font-size: 32px;
-    top: 15px;
-    right: 15px;
-    margin-right: 0;
-    z-index: 9999;
   }
 
   .mobile-nav-active .navmenu {
@@ -431,21 +437,371 @@ h6 {
     transition: 0.3s;
   }
 
-  .mobile-nav-active .navmenu>ul {
+  .mobile-nav-active .navmenu > ul {
     display: block;
   }
 }
-.main-red-button a {
-  display: inline-block;
-  background-color: var(--accent-color);
-  font-size: 15px;
-  font-weight: 400;
+
+/*--------------------------------------------------------------
+# Custom Button (أزرار "سجل معانا" و "الحساب")
+--------------------------------------------------------------*/
+.custom-button a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #333;
+  padding: 10px 0;
+  transition: transform 0.3s, color 0.3s;
+}
+.custom-button a:hover {
+  transform: translateY(-5px);
+  color: #ff5722;
+}
+.custom-button i.default-user-icon {
+  font-size: 28px;
+  margin-bottom: 5px;
+  background: none;
+  border: none;
+}
+.custom-button span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/*--------------------------------------------------------------
+# Desktop Version (الشاشات الكبيرة)
+--------------------------------------------------------------*/
+@media (min-width: 1200px) {
+  /* إظهار عناصر الديسكتوب فقط */
+  .desktop-only { display: block; }
+  .mobile-only { display: none; }
+
+  /* إعدادات زر الحساب/سجل معانا على الديسكتوب مع تحسين التصميم */
+  .custom-button a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.1); /* خلفية شفافة خفيفة */
+    border: 2px solid rgba(255, 255, 255, 0.8);  /* حد واضح بنعومة */
+    border-radius: 12px; /* حواف مستديرة أكثر لتحسين التصميم */
+    color: #fff;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+  }
+  .custom-button a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #ff5722;
+  }
+  .custom-button i.default-user-icon {
+    font-size: 30px;
+    margin-top: 11px;
+    color: #fff;
+  }
+  .custom-button span {
+    font-size: 16px;
+    display: block;
+    margin-top: 10px;
+    color: #fff;
+  }
+
+  /* تحريك زر الحساب/سجل معانا إلى اليمين */
+  .custom-button {
+    transform: translateX(40px);
+    margin-right: 1px; /* تقليل الهامش الزائد */
+  }
+
+  /* تحريك قائمة الأزرار (بما في ذلك أيقونة الإشعارات) إلى اليمين */
+  .navmenu ul {
+    transform: translateX(40px);
+  }
+
+  /* تعديل المسافات بين عناصر القائمة */
+  .navmenu > ul > li.scroll-to-section {
+    padding: 15px 1px; /* تقليل البادينج الأفقي */
+  }
+  .navmenu > ul > li.scroll-to-section:first-of-type {
+    margin-left: 20px;
+  }
+  .navmenu > ul > li.scroll-to-section:last-of-type {
+    margin-left: 0;
+  }
+
+  /* تحريك أيقونة الإشعارات إلى اليمين وتقليل المسافة بينها وبين زر الحساب */
+  .notification-container {
+    margin-left: 10px;
+    transform: translateX(7px); /* يحركها 7 بكسل إلى اليمين */
+  }
+
+  /* تنسيق أيقونة الإشعارات على الديسكتوب */
+  .notification-container a {
+    font-size: 48px;
+    color: #fff;
+  }
+  .notification-container i.fa-bell {
+    font-size: 25px !important;
+  }
+  .notification-badge {
+    top: -20px;
+    right: -8px;
+  }
+}
+
+/*--------------------------------------------------------------
+# Mobile Version (الشاشات الصغيرة)
+--------------------------------------------------------------*/
+/* إخفاء عناصر الديسكتوب وإظهار عناصر الجوال */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
+@media (max-width: 1199px) {
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
+
+  /* تصميم نسخة الجوال */
+  .mobile-buttons-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* مسافة بين زر الحساب وأيقونة الإشعارات */
+  }
+
+  /* زر الحساب/سجل معانا بتصميم دائري فاخر */
+  .mobile-buttons-wrapper .custom-button a {
+    display: inline-flex;
+    flex-direction: row;       /* ترتيب أفقي: نص على اليسار، وأيقونة على اليمين */
+    align-items: center;
+    justify-content: space-between;
+    width: 230px;              /* عرض أكبر */
+    height: 50px;
+    background: linear-gradient(90deg, var(--accent-color), #ff6f61); /* تدرج لوني يعتمد على متغير الـ accent مع درجة أفتح */
+    border-radius: 25px;       /* نصف الارتفاع للحصول على شكل حبوب */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    padding: 0 15px;           /* مساحة داخلية للنص والأيقونة */
+    transition: transform 0.3s, box-shadow 0.3s;
+    transform: translateY(10px); /* تحريك الزر للأسفل قليلاً */
+  }
+  .mobile-buttons-wrapper .custom-button a:hover {
+    transform: translateY(7px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  .mobile-buttons-wrapper .custom-button a span {
+    order: 1;
+    font-size: 16px;
+    color: var(--contrast-color);  /* يستخدم لون التباين لضمان وضوح النص */
+  }
+  .mobile-buttons-wrapper .custom-button a i.default-user-icon {
+    order: 2;
+    font-size: 30px;
+    color: var(--contrast-color);
+    margin-left: 10px;  /* مسافة بسيطة بين النص والأيقونة */
+  }
+
+  /* أيقونة الإشعارات بدون دائرة */
+  .mobile-buttons-wrapper .notification-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(10px); /* حركها للأسفل بمقدار 10 بكسل */
+  }
+  .mobile-buttons-wrapper .notification-container a {
+    color: var(--accent-color); /* استخدام لون الـ accent ليظهر بوضوح */
+    background: none;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+  }
+  .mobile-buttons-wrapper .notification-container a:hover {
+    transform: translateY(-3px);
+  }
+  .mobile-buttons-wrapper .notification-container .notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 8px;
+    background-color: #dc3545;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 50%;
+  }
+}
+
+/*--------------------------------------------------------------
+# Notification Dropdown
+--------------------------------------------------------------*/
+.notification-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-container a {
   color: #fff;
-  text-transform: capitalize;
-  padding: 12px 25px;
-  border-radius: 23px;
-  letter-spacing: 0.2px;
-  margin-left: -10px; /* نقل الزر قليلاً إلى اليسار */
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s;
+}
+
+.notification-container i.fa-bell {
+  font-size: 25px !important;
+}
+
+.notification-container a:hover {
+  transform: translateY(-3px);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -20px;
+  right: -8px;
+  background: #ff5722;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 10px;
+  padding: 2px 6px;
+}
+
+/*-------------------------------
+  تصميم قائمة الإشعارات لجميع الشاشات
+-------------------------------*/
+#notification-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* عند تفعيل القائمة (على الديسكتوب) */
+#notification-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* رأس القائمة (تأكد من إضافته في HTML) */
+#notification-dropdown .notification-header {
+  padding: 15px;
+  background: #f7f7f7;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  position: relative;
+}
+#notification-dropdown .notification-header h2 {
+  color: var(--accent-color);
+  margin: 0;
+  padding: 15px 0;
+}
+
+/* تحسين تصميم رسالة الإشعار لكل رسالة */
+#notification-dropdown .notification-list li {
+  padding: 12px;
+  margin: 8px 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  color: #555;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+#notification-dropdown .notification-list li:hover {
+  transform: translateX(5px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* قائمة الإشعارات */
+#notification-dropdown .notification-list {
+  max-height: 400px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 10px;
+  list-style: none;
+  text-align: center;
+}
+#notification-dropdown .notification-list li:last-child {
+  border-bottom: none;
+}
+
+/*-------------------------------
+  تعديل عرض قائمة الإشعارات على الشاشات الصغيرة
+  (فتحها كدرج من اليمين إلى اليسار، وثابتة من اليمين والأسفل)
+-------------------------------*/
+@media (max-width: 1199px) {
+  #notification-dropdown {
+    position: fixed;          /* نجعلها ثابتة */
+    top: 70px;                   /* تغطي كامل ارتفاع الشاشة */
+    right: 0;
+    bottom: 0;                /* تمتد إلى الأسفل */
+    width: 300px;             /* عرض القائمة */
+    height: 100%;             /* تغطي كامل الارتفاع */
+    border-radius: 0;         /* إزالة التقوس */
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%); /* في البداية تكون خارج الشاشة على اليمين */
+    transition: transform 0.3s ease;
+    opacity: 1;               /* نستخدم transform للتحكم في العرض */
+    visibility: visible;
+    overflow-y: auto;
+    z-index: 1500;
+  }
+
+  /* عند تفعيل القائمة تُزحف إلى اليسار لتصبح مرئية */
+  #notification-dropdown.active {
+    transform: translateX(0);
+  }
+
+  /* يمكنك وضع رأس القائمة داخل هذه المنطقة أيضاً */
+  #notification-dropdown .notification-header {
+    position: sticky;
+    top: 0;
+    background: #f7f7f7;
+    z-index: 10;
+  }
+}
+
+/* أيقونة الرجوع (بشكل افتراضي مخفية على الشاشات الكبيرة) */
+.notification-header .back-icon {
+  display: none;
+  cursor: pointer;
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--accent-color); /* أو أي لون تختاره */
+}
+
+/* إظهار أيقونة الرجوع على الشاشات الصغيرة */
+@media (max-width: 1199px) {
+  .notification-header .back-icon {
+    display: inline-block;
+  }
+
+  /* تعديل محاذاة عنوان الإشعارات إذا لزم الأمر */
+  #notification-dropdown .notification-header h2 {
+    text-align: center;
+    margin: 0;
+    padding: 15px 0;
+  }
 }
 
 
