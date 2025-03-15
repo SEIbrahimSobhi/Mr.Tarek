@@ -169,6 +169,7 @@ h6 {
 /* Global Header on Scroll */
 .scrolled .header {
   --background-color: rgba(0, 0, 0, 0.8);
+    padding: 19px 0; /* تقليل المساحة الرأسية */
 }
 
 /*--------------------------------------------------------------
@@ -508,6 +509,45 @@ h6 {
     margin-top: 10px;
     color: #fff;
   }
+
+  /* تخصيص زر "سجل معانا" على الشاشات الكبيرة */
+#register-btn {
+  display: inline-flex;
+  flex-direction: column;       /* ترتيب عمودي: الأيقونة فوق النص */
+  align-items: center;          /* محاذاة مركزية أفقيًا */
+  justify-content: center;      /* محاذاة مركزية رأسيًا */
+  width: 80px;                  /* عرض ثابت للمستطيل (يمكنك التعديل حسب الحاجة) */
+  height: 64px;                 /* ارتفاع ثابت للمستطيل */
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+}
+
+/* إعدادات أيقونة الزر */
+#register-btn i.default-user-icon {
+  font-size: 28px;
+  margin-bottom: 11px; /* مسافة بسيطة بين الأيقونة والنص */
+  color: #fff;
+  transform: translateX(18px); /* تحريك الأيقونة نحو اليمين */
+}
+
+/* إعدادات نص الزر */
+#register-btn span {
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
+  margin-top: -4px;  /* تحريك النص للأعلى قليلاً */
+}
+/* تقليل المسافة بين زر "سجل معانا" وباقي عناصر القائمة */
+#register-btn {
+  margin-left: -13px; /* مثال: تقليل المسافة من اليسار */
+  margin-right: 5px; /* مثال: تقليل المسافة من اليمين */
+}
+
 
   /* تحريك زر الحساب/سجل معانا إلى اليمين */
   .custom-button {
