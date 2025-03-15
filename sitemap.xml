@@ -5,4 +5,14 @@
     <lastmod>2024-12-29T22:06:07+00:00</lastmod>
     <priority>1.00</priority>
   </url>
+  <url>
+    <loc>https://mr-tarek-maths.vercel.app/register.html</loc>
+    <lastmod>2024-12-29T22:06:07+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://mr-tarek-maths.vercel.app/login.html</loc>
+    <lastmod>2024-12-29T22:06:07+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
 </urlset>
