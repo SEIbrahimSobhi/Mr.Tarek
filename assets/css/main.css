@@ -196,7 +196,7 @@ h6 {
   /* تقليل المسافة بين أزرار القائمة */
   .navmenu > ul > li {
     white-space: nowrap;
-    padding: 15px 12px; /* تقليل البادينج الأفقي */
+    padding: 15px 11px; /* تقليل البادينج الأفقي */
   }
   .navmenu > ul > li:last-child {
     padding-right: 0;
@@ -206,7 +206,7 @@ h6 {
   .navmenu a,
   .navmenu a:focus {
     color: var(--nav-color);
-    font-size: 17px;
+    font-size: 18px;
     padding: 0 2px;
     font-family: var(--nav-font);
     font-weight: 400;
