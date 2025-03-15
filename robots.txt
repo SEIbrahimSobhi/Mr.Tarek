@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /index.html
+
+# تأكد من عدم حظر الصفحات المهمة مثل index.html أو صفحات أخرى
 Disallow: /any-other-page-or-directory/
 
 Sitemap: https://mr-tarek-maths.vercel.app/sitemap.xml
