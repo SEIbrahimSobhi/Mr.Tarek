@@ -667,6 +667,14 @@ document.getElementById("contact-form").addEventListener("submit", function(e) {
     const notificationContainerMobile = document.querySelector(".mobile-only .notification-container");
     const notificationIconMobile = document.getElementById("notification-icon-mobile");
 
+    // إخفاء كل العناصر افتراضيًا عند تحميل الصفحة
+    if (registerButton) registerButton.style.display = "none";
+    if (studentInfoButton) studentInfoButton.style.display = "none";
+    if (notificationContainer) notificationContainer.style.display = "none";
+    if (startNowButton) startNowButton.style.display = "none";
+    if (studentInfoBtnMobile) studentInfoBtnMobile.style.display = "none";
+    if (notificationContainerMobile) notificationContainerMobile.style.display = "none";
+
     // متغير لتتبع حالة ظهور قائمة الإشعارات وعددها
     let notificationsVisible = false;
     let notificationCount = 0;
@@ -783,6 +791,7 @@ document.getElementById("contact-form").addEventListener("submit", function(e) {
 
     // التحقق من حالة تسجيل الدخول باستخدام Firebase
     onAuthStateChanged(auth, async (user) => {
+      // بعد التأكد من حالة المستخدم، نقوم بعرض العناصر المناسبة ونخفّي الأخرى.
       if (user) {
         // حالة المستخدم المسجل:
         // نسخة الديسكتوب:
@@ -792,12 +801,14 @@ document.getElementById("contact-form").addEventListener("submit", function(e) {
           notificationContainer.style.display = "inline-block";
         }
         if (startNowButton) {
+          startNowButton.style.display = "inline-block";
           startNowButton.textContent = "ابدأ الآن";
           startNowButton.href = "#about";
         }
 
         // نسخة الجوال:
         if (studentInfoBtnMobile) {
+          studentInfoBtnMobile.style.display = "inline-block";
           studentInfoBtnMobile.href = "student-info.html";
           studentInfoBtnMobile.innerHTML = `<i class="fa-solid fa-user-circle default-user-icon"></i><span>الحساب</span>`;
         }
@@ -858,11 +869,13 @@ document.getElementById("contact-form").addEventListener("submit", function(e) {
           notificationContainer.style.display = "none";
         }
         if (startNowButton) {
+          startNowButton.style.display = "inline-block";
           startNowButton.textContent = "سجل معانا";
           startNowButton.href = "login.html";
         }
         // نسخة الجوال:
         if (studentInfoBtnMobile) {
+          studentInfoBtnMobile.style.display = "inline-block";
           studentInfoBtnMobile.href = "register.html";
           studentInfoBtnMobile.innerHTML = `<i class="fa-solid fa-user-circle default-user-icon"></i><span>سجل معانا</span>`;
         }
