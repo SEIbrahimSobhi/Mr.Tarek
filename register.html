@@ -47,6 +47,7 @@
       <div class="form-wrapper" id="registration-page">
         <div class="form-header">
           <h1>
+            <i class="fa-solid fa-user-plus" style="color: black; margin-right: 10px;"></i>
             <span class="white">طلب</span> <span class="blue">إنشاء حساب:</span>
           </h1>
           <p>ادخل بياناتك بشكل صحيح وسيتم التواصل معك بعد مراجعة الطلب لتفعيل الحساب.</p>
@@ -65,27 +66,26 @@
               <label for="second-name" class="form-label">الاسم الثاني</label>
             </div>
           </div>
-          <!-- صف ثاني: الاسم الثالث والاسم الأخير -->
+          <!-- صف ثاني: الاسم الثالث والاسم الأخير (الحقول الخاصة بالطالب) -->
           <div class="row small-gap">
-          <div class="form-group">
-            <input type="text" id="third-name" class="form-control" placeholder=" " required>
-            <i class="form-icon fas fa-user"></i>
-            <label for="third-name" class="form-label">الاسم الثالث</label>
+            <div class="form-group">
+              <input type="text" id="third-name" class="form-control" placeholder=" ">
+              <i class="form-icon fas fa-user"></i>
+              <label for="third-name" class="form-label">الاسم الثالث</label>
+            </div>
+            <div class="form-group">
+              <input type="text" id="last-name" class="form-control" placeholder=" ">
+              <i class="form-icon fas fa-user"></i>
+              <label for="last-name" class="form-label">الاسم الأخير</label>
+            </div>
           </div>
-          <div class="form-group">
-            <input type="text" id="last-name" class="form-control" placeholder=" " required>
-            <i class="form-icon fas fa-user"></i>
-            <label for="last-name" class="form-label">الاسم الأخير</label>
-          </div>
-      </div>
 
-<!-- حقل اسم المستخدم -->
-        <div class="form-group">
+          <!-- حقل اسم المستخدم -->
+          <div class="form-group">
             <input type="text" id="username" class="form-control" placeholder=" " required>
             <i class="form-icon fas fa-user"></i>
             <label for="username" class="form-label">اسم المستخدم</label>
-        </div>
-
+          </div>
 
           <!-- حقل رقم الهاتف الأساسي -->
           <div class="form-group">
@@ -93,15 +93,15 @@
             <i class="form-icon fas fa-phone"></i>
             <label for="phone" class="form-label">رقم الهاتف</label>
           </div>
-          <!-- صف: رقم هاتف الأب ورقم هاتف الأم -->
+          <!-- صف: رقم هاتف الأب ورقم هاتف الأم (الحقول الخاصة بالطالب) -->
           <div class="row">
             <div class="form-group">
-              <input type="tel" id="father-phone" class="form-control" placeholder=" " required>
+              <input type="tel" id="father-phone" class="form-control" placeholder=" ">
               <i class="form-icon fas fa-phone"></i>
               <label for="father-phone" class="form-label">رقم هاتف الأب</label>
             </div>
             <div class="form-group">
-              <input type="tel" id="mother-phone" class="form-control" placeholder=" " required>
+              <input type="tel" id="mother-phone" class="form-control" placeholder=" ">
               <i class="form-icon fas fa-phone"></i>
               <label for="mother-phone" class="form-label">رقم هاتف الأم</label>
             </div>
@@ -167,7 +167,7 @@
             <i class="form-icon fas fa-calculator"></i>
             <label for="math-answer" class="form-label"></label>
           </div>
-          <!-- مجموعة الأزرار: زر "طلب إنشاء حساب" وزر "طريقة إنشاء حساب على المنصة" -->
+          <!-- مجموعة الأزرار -->
           <div class="row" style="justify-content: center; gap: 20px; margin-bottom: 20px;">
             <button type="submit" class="submit-btn">طلب إنشاء حساب</button>
             <button type="button" class="video-btn" onclick="window.location.href='video.html'">طريقة إنشاء حساب على المنصة</button>
@@ -180,85 +180,89 @@
           <p class="success-message" id="success-message"></p>
         </form>
       </div>
-    <!-- صفحة تأكيد البريد الإلكتروني (مخفية مبدئيًا) -->
-    <div class="form-wrapper" id="email-confirmation-page" style="display: none;">
-      <div class="form-header">
-        <h1>
-          <i class="fas fa-envelope" style="color: black; margin-right: 10px;"></i>
-          <span class="white">تأكيد</span> <span class="blue">:البريد الإلكتروني</span>
-        </h1>
-        <p>تم إرسال كود التأكيد إلى بريدك الإلكتروني، يرجى إدخال الكود أدناه لتأكيد حسابك.</p>
-        <p style="text-align:center; color:#3498db;" id="display-code"></p>
-      </div>
-      <div class="form-group">
-        <input type="text" id="confirmation-code" class="form-control" placeholder=" " required>
-        <i class="form-icon fas fa-key"></i>
-        <label for="confirmation-code" class="form-label">أدخل كود التأكيد</label>
-      </div>
-      <div style="display:flex; justify-content: center; gap: 20px; margin-top: 20px;">
-        <button class="submit-btn" id="confirm-btn">تأكيد</button>
-      </div>
-      <p class="success-message" id="confirmation-success" style="display: none;">تم تأكيد البريد الإلكتروني بنجاح!</p>
-    </div>
 
-    <!-- صفحة حالة الحساب بعد تأكيد البريد الإلكتروني -->
-    <div class="form-wrapper" id="account-status-page" style="display: none;">
-      <div class="form-header">
-        <h1>
-          <span class="white">أهلاً</span> <span class="blue" id="display-name"></span>
-        </h1>
-        <p>
-      لقد تم إنشاء حسابك بنجاح، وسيقوم المسؤولين بمراجعة بياناتك خلال 48 ساعة.
-      سيتم إرسال رسالة إلى بريدك الإلكتروني توضح حالة الحساب مع التفاصيل في حال تم رفضه.
-      وفي حالة قبول الحساب، يمكنك تسجيل الدخول والوصول إلى حسابك.
-    </p>
+      <!-- صفحة تأكيد البريد الإلكتروني (مخفية مبدئيًا) -->
+      <div class="form-wrapper" id="email-confirmation-page" style="display: none;">
+        <div class="form-header">
+          <h1>
+            <i class="fas fa-envelope" style="color: black; margin-right: 10px;"></i>
+            <span class="white">تأكيد</span> <span class="blue">:البريد الإلكتروني</span>
+          </h1>
+          <p>تم إرسال كود التأكيد إلى بريدك الإلكتروني، يرجى إدخال الكود أدناه لتأكيد حسابك.</p>
+          <p style="text-align:center; color:#3498db;" id="display-code"></p>
+        </div>
+        <div class="form-group">
+          <input type="text" id="confirmation-code" class="form-control" placeholder=" " required>
+          <i class="form-icon fas fa-key"></i>
+          <label for="confirmation-code" class="form-label">أدخل كود التأكيد</label>
+        </div>
+        <div style="display:flex; justify-content: center; gap: 20px; margin-top: 20px;">
+          <button class="submit-btn" id="confirm-btn">تأكيد</button>
+        </div>
+        <p class="success-message" id="confirmation-success" style="display: none;">تم تأكيد البريد الإلكتروني بنجاح!</p>
       </div>
-      <div style="text-align: center;">
-        <button type="button" class="submit-btn" onclick="window.location.href='login.html'">
-          تسجيل الدخول
-        </button>
+
+      <!-- صفحة حالة الحساب (للطلاب) بعد تأكيد البريد الإلكتروني -->
+      <div class="form-wrapper" id="account-status-page" style="display: none;">
+        <div class="form-header">
+          <h1>
+            <span class="white">أهلاً</span> <span class="blue" id="display-name"></span>
+          </h1>
+          <p>
+            لقد تم إنشاء حسابك بنجاح، وسيقوم المسؤولين بمراجعة بياناتك خلال 48 ساعة.
+            سيتم إرسال رسالة إلى بريدك الإلكتروني توضح حالة الحساب مع التفاصيل في حال تم رفضه.
+            وفي حالة قبول الحساب، يمكنك تسجيل الدخول والوصول إلى حسابك.
+          </p>
+        </div>
+        <div style="text-align: center;">
+          <button type="button" class="submit-btn" onclick="window.location.href='login.html'">
+            تسجيل الدخول
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
+  <!-- الفوتر -->
   <footer>
-  <div class="footer-top">
-    <div class="footer-brand">
-      <img src="assets/img/favicon.png" alt="Logo">
-      <div class="brand-text">
-        <h2>Mr.Tarek</h2>
-        <h4>منصه الرياضيات</h4>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/img/favicon.png" alt="Logo">
+        <div class="brand-text">
+          <h2>Mr.Tarek</h2>
+          <h4>منصه الرياضيات</h4>
+        </div>
+      </div>
+      <div class="footer-support">
+        <h3>الدعم</h3>
+        <p>
+          Phone: <a href="tel:+201128471221" class="support-number">+201128471221</a><br>
+          WhatsApp: <a href="https://wa.me/201128471221" target="_blank" class="support-number">+201128471221</a>
+        </p>
+        <p class="support-note">في حال وجود أي مشكلة، يرجى التواصل مع الدعم.</p>
       </div>
     </div>
-    <div class="footer-support">
-      <h3>الدعم</h3>
-      <p>
-        Phone: <a href="tel:+201128471221" class="support-number">+201128471221</a><br>
-        WhatsApp: <a href="https://wa.me/201128471221" target="_blank" class="support-number">+201128471221</a>
-      </p>
-      <p class="support-note">في حال وجود أي مشكلة، يرجى التواصل مع الدعم.</p>
+    <div class="footer-bottom">
+      <p>Copy Right 2024 © By <strong class="px-1 sitename">Ebrahem Sobhy</strong> <span> All Rights Reserved</span></p>
     </div>
-  </div>
-  <div class="footer-bottom">
-    <p>Copy Right 2024 © By <strong class="px-1 sitename">Ebrahem Sobhy</strong> <span> All Rights Reserved</span></p>
-  </div>
-</footer>
+  </footer>
+
+  <!-- السكريبت الرئيسي -->
 <script type="module">
   // استيراد وحدات Firebase المطلوبة
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getFirestore, collection, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
-  // إعدادات Firebase
+  // إعدادات Firebase باستخدام متغيرات البيئة
   const firebaseConfig = {
-    apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
-    authDomain: "project-hema.firebaseapp.com",
-    projectId: "project-hema",
-    storageBucket: "project-hema.firebasestorage.app",
-    messagingSenderId: "1079729179279",
-    appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
-    measurementId: "G-YFSTXKFQ9E"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
   };
 
   // تهيئة التطبيق وقاعدة البيانات والمصادقة
@@ -266,10 +270,29 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
+  console.log("Firebase initialized successfully");
+
+  // استرجاع العداد من localStorage أو تعيينه إلى 0 إذا لم يوجد
+  let emailMessagesSent = parseInt(localStorage.getItem("emailMessagesSent") || "0", 10);
+  const EMAILJS_LIMIT = 200; // الحد الأقصى للإعداد الأساسي
+
+  // إعدادات EmailJS البديلة (غير الأساسية)
+  const EMAILJS_ALT_USER_ID = "dSQ33zEgHrtn8uBju"; // استخدم هذا الإعداد للرسائل بعد تجاوز الحد
+  const EMAILJS_ALT_SERVICE_ID = "service_7dxji4s"; // قم بتعديلها حسب حسابك البديل
+  const EMAILJS_ALT_TEMPLATE_ID = "template_vxu1797"; // قم بتعديلها حسب حسابك البديل
+
   // متغيرات عامة لتخزين بيانات المستخدم مؤقتاً والإجابة الصحيحة للمسألة
   let countdownInterval;
-  let tempUserData = {};
+  let tempUserData = {}; // لتخزين بيانات المسؤول أو الطالب مؤقتاً
   let correctMathAnswer;
+
+  // قائمة عناوين البريد الإلكتروني الخاصة بالمسؤولين
+  const adminEmails = [
+    "seebrahemsobhy@gmail.com",
+    "tarekk1552@gmail.com",
+    "ahmedloda255@gmail.com",
+    "admin3@gmail.com"
+  ];
 
   // ==================== نظام الإشعارات ====================
   class NotificationManager {
@@ -349,20 +372,36 @@
     }
   }
 
-  // دالة لإرسال رمز التحقق عبر البريد الإلكتروني باستخدام EmailJS
+  /**
+   * دالة لإرسال رمز التحقق عبر EmailJS.
+   * تعتمد على عدد الرسائل المرسلة: إذا كان أقل من الحد، تستخدم الإعداد الأساسي،
+   * وإلا تستخدم الإعداد البديل.
+   */
   async function sendVerificationEmail(email, code) {
     try {
-      await emailjs.send("service_4de4l3i", "template_gqjxtul", {
-          email: email,
-          verification_code: code
+      let serviceId, templateId;
+      if (emailMessagesSent < EMAILJS_LIMIT) {
+        serviceId = "service_4de4l3i";
+        templateId = "template_gqjxtul";
+      } else {
+        // تهيئة إعداد EmailJS البديل
+        emailjs.init(EMAILJS_ALT_USER_ID);
+        serviceId = EMAILJS_ALT_SERVICE_ID;
+        templateId = EMAILJS_ALT_TEMPLATE_ID;
+      }
+      await emailjs.send(serviceId, templateId, {
+        email: email,
+        verification_code: code
       });
+      emailMessagesSent++;
+      localStorage.setItem("emailMessagesSent", emailMessagesSent);
     } catch (error) {
       console.error("فشل إرسال البريد:", error);
       throw new Error("فشل إرسال البريد الإلكتروني");
     }
   }
 
-  // دالة بدء العد التنازلي لصلاحية رمز التحقق (إذا وُجد عنصر بعدد الثواني)
+  // دالة بدء العد التنازلي لصلاحية رمز التأكيد (إذا وُجد عنصر للعد)
   function startCountdown(duration) {
     const countdownElement = document.getElementById("countdown");
     if (!countdownElement) return;
@@ -394,7 +433,7 @@
       e.preventDefault();
       toggleLoading(true);
 
-      // جمع بيانات النموذج
+      // جمع بيانات النموذج المشتركة
       const firstName       = document.getElementById("first-name").value.trim();
       const secondName      = document.getElementById("second-name").value.trim();
       const thirdName       = document.getElementById("third-name").value.trim();
@@ -404,25 +443,31 @@
       const fatherPhone     = document.getElementById("father-phone").value.trim();
       const motherPhone     = document.getElementById("mother-phone").value.trim();
       const governorate     = document.getElementById("governorate").value;
-      const email           = document.getElementById("email").value.trim();
+      const email           = document.getElementById("email").value.trim().toLowerCase();
       const password        = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirm-password").value;
       const mathAnswer      = parseInt(document.getElementById("math-answer").value.trim());
 
-      // التحقق من ملء جميع الحقول
-      if (!firstName || !secondName || !thirdName || !lastName || !username ||
-          !phone || !fatherPhone || !motherPhone || !governorate || !email ||
-          !password || !confirmPassword) {
-        showNotification("error", "يرجى ملء جميع البيانات");
+      // التحقق من ملء الحقول الأساسية
+      if (!firstName || !secondName || !username || !phone || !governorate || !email || !password || !confirmPassword) {
+        showNotification("error", "يرجى ملء جميع الحقول المطلوبة");
         toggleLoading(false);
         return;
+      }
+      // بالنسبة للطالب (إذا لم يكن البريد ضمن المسؤولين) يجب ملء الحقول الإضافية
+      if (!adminEmails.includes(email)) {
+        if (!thirdName || !lastName || !fatherPhone || !motherPhone) {
+          showNotification("error", "يرجى ملء جميع الحقول الخاصة بالطالب");
+          toggleLoading(false);
+          return;
+        }
       }
 
       // التحقق من إجابة المسألة الرياضية
       if (mathAnswer !== correctMathAnswer) {
         showNotification("error", "إجابة المسألة الرياضية غير صحيحة.");
         toggleLoading(false);
-        generateMathProblem(); // إعادة توليد المسألة
+        generateMathProblem();
         return;
       }
 
@@ -434,15 +479,16 @@
         return;
       }
 
-      // التحقق من صحة أرقام الهواتف (10-15 رقم)
+      // التحقق من صحة رقم الهاتف (10-15 رقم)
       const phoneRegex = /^\+?[0-9]{10,15}$/;
-      if (!phoneRegex.test(phone) || !phoneRegex.test(fatherPhone) || !phoneRegex.test(motherPhone)) {
+      if (!phoneRegex.test(phone) ||
+          (!adminEmails.includes(email) && (!phoneRegex.test(fatherPhone) || !phoneRegex.test(motherPhone)))) {
         showNotification("error", "رقم الهاتف غير صالح");
         toggleLoading(false);
         return;
       }
 
-      // التحقق من طول كلمة المرور وتطابقها
+      // التحقق من كلمة المرور وتأكيدها
       if (password.length < 8) {
         showNotification("error", "كلمة المرور يجب أن تكون 8 أحرف على الأقل");
         toggleLoading(false);
@@ -454,13 +500,16 @@
         return;
       }
 
-      // دمج الاسم الكامل
-      const fullName = `${firstName} ${secondName} ${thirdName} ${lastName}`;
+      // دمج الاسم الكامل:
+      // للمسؤول: استخدام الاسم الأول والثاني فقط، وللطالب: جمع كافة الأسماء
+      const fullName = adminEmails.includes(email)
+        ? `${firstName} ${secondName}`
+        : `${firstName} ${secondName} ${thirdName} ${lastName}`;
 
       // توليد رمز تحقق عشوائي (6 أرقام)
       const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
-      // تخزين بيانات المستخدم مؤقتاً
+      // تخزين بيانات المستخدم مؤقتاً مع تضمين رمز التحقق، وعدم حفظ كلمة المرور كنص
       tempUserData = {
         username,
         fullName,
@@ -469,12 +518,11 @@
         motherPhone,
         governorate,
         email,
-        password,  // تنبيه: تخزين كلمة المرور بنص عادي غير آمن في البيئات الإنتاجية.
         verificationCode
       };
 
       try {
-        // إرسال رمز التحقق إلى البريد الإلكتروني باستخدام EmailJS
+        // إرسال رمز التحقق عبر EmailJS (سيستخدم الإعداد المناسب حسب عدد الرسائل المُرسلة)
         await sendVerificationEmail(email, verificationCode);
         showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
       } catch (error) {
@@ -489,7 +537,7 @@
       document.getElementById("registration-page").style.display = "none";
       document.getElementById("email-confirmation-page").style.display = "block";
 
-      // بدء العد التنازلي إذا وُجد العنصر المخصص لذلك
+      // بدء العد التنازلي إذا وُجد عنصر للعد
       if (document.getElementById("countdown")) {
         startCountdown(180);
       }
@@ -504,36 +552,57 @@
       }
 
       try {
-        // إنشاء حساب المستخدم في Firebase Authentication
-        const userCredential = await createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password);
+        // إنشاء حساب المستخدم باستخدام Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, tempUserData.email, document.getElementById("password").value);
         const user = userCredential.user;
         console.log("تم إنشاء حساب Firebase Auth:", user.uid);
-        // إنشاء وثيقة في مجموعة "pending_users" باستخدام uid المستخدم كمُعرف للوثيقة
-        await setDoc(doc(db, "pending_users", user.uid), {
-          uid: user.uid,  // ربط الحساب بمعرّف المستخدم في Auth
-          username: tempUserData.username,
-          fullName: tempUserData.fullName,
-          phone: tempUserData.phone,
-          fatherPhone: tempUserData.fatherPhone,
-          motherPhone: tempUserData.motherPhone,
-          governorate: tempUserData.governorate,
-          email: tempUserData.email,
-          emailVerified: true,
-          createdAt: new Date().toISOString(),
-          accountStatus: "pending"  // الحالة: في انتظار الموافقة
-        });
-        showNotification("success", "تم إنشاء الحساب وإرسال طلب المراجعة للمسؤولين. سيتم تفعيل حسابك عند الموافقة.");
-        // إخفاء صفحة تأكيد البريد وعرض صفحة حالة الحساب
-        document.getElementById("email-confirmation-page").style.display = "none";
-        document.getElementById("account-status-page").style.display = "block";
-        document.getElementById("display-name").innerText = tempUserData.username;
+
+        if (adminEmails.includes(tempUserData.email)) {
+          // للمسؤول: إنشاء وثيقة في مجموعة "users" (بدون كلمة المرور) مع تضمين رمز التحقق
+          await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            username: tempUserData.username,
+            fullName: tempUserData.fullName,
+            phone: tempUserData.phone,
+            governorate: tempUserData.governorate,
+            email: tempUserData.email,
+            emailVerified: true,
+            verificationCode: tempUserData.verificationCode,
+            createdAt: new Date().toISOString(),
+            accountStatus: "active"
+          });
+          showNotification("success", "تم إنشاء حساب المسؤول بنجاح.");
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1500);
+        } else {
+          // للطالب: إنشاء وثيقة في مجموعة "pending_users" (بدون كلمة المرور) مع تضمين رمز التحقق
+          await setDoc(doc(db, "pending_users", user.uid), {
+            uid: user.uid,
+            username: tempUserData.username,
+            fullName: tempUserData.fullName,
+            phone: tempUserData.phone,
+            fatherPhone: tempUserData.fatherPhone,
+            motherPhone: tempUserData.motherPhone,
+            governorate: tempUserData.governorate,
+            email: tempUserData.email,
+            emailVerified: true,
+            verificationCode: tempUserData.verificationCode,
+            createdAt: new Date().toISOString(),
+            accountStatus: "pending"
+          });
+          showNotification("success", "تم إرسال طلب إنشاء الحساب. سيتم تفعيل حسابك عند الموافقة.");
+          document.getElementById("email-confirmation-page").style.display = "none";
+          document.getElementById("account-status-page").style.display = "block";
+          document.getElementById("display-name").innerText = tempUserData.username;
+        }
       } catch (error) {
         console.error("خطأ في إنشاء الحساب:", error);
-        showNotification("error", "فشل إرسال طلب الحساب: " + error.message);
+        showNotification("error", "فشل إنشاء الحساب: " + error.message);
       }
     });
 
-    // (اختياري) إعادة إرسال رمز التحقق
+    // (اختياري) زر إعادة إرسال رمز التأكيد
     const resendBtn = document.getElementById("resend-code");
     if (resendBtn) {
       resendBtn.addEventListener("click", async () => {
