@@ -206,7 +206,7 @@ h6 {
   .navmenu a,
   .navmenu a:focus {
     color: var(--nav-color);
-    font-size: 18px;
+    font-size: 17.5px;
     padding: 0 2px;
     font-family: var(--nav-font);
     font-weight: 400;
@@ -605,39 +605,46 @@ h6 {
   .mobile-buttons-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px; /* مسافة بين زر الحساب وأيقونة الإشعارات */
+    gap: 8px; /* مسافة بين زر الحساب وأيقونة الإشعارات */
   }
-
-  /* زر الحساب/سجل معانا بتصميم دائري فاخر */
   .mobile-buttons-wrapper .custom-button a {
-    display: inline-flex;
-    flex-direction: row;       /* ترتيب أفقي: نص على اليسار، وأيقونة على اليمين */
+    display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 230px;              /* عرض أكبر */
+    width: 230px;
     height: 50px;
-    background: linear-gradient(90deg, var(--accent-color), #ff6f61); /* تدرج لوني يعتمد على متغير الـ accent مع درجة أفتح */
-    border-radius: 25px;       /* نصف الارتفاع للحصول على شكل حبوب */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    text-decoration: none;
-    padding: 0 15px;           /* مساحة داخلية للنص والأيقونة */
+    padding: 0 20px;
+    background: linear-gradient(90deg, var(--accent-color), #ff6f61);
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
-    transform: translateY(10px); /* تحريك الزر للأسفل قليلاً */
+    transform: translateY(10px); /* يحرك الزر للأسفل قليلاً */
   }
-  .mobile-buttons-wrapper .custom-button a:hover {
-    transform: translateY(7px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  }
+
+  /* تحسين تصميم النص داخل الزر */
   .mobile-buttons-wrapper .custom-button a span {
-    order: 1;
-    font-size: 16px;
-    color: var(--contrast-color);  /* يستخدم لون التباين لضمان وضوح النص */
+  order: 1;
+  display: inline-block;  /* لضمان تطبيق التحريك */
+  font-size: 16px;
+  color: var(--contrast-color);
+  line-height: 50px;
+  position: relative;
+  top: -35px;  /* زيادة تحريك النص للأعلى */
   }
+
   .mobile-buttons-wrapper .custom-button a i.default-user-icon {
     order: 2;
-    font-size: 30px;
+    font-size: 28px;
     color: var(--contrast-color);
-    margin-left: 10px;  /* مسافة بسيطة بين النص والأيقونة */
+    margin-left: auto;
+    line-height: 50px;
+    position: relative;
+    top: 10px; /* تحريك الأيقونة للأسفل بمقدار 3 بكسل */
+  }
+
+  .mobile-buttons-wrapper .custom-button a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
 
   /* أيقونة الإشعارات بدون دائرة */
