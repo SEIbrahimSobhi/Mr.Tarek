@@ -251,7 +251,7 @@
 <script type="module">
   // استيراد وحدات Firebase المطلوبة
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-  import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  import { getFirestore, runTransaction, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
   // إعدادات Firebase
@@ -270,14 +270,14 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  // استرجاع العداد من localStorage أو تعيينه إلى 0 إذا لم يوجد
-  let emailMessagesSent = parseInt(localStorage.getItem("emailMessagesSent") || "0", 10);
-  const EMAILJS_LIMIT = 2; // الحد الأقصى للإعداد الأساسي
+  // إعدادات EmailJS
+  const EMAILJS_LIMIT = 200; 
+  const EMAILJS_PRIMARY_SERVICE_ID = "service_4de4l3i";
+  const EMAILJS_PRIMARY_TEMPLATE_ID = "template_gqjxtul";
 
-  // إعدادات EmailJS البديلة (غير الأساسية)
-  const EMAILJS_ALT_USER_ID = "dSQ33zEgHrtn8uBju"; // استخدم هذا الإعداد للرسائل بعد تجاوز الحد
-  const EMAILJS_ALT_SERVICE_ID = "service_7dxji4s"; // قم بتعديلها حسب حسابك البديل
-  const EMAILJS_ALT_TEMPLATE_ID = "template_vxu1797"; // قم بتعديلها حسب حسابك البديل
+  const EMAILJS_ALT_USER_ID = "dSQ33zEgHrtn8uBju";
+  const EMAILJS_ALT_SERVICE_ID = "service_7dxji4s";
+  const EMAILJS_ALT_TEMPLATE_ID = "template_vxu1797";
 
   // متغيرات عامة لتخزين بيانات المستخدم مؤقتاً والإجابة الصحيحة للمسألة
   let countdownInterval;
@@ -371,28 +371,56 @@
   }
 
   /**
-   * دالة لإرسال رمز التحقق عبر EmailJS.
-   * تعتمد على عدد الرسائل المرسلة: إذا كان أقل من الحد، تستخدم الإعداد الأساسي،
-   * وإلا تستخدم الإعداد البديل.
+   * دالة لزيادة العداد العالمي لإرسال رسائل EmailJS باستخدام معاملة Firestore.
+   */
+  async function incrementGlobalEmailCount() {
+    const counterRef = doc(db, "emailUsage", "globalCounter");
+    try {
+      const newCount = await runTransaction(db, async (transaction) => {
+        const counterDoc = await transaction.get(counterRef);
+        let currentCount = 0;
+        if (!counterDoc.exists()) {
+          // إذا لم يكن المستند موجوداً، أنشئه بالقيمة 1
+          transaction.set(counterRef, { count: 1 });
+          return 1;
+        } else {
+          currentCount = counterDoc.data().count;
+          const updatedCount = currentCount + 1;
+          transaction.update(counterRef, { count: updatedCount });
+          return updatedCount;
+        }
+      });
+      return newCount;
+    } catch (error) {
+      console.error("فشل تحديث العداد:", error);
+      throw new Error("فشل تحديث العداد العالمي للبريد الإلكتروني");
+    }
+  }
+
+  /**
+   * دالة لإرسال رمز التحقق باستخدام EmailJS مع اختيار الإعداد المناسب بناءً على العداد العالمي.
    */
   async function sendVerificationEmail(email, code) {
     try {
+      // زيادة العداد العالمي والحصول على القيمة الجديدة
+      const globalEmailCount = await incrementGlobalEmailCount();
       let serviceId, templateId;
-      if (emailMessagesSent < EMAILJS_LIMIT) {
-        serviceId = "service_4de4l3i";
-        templateId = "template_gqjxtul";
+      
+      if (globalEmailCount <= EMAILJS_LIMIT) {
+        // استخدام الإعداد الأساسي
+        serviceId = EMAILJS_PRIMARY_SERVICE_ID;
+        templateId = EMAILJS_PRIMARY_TEMPLATE_ID;
       } else {
-        // تهيئة إعداد EmailJS البديل
+        // عند تخطي 200 رسالة، يتم تهيئة الإعداد البديل (مرة واحدة لجميع المستخدمين)
         emailjs.init(EMAILJS_ALT_USER_ID);
         serviceId = EMAILJS_ALT_SERVICE_ID;
         templateId = EMAILJS_ALT_TEMPLATE_ID;
       }
+      
       await emailjs.send(serviceId, templateId, {
         email: email,
         verification_code: code
       });
-      emailMessagesSent++;
-      localStorage.setItem("emailMessagesSent", emailMessagesSent);
     } catch (error) {
       console.error("فشل إرسال البريد:", error);
       throw new Error("فشل إرسال البريد الإلكتروني");
@@ -520,7 +548,7 @@
       };
 
       try {
-        // إرسال رمز التحقق عبر EmailJS (سيستخدم الإعداد المناسب حسب عدد الرسائل المُرسلة)
+        // إرسال رمز التحقق عبر EmailJS باستخدام العداد العالمي
         await sendVerificationEmail(email, verificationCode);
         showNotification("success", "تم إرسال رمز التحقق إلى بريدك الإلكتروني.");
       } catch (error) {
