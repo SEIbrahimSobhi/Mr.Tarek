@@ -7,6 +7,19 @@
   <title>Mr.Tarek-طلب إنشاء حساب</title>
   <!-- ملف css -->
   <link rel="stylesheet" href="assets/css/auth.css">
+    <style>
+@media (max-width: 768px) {
+  /* تقليل المسافة أسفل الحاوية الرئيسية */
+  .form-container {
+    margin-bottom: 50px;
+  }
+
+  /* تقليل المسافة العلوية للفوتر */
+  footer {
+    margin-top: 10px;
+  }
+}
+  </style>
   <!-- استدعاء خط Tajawal من Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -271,7 +284,7 @@
     const auth = getAuth(app);
 
     // إعدادات EmailJS
-    const EMAILJS_LIMIT = 2; 
+    const EMAILJS_LIMIT = 2;
     const EMAILJS_PRIMARY_SERVICE_ID = "service_4de4l3i";
     const EMAILJS_PRIMARY_TEMPLATE_ID = "template_gqjxtul";
 
@@ -392,7 +405,7 @@
         });
         return newCount;
       } catch (error) {
-        console.error("فشل تحديث العداد ،يرجى التواصل مع الدعم", error);
+        console.error("فشل تحديث العداد:", error);
         throw new Error("فشل تحديث العداد العالمي للبريد الإلكتروني");
       }
     }
@@ -405,7 +418,7 @@
         // زيادة العداد العالمي والحصول على القيمة الجديدة
         const globalEmailCount = await incrementGlobalEmailCount();
         let serviceId, templateId;
-        
+
         if (globalEmailCount <= EMAILJS_LIMIT) {
           // استخدام الإعداد الأساسي
           serviceId = EMAILJS_PRIMARY_SERVICE_ID;
@@ -416,13 +429,13 @@
           serviceId = EMAILJS_ALT_SERVICE_ID;
           templateId = EMAILJS_ALT_TEMPLATE_ID;
         }
-        
+
         await emailjs.send(serviceId, templateId, {
           email: email,
           verification_code: code
         });
       } catch (error) {
-        console.error("فشل إرسال الى البريد:", error);
+        console.error("فشل إرسال البريد:", error);
         throw new Error("فشل إرسال البريد الإلكتروني");
       }
     }
@@ -591,7 +604,7 @@
           // إنشاء حساب المستخدم باستخدام Firebase Authentication
           const userCredential = await createUserWithEmailAndPassword(auth, tempUserData.email, document.getElementById("password").value);
           const user = userCredential.user;
-          console.log("تم إنشاء حساب", user.uid);
+          console.log("تم إنشاء حساب Firebase Auth:", user.uid);
 
           if (adminEmails.includes(tempUserData.email)) {
             // للمسؤول: إنشاء وثيقة في مجموعة "users" (بدون كلمة المرور) مع تضمين رمز التأكد
@@ -627,14 +640,14 @@
               createdAt: new Date().toISOString(),
               accountStatus: "pending"
             });
-            showNotification("success", "تم إرسال طلب إنشاء الحساب.");
+            showNotification("success", "تم إرسال طلب إنشاء الحساب. سيتم تفعيل حسابك عند الموافقة.");
             document.getElementById("email-confirmation-page").style.display = "none";
             document.getElementById("account-status-page").style.display = "block";
             document.getElementById("display-name").innerText = tempUserData.username;
           }
         } catch (error) {
           console.error("خطأ في إنشاء الحساب:", error);
-          showNotification("error", "فشل إرسال طلب إنشاء الحساب: " + error.message);
+          showNotification("error", "فشل إنشاء الحساب: " + error.message);
         }
       });
 
