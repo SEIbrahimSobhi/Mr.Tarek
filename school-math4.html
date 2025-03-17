@@ -16,6 +16,7 @@
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -26,36 +27,89 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body class="starter-page-page">
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+<header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    <a href="index.html" class="logo d-flex align-items-center">
+      <!-- يمكنك تفعيل الصورة بإزالة التعليق عن السطر التالي -->
+      <!-- <img src="assets/img/logo.png" alt=""> -->
+      <h1 class="sitename">M R . T A R E K</h1>
+    </a>
 
-      <a href="index.html" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1 class="sitename">M R . T A R E K</h1>
-      </a>
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="#hero" class="active">الرئيسية</a></li>
+        <li><a href="#about">الفيديوهات</a></li>
+        <li><a href="#services">أوراق ملخصات</a></li>
+        <li><a href="#call-to-action">مشاركة الأسئلة</a></li>
+        <li><a href="#features">ملخصات مدرسية</a></li>
+        <li><a href="#featured-services">امتحانات مدرسية</a></li>
+        <li><a href="#contact">اتصل بنا</a></li>
 
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="index.html#hero" class="active">الرئيسية</a></li>
-          <li><a href="index.html#about">الفيديوهات</a></li>
-          <li><a href="#services">أوراق ملخصات</a></li>
-          <li><a href="index.html#call-to-action">مشاركة الأسئلة</a></li>
-          <li><a href="index.html#features">ملخصات مدرسية</a></li>
-          <li><a href="index.html#featured-services">امتحانات مدرسية</a></li>
-          <li><a href="index.html#contact">اتصل بنا</a></li>
-         </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
+        <!-- نسخة الشاشات الكبيرة (تظهر فقط على الديسكتوب) -->
+        <li class="scroll-to-section desktop-only">
+          <div class="notification-container">
+            <a href="javascript:void(0)" id="notification-icon">
+              <i class="fa-solid fa-bell"></i>
+            </a>
+            <span class="notification-badge">1</span>
+          </div>
+        </li>
+        <li class="scroll-to-section desktop-only">
+          <div class="custom-button">
+            <a href="register.html" id="register-btn">
+              <i class="fa-solid fa-user-circle default-user-icon"></i>
+              <span>سجل معانا</span>
+            </a>
+          </div>
+        </li>
+        <li class="scroll-to-section desktop-only">
+          <div class="custom-button">
+            <a href="student-info.html" id="student-info-btn">
+              <i class="fa-solid fa-user-circle default-user-icon"></i>
+              <span>الحساب</span>
+            </a>
+          </div>
+        </li>
 
+        <!-- نسخة الشاشات الصغيرة (التصميم الجديد: زر دائري وفاخر مع أيقونة إشعارات بجانبه) -->
+        <li class="scroll-to-section mobile-only">
+          <div class="mobile-buttons-wrapper">
+            <div class="custom-button">
+              <a href="student-info.html" id="student-info-btn-mobile">
+                <i class="fa-solid fa-user-circle default-user-icon"></i>
+                <span>الحساب</span>
+              </a>
+            </div>
+            <div class="notification-container">
+              <a href="javascript:void(0)" id="notification-icon-mobile">
+                <i class="fa-solid fa-bell"></i>
+              </a>
+              <span class="notification-badge">1</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
+
+    <!-- قائمة الإشعارات (يمكن تعبئتها ديناميكيًا عبر JS) -->
+<div id="notification-dropdown">
+  <div class="notification-header">
+    <span class="back-icon">
+      <i class="fa-solid fa-arrow-right"></i>
+    </span>
+    <h2>الإشعارات</h2>
+  </div>
+      <ul class="notification-list">
+        <!-- عناصر الإشعارات -->
+      </ul>
     </div>
-  </header>
+  </div>
+</header>
 
   <main class="main">
 
@@ -175,10 +229,10 @@
         </div>
 
         <div class="col-lg-2 col-6 footer-links">
-  <h4>العلم في القرآن</h4>
-  <h6>قال الله تعالى:</h6>
-  <p><strong>"رَّبِّ زِدْنِي عِلْمًا" (طه: 114)</strong></p>
-</div>
+          <h4>ذكاء الاصطناعي</h4>
+          <h6>تم تصميم موقع بالذكاء الاصطناعي</h6>
+          <p><strong>لمساعدتك في مهامك اليومية و الدراسية. </strong></p><a href="https://seibrahimsobhi.github.io/ChatHema/"> Al Chat Hema</a>
+        </div>
 
         <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
           <h4>اتصل بنا</h4>
@@ -221,6 +275,235 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
-</body>
+<script type="module">
+  // استيراد مكتبات Firebase المطلوبة (باستخدام إصدار 11.1.0)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
+  // تهيئة Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBnqYuNCbt8QoHG1m9yBqoEhgZ6ThijyAI",
+    authDomain: "mr-tarek-226db.firebaseapp.com",
+    projectId: "mr-tarek-226db",
+    storageBucket: "mr-tarek-226db.firebasestorage.app",
+    messagingSenderId: "223389017591",
+    appId: "1:223389017591:web:802ce707c1c78d380abaf2",
+    measurementId: "G-2MKLQ0L2XW"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // عند تحميل محتوى الصفحة
+  document.addEventListener("DOMContentLoaded", () => {
+    // استهداف عناصر الواجهة الرئيسية (نسخة الديسكتوب)
+    const registerButton = document.getElementById("register-btn");
+    const startNowButton = document.getElementById("start-now-btn");
+    const studentInfoButton = document.getElementById("student-info-btn");
+    const notificationContainer = document.querySelector(".desktop-only .notification-container");
+    const notificationIcon = document.getElementById("notification-icon");
+    // عناصر البادج للإشعارات (لكلا النسختين)
+    const notificationBadges = document.querySelectorAll(".notification-badge");
+    const notificationDropdown = document.getElementById("notification-dropdown");
+    let notificationList = null;
+    if (notificationDropdown) {
+      notificationList = notificationDropdown.querySelector('.notification-list');
+    }
+    const mobileNavToggle = document.querySelector(".mobile-nav-toggle");
+    const navMenu = document.getElementById("navmenu");
+    const mobileNavOverlay = document.querySelector(".mobile-nav-overlay");
+
+    // استهداف عناصر النسخة المحمولة
+    const studentInfoBtnMobile = document.getElementById("student-info-btn-mobile");
+    const notificationContainerMobile = document.querySelector(".mobile-only .notification-container");
+    const notificationIconMobile = document.getElementById("notification-icon-mobile");
+
+    // قبل تحديد حالة تسجيل الدخول، نجعل بعض العناصر مخفية
+    if(registerButton) registerButton.style.display = "none";
+    if(studentInfoButton) studentInfoButton.style.display = "none";
+    if(notificationContainer) notificationContainer.style.display = "none";
+    if(studentInfoBtnMobile) studentInfoBtnMobile.style.display = "none";
+    if(notificationContainerMobile) notificationContainerMobile.style.display = "none";
+
+    // متغير لتتبع حالة ظهور قائمة الإشعارات وعددها
+    let notificationsVisible = false;
+    let notificationCount = 0;
+
+    // دالة لتحديث البادج في جميع العناصر
+    function updateBadge() {
+      notificationBadges.forEach(badge => {
+        if (notificationCount > 0) {
+          badge.textContent = notificationCount;
+          badge.style.display = "inline-block";
+        } else {
+          badge.style.display = "none";
+        }
+      });
+    }
+
+    // دالة لإظهار إشعار Toast (يمكن تخصيصها حسب الحاجة)
+    function showNotification(type, message) {
+      const notif = document.createElement('div');
+      notif.textContent = message;
+      notif.className = 'notification-toast';
+      notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    }
+
+    // دالة لإضافة إشعار إلى القائمة المنسدلة وتحديث العداد
+    function addNotification(message) {
+      if (notificationList) {
+        const li = document.createElement("li");
+        li.textContent = message;
+        li.classList.add("notification-item");
+        notificationList.appendChild(li);
+        notificationCount++;
+        updateBadge();
+      }
+    }
+
+    // التعامل مع النقر على أيقونة الإشعارات (نسخة الديسكتوب)
+    if (notificationIcon && notificationDropdown) {
+      notificationIcon.addEventListener("click", () => {
+        notificationsVisible = !notificationsVisible;
+        if (notificationsVisible) {
+          notificationDropdown.classList.add("active");
+          // إعادة ضبط العداد عند فتح القائمة
+          notificationCount = 0;
+          updateBadge();
+        } else {
+          notificationDropdown.classList.remove("active");
+        }
+      });
+    }
+
+    // التعامل مع النقر على أيقونة الإشعارات (نسخة الجوال)
+    if (notificationIconMobile && notificationDropdown) {
+      notificationIconMobile.addEventListener("click", () => {
+        notificationsVisible = !notificationsVisible;
+        if (notificationsVisible) {
+          notificationDropdown.classList.add("active");
+          notificationCount = 0;
+          updateBadge();
+        } else {
+          notificationDropdown.classList.remove("active");
+        }
+      });
+    }
+
+    // إعادة ضبط البادج عند النقر داخل قائمة الإشعارات على الشاشات الصغيرة
+    if (notificationDropdown) {
+      notificationDropdown.addEventListener("click", () => {
+        if (window.innerWidth < 768) {
+          notificationCount = 0;
+          updateBadge();
+        }
+      });
+    }
+
+    // التعامل مع أيقونة الرجوع داخل قائمة الإشعارات (للشاشات الصغيرة)
+    const backIcon = document.querySelector(".notification-header .back-icon");
+    if (backIcon && notificationDropdown) {
+      backIcon.addEventListener("click", () => {
+        notificationDropdown.classList.remove("active");
+        notificationsVisible = false;
+        if (navMenu && navMenu.classList.contains("mobile-nav-active")) {
+          navMenu.classList.remove("mobile-nav-active");
+          if (mobileNavOverlay) {
+            mobileNavOverlay.style.display = "none";
+          }
+        }
+      });
+    }
+
+    // التعامل مع النقر على أيقونة القائمة (الهامبرغر) على الهواتف
+    if (mobileNavToggle && navMenu) {
+      mobileNavToggle.addEventListener("click", () => {
+        if (notificationDropdown && notificationDropdown.classList.contains("active")) {
+          notificationDropdown.classList.remove("active");
+          notificationsVisible = false;
+        }
+        navMenu.classList.toggle("mobile-nav-active");
+        if (mobileNavOverlay) {
+          mobileNavOverlay.style.display = navMenu.classList.contains("mobile-nav-active") ? "block" : "none";
+        }
+      });
+    }
+
+    // إغلاق القائمة عند النقر على طبقة التغطية (للجوال)
+    if (mobileNavOverlay && navMenu) {
+      mobileNavOverlay.addEventListener("click", () => {
+        navMenu.classList.remove("mobile-nav-active");
+        mobileNavOverlay.style.display = "none";
+      });
+    }
+
+    // التحقق من حالة تسجيل الدخول باستخدام Firebase
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // حالة المستخدم المسجل (نسخة الديسكتوب):
+        if (registerButton) registerButton.style.display = "none";
+        if (studentInfoButton) studentInfoButton.style.display = "flex";
+        if (notificationContainer) notificationContainer.style.display = "inline-block";
+
+        // تحديث نسخة الجوال (زر الحساب وأيقونة الإشعارات)
+        if (studentInfoBtnMobile) {
+          studentInfoBtnMobile.href = "student-info.html";
+          studentInfoBtnMobile.innerHTML = `<i class="fa-solid fa-user-circle default-user-icon"></i><span>الحساب</span>`;
+          studentInfoBtnMobile.style.display = "inline-block";
+        }
+        if (notificationContainerMobile) {
+          notificationContainerMobile.style.display = "inline-block";
+        }
+
+        // جلب اسم المستخدم من Firestore وعرض رسالة ترحيب في قائمة الإشعارات
+        let username = "";
+        try {
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            username = userData.username || "";
+          }
+        } catch (error) {
+          console.error("خطأ في جلب بيانات المستخدم:", error);
+        }
+        if (!username) {
+          username = user.displayName || "مستخدم";
+        }
+        const welcomeMsg = `مرحباً بك ${username}`;
+        if (notificationList) {
+          notificationList.innerHTML = `<li id="welcome-notification">${welcomeMsg}</li>`;
+        }
+        if (notificationIcon) {
+          notificationIcon.classList.add("has-notifications");
+        }
+      } else {
+        // إذا لم يكن المستخدم مسجلاً يتم إعادة التوجيه إلى صفحة تسجيل الدخول
+        window.location.href = "login.html";
+      }
+    });
+
+    // --- التعامل مع إرسال الرسائل وعرضها في جزء الإشعارات ---
+    const messageForm = document.getElementById("messageForm");
+    if (messageForm) {
+      messageForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value.trim();
+        if (message) {
+          addNotification(message);
+          showNotification("success", message);
+          messageInput.value = "";
+        }
+      });
+    }
+  });
+</script>
+</body>
 </html>
