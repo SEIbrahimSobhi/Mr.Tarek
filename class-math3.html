@@ -217,7 +217,7 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
-  <script type="module">
+<script type="module">
   // استيراد مكتبات Firebase المطلوبة (باستخدام إصدار 11.1.0)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
@@ -226,13 +226,13 @@
 
   // تهيئة Firebase
   const firebaseConfig = {
-    apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
-    authDomain: "project-hema.firebaseapp.com",
-    projectId: "project-hema",
-    storageBucket: "project-hema.appspot.com",
-    messagingSenderId: "1079729179279",
-    appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
-    measurementId: "G-YFSTXKFQ9E"
+    apiKey: "AIzaSyBnqYuNCbt8QoHG1m9yBqoEhgZ6ThijyAI",
+    authDomain: "mr-tarek-226db.firebaseapp.com",
+    projectId: "mr-tarek-226db",
+    storageBucket: "mr-tarek-226db.firebasestorage.app",
+    messagingSenderId: "223389017591",
+    appId: "1:223389017591:web:802ce707c1c78d380abaf2",
+    measurementId: "G-2MKLQ0L2XW"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -266,6 +266,13 @@
     // متغير لتتبع حالة ظهور قائمة الإشعارات وعددها
     let notificationsVisible = false;
     let notificationCount = 0;
+
+    // إخفاء بعض العناصر حتى التأكد من حالة تسجيل الدخول
+    if (registerButton) registerButton.style.display = "none";
+    if (studentInfoButton) studentInfoButton.style.display = "none";
+    if (notificationContainer) notificationContainer.style.display = "none";
+    if (studentInfoBtnMobile) studentInfoBtnMobile.style.display = "none";
+    if (notificationContainerMobile) notificationContainerMobile.style.display = "none";
 
     // دالة لتحديث البادج في جميع العناصر
     function updateBadge() {
@@ -307,7 +314,6 @@
         notificationsVisible = !notificationsVisible;
         if (notificationsVisible) {
           notificationDropdown.classList.add("active");
-          // إعادة ضبط العداد عند فتح القائمة
           notificationCount = 0;
           updateBadge();
         } else {
@@ -330,7 +336,7 @@
       });
     }
 
-    // إضافة مستمع حدث على قائمة الإشعارات لإعادة ضبط البادج على الشاشات الصغيرة عند النقر داخل القائمة
+    // إعادة ضبط البادج على الشاشات الصغيرة عند النقر داخل القائمة
     if (notificationDropdown) {
       notificationDropdown.addEventListener("click", () => {
         if (window.innerWidth < 768) {
@@ -380,16 +386,14 @@
     // التحقق من حالة تسجيل الدخول باستخدام Firebase
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // حالة المستخدم المسجل (نسخة الديسكتوب):
+        // حالة المستخدم المسجل: عرض عناصر الصفحة
         if (registerButton) registerButton.style.display = "none";
         if (studentInfoButton) studentInfoButton.style.display = "flex";
         if (notificationContainer) {
           notificationContainer.style.display = "inline-block";
         }
-        // لا يتم تعديل زر الصفحة الرئيسية (startNowButton)
-
-        // تحديث نسخة الجوال (زر الحساب وأيقونة الإشعارات)
         if (studentInfoBtnMobile) {
+          studentInfoBtnMobile.style.display = "inline-block";
           studentInfoBtnMobile.href = "student-info.html";
           studentInfoBtnMobile.innerHTML = `<i class="fa-solid fa-user-circle default-user-icon"></i><span>الحساب</span>`;
         }
@@ -397,7 +401,7 @@
           notificationContainerMobile.style.display = "inline-block";
         }
 
-        // جلب اسم المستخدم الحقيقي من Firestore وعرض رسالة ترحيب في قائمة الإشعارات
+        // جلب اسم المستخدم من Firestore وعرض رسالة ترحيب
         let username = "";
         try {
           const userDocRef = doc(db, 'users', user.uid);
@@ -420,26 +424,12 @@
           notificationIcon.classList.add("has-notifications");
         }
       } else {
-        // حالة المستخدم غير المسجل (نسخة الديسكتوب):
-        if (registerButton) registerButton.style.display = "inline-block";
-        if (studentInfoButton) studentInfoButton.style.display = "none";
-        if (notificationContainer) {
-          notificationContainer.style.display = "none";
-        }
-        // لا يتم تعديل زر الصفحة الرئيسية (startNowButton)
-
-        // تحديث نسخة الجوال (زر الحساب وأيقونة الإشعارات)
-        if (studentInfoBtnMobile) {
-          studentInfoBtnMobile.href = "register.html";
-          studentInfoBtnMobile.innerHTML = `<i class="fa-solid fa-user-circle default-user-icon"></i><span>سجل معانا</span>`;
-        }
-        if (notificationContainerMobile) {
-          notificationContainerMobile.style.display = "none";
-        }
+        // حالة المستخدم غير المسجل: إعادة توجيه المستخدم لصفحة تسجيل الدخول
+        window.location.href = "login.html";
       }
     });
 
-    // --- التعامل مع إرسال الرسائل وعرضها في جزء الإشعارات ---
+    // التعامل مع إرسال الرسائل وعرضها في جزء الإشعارات
     const messageForm = document.getElementById("messageForm");
     if (messageForm) {
       messageForm.addEventListener("submit", (e) => {
