@@ -9,6 +9,19 @@
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <!-- ملف css -->
   <link rel="stylesheet" href="assets/css/auth.css">
+  <style>
+@media (max-width: 768px) {
+  /* تقليل المسافة أسفل الحاوية الرئيسية */
+  .form-container {
+    margin-bottom: -100px; /* يمكنك تعديل القيمة لتناسب المسافة المرغوبة */
+  }
+
+  /* تقليل المسافة العلوية للفوتر */
+  footer {
+    margin-top: -100px; /* تعديل القيمة حسب الاحتياج */
+  }
+}
+  </style>
   <!-- استدعاء خط Tajawal من Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100,15 +113,15 @@
   import { getFirestore, query, collection, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
   // إعدادات Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyBnqYuNCbt8QoHG1m9yBqoEhgZ6ThijyAI",
-    authDomain: "mr-tarek-226db.firebaseapp.com",
-    projectId: "mr-tarek-226db",
-    storageBucket: "mr-tarek-226db.firebasestorage.app",
-    messagingSenderId: "223389017591",
-    appId: "1:223389017591:web:802ce707c1c78d380abaf2",
-    measurementId: "G-2MKLQ0L2XW"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
+      authDomain: "project-hema.firebaseapp.com",
+      projectId: "project-hema",
+      storageBucket: "project-hema.firebasestorage.app",
+      messagingSenderId: "1079729179279",
+      appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
+      measurementId: "G-YFSTXKFQ9E"
+    };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
