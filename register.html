@@ -392,7 +392,7 @@
         });
         return newCount;
       } catch (error) {
-        console.error("فشل تحديث العداد:", error);
+        console.error("فشل تحديث العداد ،يرجى التواصل مع الدعم", error);
         throw new Error("فشل تحديث العداد العالمي للبريد الإلكتروني");
       }
     }
@@ -422,7 +422,7 @@
           verification_code: code
         });
       } catch (error) {
-        console.error("فشل إرسال البريد:", error);
+        console.error("فشل إرسال الى البريد:", error);
         throw new Error("فشل إرسال البريد الإلكتروني");
       }
     }
@@ -591,7 +591,7 @@
           // إنشاء حساب المستخدم باستخدام Firebase Authentication
           const userCredential = await createUserWithEmailAndPassword(auth, tempUserData.email, document.getElementById("password").value);
           const user = userCredential.user;
-          console.log("تم إنشاء حساب Firebase Auth:", user.uid);
+          console.log("تم إنشاء حساب", user.uid);
 
           if (adminEmails.includes(tempUserData.email)) {
             // للمسؤول: إنشاء وثيقة في مجموعة "users" (بدون كلمة المرور) مع تضمين رمز التأكد
@@ -627,14 +627,14 @@
               createdAt: new Date().toISOString(),
               accountStatus: "pending"
             });
-            showNotification("success", "تم إرسال طلب إنشاء الحساب. سيتم تفعيل حسابك عند الموافقة.");
+            showNotification("success", "تم إرسال طلب إنشاء الحساب.");
             document.getElementById("email-confirmation-page").style.display = "none";
             document.getElementById("account-status-page").style.display = "block";
             document.getElementById("display-name").innerText = tempUserData.username;
           }
         } catch (error) {
           console.error("خطأ في إنشاء الحساب:", error);
-          showNotification("error", "فشل إنشاء الحساب: " + error.message);
+          showNotification("error", "فشل إرسال طلب إنشاء الحساب: " + error.message);
         }
       });
 
