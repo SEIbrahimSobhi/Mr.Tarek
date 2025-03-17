@@ -272,7 +272,7 @@
 
   // استرجاع العداد من localStorage أو تعيينه إلى 0 إذا لم يوجد
   let emailMessagesSent = parseInt(localStorage.getItem("emailMessagesSent") || "0", 10);
-  const EMAILJS_LIMIT = 200; // الحد الأقصى للإعداد الأساسي
+  const EMAILJS_LIMIT = 2; // الحد الأقصى للإعداد الأساسي
 
   // إعدادات EmailJS البديلة (غير الأساسية)
   const EMAILJS_ALT_USER_ID = "dSQ33zEgHrtn8uBju"; // استخدم هذا الإعداد للرسائل بعد تجاوز الحد
