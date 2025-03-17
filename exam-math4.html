@@ -269,7 +269,7 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
-  <script type="module">
+<script type="module">
   // استيراد مكتبات Firebase المطلوبة (باستخدام إصدار 11.1.0)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
@@ -278,13 +278,13 @@
 
   // تهيئة Firebase
   const firebaseConfig = {
-    apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
-    authDomain: "project-hema.firebaseapp.com",
-    projectId: "project-hema",
-    storageBucket: "project-hema.appspot.com",
-    messagingSenderId: "1079729179279",
-    appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
-    measurementId: "G-YFSTXKFQ9E"
+    apiKey: "AIzaSyBnqYuNCbt8QoHG1m9yBqoEhgZ6ThijyAI",
+    authDomain: "mr-tarek-226db.firebaseapp.com",
+    projectId: "mr-tarek-226db",
+    storageBucket: "mr-tarek-226db.firebasestorage.app",
+    messagingSenderId: "223389017591",
+    appId: "1:223389017591:web:802ce707c1c78d380abaf2",
+    measurementId: "G-2MKLQ0L2XW"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -293,163 +293,157 @@
   const db = getFirestore(app);
 
   document.addEventListener("DOMContentLoaded", () => {
-    // استهداف عناصر الواجهة الرئيسية (نسخة الديسكتوب)
-    const registerButton = document.getElementById("register-btn");
-    const startNowButton = document.getElementById("start-now-btn");
-    const studentInfoButton = document.getElementById("student-info-btn");
-    const notificationContainer = document.querySelector(".desktop-only .notification-container");
-    const notificationIcon = document.getElementById("notification-icon");
-    // عناصر البادج للإشعارات (لكلا النسختين)
-    const notificationBadges = document.querySelectorAll(".notification-badge");
-    const notificationDropdown = document.getElementById("notification-dropdown");
-    let notificationList = null;
-    if (notificationDropdown) {
-      notificationList = notificationDropdown.querySelector('.notification-list');
-    }
-    const mobileNavToggle = document.querySelector(".mobile-nav-toggle");
-    const navMenu = document.getElementById("navmenu");
-    const mobileNavOverlay = document.querySelector(".mobile-nav-overlay");
-
-    // استهداف عناصر النسخة المحمولة
-    const studentInfoBtnMobile = document.getElementById("student-info-btn-mobile");
-    const notificationContainerMobile = document.querySelector(".mobile-only .notification-container");
-    const notificationIconMobile = document.getElementById("notification-icon-mobile");
-
-    // متغير لتتبع حالة ظهور قائمة الإشعارات وعددها
-    let notificationsVisible = false;
-    let notificationCount = 0;
-
-    // دالة لتحديث البادج في جميع العناصر
-    function updateBadge() {
-      notificationBadges.forEach(badge => {
-        if (notificationCount > 0) {
-          badge.textContent = notificationCount;
-          badge.style.display = "inline-block";
-        } else {
-          badge.style.display = "none";
-        }
-      });
-    }
-
-    // دالة لإظهار إشعار Toast (يمكن تخصيصها حسب الحاجة)
-    function showNotification(type, message) {
-      const notif = document.createElement('div');
-      notif.textContent = message;
-      notif.className = 'notification-toast';
-      notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
-    }
-
-    // دالة لإضافة إشعار إلى القائمة المنسدلة وتحديث العداد
-    function addNotification(message) {
-      if (notificationList) {
-        const li = document.createElement("li");
-        li.textContent = message;
-        li.classList.add("notification-item");
-        notificationList.appendChild(li);
-        notificationCount++;
-        updateBadge();
-      }
-    }
-
-    // التعامل مع النقر على أيقونة الإشعارات (نسخة الديسكتوب)
-    if (notificationIcon && notificationDropdown) {
-      notificationIcon.addEventListener("click", () => {
-        notificationsVisible = !notificationsVisible;
-        if (notificationsVisible) {
-          notificationDropdown.classList.add("active");
-          // إعادة ضبط العداد عند فتح القائمة
-          notificationCount = 0;
-          updateBadge();
-        } else {
-          notificationDropdown.classList.remove("active");
-        }
-      });
-    }
-
-    // التعامل مع النقر على أيقونة الإشعارات (نسخة الجوال)
-    if (notificationIconMobile && notificationDropdown) {
-      notificationIconMobile.addEventListener("click", () => {
-        notificationsVisible = !notificationsVisible;
-        if (notificationsVisible) {
-          notificationDropdown.classList.add("active");
-          notificationCount = 0;
-          updateBadge();
-        } else {
-          notificationDropdown.classList.remove("active");
-        }
-      });
-    }
-
-    // إضافة مستمع حدث على قائمة الإشعارات لإعادة ضبط البادج على الشاشات الصغيرة عند النقر داخل القائمة
-    if (notificationDropdown) {
-      notificationDropdown.addEventListener("click", () => {
-        if (window.innerWidth < 768) {
-          notificationCount = 0;
-          updateBadge();
-        }
-      });
-    }
-
-    // التعامل مع أيقونة الرجوع داخل قائمة الإشعارات (للشاشات الصغيرة)
-    const backIcon = document.querySelector(".notification-header .back-icon");
-    if (backIcon && notificationDropdown) {
-      backIcon.addEventListener("click", () => {
-        notificationDropdown.classList.remove("active");
-        notificationsVisible = false;
-        if (navMenu && navMenu.classList.contains("mobile-nav-active")) {
-          navMenu.classList.remove("mobile-nav-active");
-          if (mobileNavOverlay) {
-            mobileNavOverlay.style.display = "none";
-          }
-        }
-      });
-    }
-
-    // التعامل مع النقر على أيقونة القائمة (الهامبرغر) على الهواتف
-    if (mobileNavToggle && navMenu) {
-      mobileNavToggle.addEventListener("click", () => {
-        if (notificationDropdown && notificationDropdown.classList.contains("active")) {
-          notificationDropdown.classList.remove("active");
-          notificationsVisible = false;
-        }
-        navMenu.classList.toggle("mobile-nav-active");
-        if (mobileNavOverlay) {
-          mobileNavOverlay.style.display = navMenu.classList.contains("mobile-nav-active") ? "block" : "none";
-        }
-      });
-    }
-
-    // إغلاق القائمة عند النقر على طبقة التغطية (للجوال)
-    if (mobileNavOverlay && navMenu) {
-      mobileNavOverlay.addEventListener("click", () => {
-        navMenu.classList.remove("mobile-nav-active");
-        mobileNavOverlay.style.display = "none";
-      });
-    }
-
-    // التحقق من حالة تسجيل الدخول باستخدام Firebase
+    // التحقق من حالة تسجيل الدخول
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // حالة المستخدم المسجل (نسخة الديسكتوب):
-        if (registerButton) registerButton.style.display = "none";
-        if (studentInfoButton) studentInfoButton.style.display = "flex";
-        if (notificationContainer) {
-          notificationContainer.style.display = "inline-block";
+        // المستخدم مسجل الدخول، يمكن تحميل الصفحة وعرض المحتوى
+        // استهداف عناصر الواجهة الرئيسية (نسخة الديسكتوب)
+        const registerButton = document.getElementById("register-btn");
+        const startNowButton = document.getElementById("start-now-btn");
+        const studentInfoButton = document.getElementById("student-info-btn");
+        const notificationContainer = document.querySelector(".desktop-only .notification-container");
+        const notificationIcon = document.getElementById("notification-icon");
+        // عناصر البادج للإشعارات (لكلا النسختين)
+        const notificationBadges = document.querySelectorAll(".notification-badge");
+        const notificationDropdown = document.getElementById("notification-dropdown");
+        let notificationList = null;
+        if (notificationDropdown) {
+          notificationList = notificationDropdown.querySelector('.notification-list');
         }
-        // لا يتم تعديل زر الصفحة الرئيسية (startNowButton)
+        const mobileNavToggle = document.querySelector(".mobile-nav-toggle");
+        const navMenu = document.getElementById("navmenu");
+        const mobileNavOverlay = document.querySelector(".mobile-nav-overlay");
 
-        // تحديث نسخة الجوال (زر الحساب وأيقونة الإشعارات)
+        // استهداف عناصر النسخة المحمولة
+        const studentInfoBtnMobile = document.getElementById("student-info-btn-mobile");
+        const notificationContainerMobile = document.querySelector(".mobile-only .notification-container");
+        const notificationIconMobile = document.getElementById("notification-icon-mobile");
+
+        // إعداد الحالة الافتراضية: إخفاء بعض العناصر حتى يتم تحديد حالة المستخدم
+        if (registerButton) registerButton.style.display = "none";
+        if (studentInfoButton) studentInfoButton.style.display = "none";
+        if (notificationContainer) notificationContainer.style.display = "none";
         if (studentInfoBtnMobile) {
-          studentInfoBtnMobile.href = "student-info.html";
-          studentInfoBtnMobile.innerHTML = `<i class="fa-solid fa-user-circle default-user-icon"></i><span>الحساب</span>`;
+          studentInfoBtnMobile.style.display = "none";
         }
         if (notificationContainerMobile) {
-          notificationContainerMobile.style.display = "inline-block";
+          notificationContainerMobile.style.display = "none";
         }
 
-        // جلب اسم المستخدم الحقيقي من Firestore وعرض رسالة ترحيب في قائمة الإشعارات
+        // متغير لتتبع حالة ظهور قائمة الإشعارات وعددها
+        let notificationsVisible = false;
+        let notificationCount = 0;
+
+        // دالة لتحديث البادج في جميع العناصر
+        function updateBadge() {
+          notificationBadges.forEach(badge => {
+            if (notificationCount > 0) {
+              badge.textContent = notificationCount;
+              badge.style.display = "inline-block";
+            } else {
+              badge.style.display = "none";
+            }
+          });
+        }
+
+        // دالة لإظهار إشعار Toast
+        function showNotification(type, message) {
+          const notif = document.createElement('div');
+          notif.textContent = message;
+          notif.className = 'notification-toast';
+          notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
+          document.body.appendChild(notif);
+          setTimeout(() => notif.remove(), 3000);
+        }
+
+        // دالة لإضافة إشعار إلى القائمة المنسدلة وتحديث العداد
+        function addNotification(message) {
+          if (notificationList) {
+            const li = document.createElement("li");
+            li.textContent = message;
+            li.classList.add("notification-item");
+            notificationList.appendChild(li);
+            notificationCount++;
+            updateBadge();
+          }
+        }
+
+        // التعامل مع النقر على أيقونة الإشعارات (نسخة الديسكتوب)
+        if (notificationIcon && notificationDropdown) {
+          notificationIcon.addEventListener("click", () => {
+            notificationsVisible = !notificationsVisible;
+            if (notificationsVisible) {
+              notificationDropdown.classList.add("active");
+              notificationCount = 0;
+              updateBadge();
+            } else {
+              notificationDropdown.classList.remove("active");
+            }
+          });
+        }
+
+        // التعامل مع النقر على أيقونة الإشعارات (نسخة الجوال)
+        if (notificationIconMobile && notificationDropdown) {
+          notificationIconMobile.addEventListener("click", () => {
+            notificationsVisible = !notificationsVisible;
+            if (notificationsVisible) {
+              notificationDropdown.classList.add("active");
+              notificationCount = 0;
+              updateBadge();
+            } else {
+              notificationDropdown.classList.remove("active");
+            }
+          });
+        }
+
+        // إعادة ضبط البادج عند النقر داخل قائمة الإشعارات على الشاشات الصغيرة
+        if (notificationDropdown) {
+          notificationDropdown.addEventListener("click", () => {
+            if (window.innerWidth < 768) {
+              notificationCount = 0;
+              updateBadge();
+            }
+          });
+        }
+
+        // التعامل مع أيقونة الرجوع داخل قائمة الإشعارات (للشاشات الصغيرة)
+        const backIcon = document.querySelector(".notification-header .back-icon");
+        if (backIcon && notificationDropdown) {
+          backIcon.addEventListener("click", () => {
+            notificationDropdown.classList.remove("active");
+            notificationsVisible = false;
+            if (navMenu && navMenu.classList.contains("mobile-nav-active")) {
+              navMenu.classList.remove("mobile-nav-active");
+              if (mobileNavOverlay) {
+                mobileNavOverlay.style.display = "none";
+              }
+            }
+          });
+        }
+
+        // التعامل مع النقر على أيقونة القائمة (الهامبرغر) على الهواتف
+        if (mobileNavToggle && navMenu) {
+          mobileNavToggle.addEventListener("click", () => {
+            if (notificationDropdown && notificationDropdown.classList.contains("active")) {
+              notificationDropdown.classList.remove("active");
+              notificationsVisible = false;
+            }
+            navMenu.classList.toggle("mobile-nav-active");
+            if (mobileNavOverlay) {
+              mobileNavOverlay.style.display = navMenu.classList.contains("mobile-nav-active") ? "block" : "none";
+            }
+          });
+        }
+
+        // إغلاق القائمة عند النقر على طبقة التغطية (للجوال)
+        if (mobileNavOverlay && navMenu) {
+          mobileNavOverlay.addEventListener("click", () => {
+            navMenu.classList.remove("mobile-nav-active");
+            mobileNavOverlay.style.display = "none";
+          });
+        }
+
+        // تحديث واجهة المستخدم بناءً على بيانات المستخدم
         let username = "";
         try {
           const userDocRef = doc(db, 'users', user.uid);
@@ -471,40 +465,26 @@
         if (notificationIcon) {
           notificationIcon.classList.add("has-notifications");
         }
-      } else {
-        // حالة المستخدم غير المسجل (نسخة الديسكتوب):
-        if (registerButton) registerButton.style.display = "inline-block";
-        if (studentInfoButton) studentInfoButton.style.display = "none";
-        if (notificationContainer) {
-          notificationContainer.style.display = "none";
-        }
-        // لا يتم تعديل زر الصفحة الرئيسية (startNowButton)
 
-        // تحديث نسخة الجوال (زر الحساب وأيقونة الإشعارات)
-        if (studentInfoBtnMobile) {
-          studentInfoBtnMobile.href = "register.html";
-          studentInfoBtnMobile.innerHTML = `<i class="fa-solid fa-user-circle default-user-icon"></i><span>سجل معانا</span>`;
+        // التعامل مع إرسال الرسائل وعرضها في جزء الإشعارات
+        const messageForm = document.getElementById("messageForm");
+        if (messageForm) {
+          messageForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
+            if (message) {
+              addNotification(message);
+              showNotification("success", message);
+              messageInput.value = "";
+            }
+          });
         }
-        if (notificationContainerMobile) {
-          notificationContainerMobile.style.display = "none";
-        }
+      } else {
+        // المستخدم غير مسجل الدخول، إعادة التوجيه إلى صفحة تسجيل الدخول
+        window.location.href = "login.html";
       }
     });
-
-    // --- التعامل مع إرسال الرسائل وعرضها في جزء الإشعارات ---
-    const messageForm = document.getElementById("messageForm");
-    if (messageForm) {
-      messageForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const messageInput = document.getElementById("messageInput");
-        const message = messageInput.value.trim();
-        if (message) {
-          addNotification(message);
-          showNotification("success", message);
-          messageInput.value = "";
-        }
-      });
-    }
   });
 </script>
 </body>
