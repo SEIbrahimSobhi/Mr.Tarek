@@ -199,7 +199,7 @@
           <button class="submit-btn" id="resend-code" style="display:none;">إعادة إرسال الكود</button>
         </div>
         <p class="success-message" id="confirmation-success" style="display: none;">تم تأكيد البريد الإلكتروني بنجاح!</p>
-        <p id="countdown" style="text-align:center; color:#e74c3c;"></p>
+        <p id="countdown" style="text-align:center; color:#e74c3c; margin-top:20px;"></p>
       </div>
 
       <!-- صفحة حالة الحساب (للطلاب) بعد تأكيد البريد الإلكتروني -->
@@ -575,7 +575,7 @@
 
         // بدء العد التنازلي إذا وُجد عنصر للعد (يمكنك ضبط المدة كما تريد)
         if (document.getElementById("countdown")) {
-          startCountdown(180);
+          startCountdown(240);
         }
       });
 
@@ -653,7 +653,7 @@
           }, 240000);
           // يمكنك أيضاً إعادة بدء العد التنازلي إذا رغبت
           if (document.getElementById("countdown")) {
-            startCountdown(180);
+            startCountdown(240);
           }
         } catch (error) {
           showNotification("error", error.message);
