@@ -4,273 +4,342 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة تحكم المسؤول</title>
-  <style>
-    /* تصميم مُحسن للوحة تحكم المسؤول */
-    body {
-      font-family: 'Tajawal', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #eef2f7;
-      direction: rtl;
-      color: #333;
-    }
+<style>
+  /* التصميم العام كما هو موجود */
+  body {
+    font-family: 'Tajawal', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #eef2f7;
+    direction: rtl;
+    color: #333;
+  }
+  header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    background: #f8f9fa;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    flex-wrap: wrap;
+  }
+  nav button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #ddd;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+    border-radius: 4px;
+  }
+  nav button.active,
+  nav button:hover {
+    background: #007bff;
+    color: #fff;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  section {
+    margin-bottom: 2rem;
+  }
+  h2 {
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 0.5rem;
+    color: #007bff;
+  }
+  .bulk-actions {
+    margin-bottom: 1rem;
+    text-align: right;
+  }
+  .bulk-actions button {
+    padding: 0.4rem 0.8rem;
+    margin-left: 0.5rem;
+    background: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .bulk-actions button:hover {
+    background: #0056b3;
+  }
+  .show-all-btn {
+    display: inline-block;
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .show-all-btn:hover {
+    background: #218838;
+  }
+
+  /* تحسين عرض الجداول */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+  }
+  table thead {
+    background: #007bff;
+  }
+  table thead th {
+    color: #fff;
+    padding: 0.75rem;
+    border: 1px solid #0062cc;
+    white-space: nowrap;
+  }
+  table tbody tr {
+    background: #fafafa;
+    transition: background 0.3s;
+  }
+  table tbody tr:nth-child(even) {
+    background: #f1f1f1;
+  }
+  table tbody tr:hover {
+    background: #e9ecef;
+  }
+  table th, table td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap;
+  }
+  /* عمود التفاصيل بدون عنوان */
+  table thead th:nth-child(6) {
+    /* بدون نص */
+  }
+  .expand-icon {
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .expand-icon.rotate {
+    transform: rotate(90deg);
+  }
+  .details-row {
+    background: #f9f9f9;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  .details-cell {
+    text-align: left;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #ddd;
+  }
+  /* تنسيق تفاصيل المستخدمين باستخدام Flex مع انميشن */
+  .details-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .detail-item {
+    flex: 1 1 45%;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    animation: slideIn 0.5s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideIn {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  /* أيقونة التوثيق للمسؤول */
+  .verified-icon {
+    color: #1DA1F2;
+    margin-left: 5px;
+    font-size: 1rem;
+  }
+  /* تنسيق أيقونات الإجراءات داخل مستطيل منفصل لكل أيقونة (أفقي) */
+  .action-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .action-box {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background: #f7f7f7;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .action-box:hover {
+    background: rgba(0,0,0,0.05);
+    transform: scale(1.1);
+  }
+  .action-icon {
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .action-box.accept {
+    border-color: #28a745;
+    color: #28a745;
+  }
+  .action-box.reject, .action-box.delete {
+    border-color: #dc3545;
+    color: #dc3545;
+  }
+  .notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #333;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
+    font-size: 1rem;
+  }
+  /* أنماط النافذة (modal) للتأكيد */
+  #confirmationModal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  #confirmationModal .modal-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+  }
+  #confirmationModal .modal-content {
+    position: relative;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 2100;
+    width: 90%;
+    max-width: 400px;
+  }
+  #confirmationModal .modal-content p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  #confirmationModal .modal-content button {
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  #confirmationModal .modal-content button#confirmRejectBtn {
+    background: #dc3545;
+    color: #fff;
+  }
+  #confirmationModal .modal-content button#cancelRejectBtn {
+    background: #6c757d;
+    color: #fff;
+  }
+
+  /* تحسين التصميم على الشاشات الصغيرة */
+  @media (max-width: 768px) {
     header {
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      color: #fff;
-      padding: 1rem;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      padding: 0.8rem;
+      font-size: 0.9rem;
     }
     nav {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      background: #f8f9fa;
-      padding: 0.5rem;
-      border-bottom: 1px solid #ddd;
+      flex-direction: column;
+      align-items: center;
     }
     nav button {
-      padding: 0.5rem 1rem;
-      border: none;
-      background: #ddd;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.3s;
-      border-radius: 4px;
-    }
-    nav button.active,
-    nav button:hover {
-      background: #007bff;
-      color: #fff;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
     }
     .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    section {
-      margin-bottom: 2rem;
+      margin: 1rem;
+      padding: 0.5rem;
     }
     h2 {
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 0.5rem;
-      color: #007bff;
+      font-size: 1.2rem;
+      padding-bottom: 0.3rem;
     }
     .bulk-actions {
-      margin-bottom: 1rem;
-      text-align: right;
-    }
-    .bulk-actions button {
-      padding: 0.4rem 0.8rem;
-      margin-left: 0.5rem;
-      background: #007bff;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .bulk-actions button:hover {
-      background: #0056b3;
-    }
-    .show-all-btn {
-      display: inline-block;
-      margin: 1rem 0;
-      padding: 0.5rem 1rem;
-      background: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .show-all-btn:hover {
-      background: #218838;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1rem;
-    }
-    table thead {
-      background: #007bff;
-    }
-    table thead th {
-      color: #fff;
-      padding: 0.75rem;
-      border: 1px solid #0062cc;
-    }
-    table tbody tr {
-      background: #fafafa;
-      transition: background 0.3s;
-    }
-    table tbody tr:nth-child(even) {
-      background: #f1f1f1;
-    }
-    table tbody tr:hover {
-      background: #e9ecef;
-    }
-    table th, table td {
-      padding: 0.75rem;
-      border: 1px solid #ddd;
       text-align: center;
     }
-    /* عمود التفاصيل بدون عنوان */
-    table thead th:nth-child(6) {
-      /* لا يوجد نص */
+    table thead th,
+    table tbody td {
+      padding: 0.5rem;
+      font-size: 0.8rem;
     }
-    .expand-icon {
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    .expand-icon.rotate {
-      transform: rotate(90deg);
-    }
-    .details-row {
-      background: #f9f9f9;
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    .details-cell {
-      text-align: left;
-      font-size: 0.9rem;
-      padding: 0.75rem 1rem;
-      border-top: 1px solid #ddd;
-    }
-    /* تنسيق تفاصيل المستخدمين باستخدام Flex مع انميشن */
     .details-content {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
+      flex-direction: column;
     }
     .detail-item {
-      flex: 1 1 45%;
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 0.5rem;
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      animation: slideIn 0.5s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes slideIn {
-      from { transform: translateX(20px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    /* أيقونة التوثيق للمسؤول */
-    .verified-icon {
-      color: #1DA1F2;
-      margin-left: 5px;
-      font-size: 1rem;
-    }
-    /* تنسيق أيقونات الإجراءات داخل مستطيل منفصل لكل أيقونة (أفقي) */
-    .action-container {
-      display: flex;
-      flex-direction: row;
-      gap: 0.5rem;
-      align-items: center;
-      justify-content: center;
+      flex: 1 1 100%;
     }
     .action-box {
-      width: 2.5rem;
-      height: 2.5rem;
-      line-height: 2.5rem;
-      text-align: center;
-      border: 2px solid #ddd;
-      border-radius: 4px;
-      background: #f7f7f7;
-      transition: transform 0.2s, background 0.2s;
-    }
-    .action-box:hover {
-      background: rgba(0,0,0,0.05);
-      transform: scale(1.1);
-    }
-    .action-icon {
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-    .action-box.accept {
-      border-color: #28a745;
-      color: #28a745;
-    }
-    .action-box.reject {
-      border-color: #dc3545;
-      color: #dc3545;
-    }
-    .action-box.delete {
-      border-color: #dc3545;
-      color: #dc3545;
+      width: 2rem;
+      height: 2rem;
+      line-height: 2rem;
     }
     .notification {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 10px 20px;
-      background: #333;
-      color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      z-index: 1000;
-      font-size: 1rem;
-    }
-    /* أنماط النافذة (modal) للتأكيد */
-    #confirmationModal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
-    #confirmationModal .modal-overlay {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
+      font-size: 0.8rem;
+      padding: 8px 16px;
+      bottom: 10px;
+      right: 10px;
     }
     #confirmationModal .modal-content {
-      position: relative;
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      text-align: center;
-      z-index: 2100;
+      padding: 1rem;
     }
     #confirmationModal .modal-content p {
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-    }
-    #confirmationModal .modal-content button {
-      margin: 0.5rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
       font-size: 1rem;
     }
-    #confirmationModal .modal-content button#confirmRejectBtn {
-      background: #dc3545;
-      color: #fff;
+    #confirmationModal .modal-content button {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.8rem;
     }
-    #confirmationModal .modal-content button#cancelRejectBtn {
-      background: #6c757d;
-      color: #fff;
-    }
-  </style>
+  }
+</style>
   <!-- تضمين مكتبة EmailJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
-    // تهيئة EmailJS الأساسي
-    emailjs.init("YOUR_PRIMARY_USER_ID");
+    (function() {
+      emailjs.init("GM01pYviz5PCNHzkV");
+    })();
   </script>
   <!-- تضمين FontAwesome للأيقونات -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -295,22 +364,28 @@
         <button id="acceptSelectedPending">قبول المحدد</button>
         <button id="rejectSelectedPending">رفض المحدد</button>
       </div>
-      <table id="pendingTable">
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="selectAllPending" /></th>
-            <th>اسم المستخدم</th>
-            <th>الاسم الكامل</th>
-            <th>البريد الإلكتروني</th>
-            <th>الهاتف</th>
-            <th></th> <!-- عمود التفاصيل بدون عنوان -->
-            <th>الإجراءات</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- سيتم ملء البيانات ديناميكيًا -->
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table id="pendingTable">
+          <thead>
+            <tr>
+              <!-- عمود يجمع بين مربع التحديد والرقم -->
+              <th>
+                <input type="checkbox" id="selectAllPending" />
+
+              </th>
+              <th>اسم المستخدم</th>
+              <th>الاسم الكامل</th>
+              <th>البريد الإلكتروني</th>
+              <th>الهاتف</th>
+              <th></th> <!-- عمود التفاصيل -->
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- سيتم ملء البيانات ديناميكيًا -->
+          </tbody>
+        </table>
+      </div>
     </section>
     <!-- قسم الحسابات المفعلة -->
     <section id="activatedSection" style="display: none;">
@@ -318,450 +393,491 @@
       <div class="bulk-actions">
         <button id="deleteSelectedActivated">حذف المحدد</button>
       </div>
-      <table id="activatedTable">
-        <thead>
-          <tr>
-            <th><input type="checkbox" id="selectAllActivated" /></th>
-            <th>اسم المستخدم</th>
-            <th>الاسم الكامل</th>
-            <th>البريد الإلكتروني</th>
-            <th>الهاتف</th>
-            <th></th> <!-- عمود التفاصيل بدون عنوان -->
-            <th>الإجراءات</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- سيتم ملء البيانات ديناميكيًا -->
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table id="activatedTable">
+          <thead>
+            <tr>
+              <!-- عمود يجمع بين مربع التحديد والرقم -->
+              <th>
+                <input type="checkbox" id="selectAllActivated" />
+
+              </th>
+              <th>اسم المستخدم</th>
+              <th>الاسم الكامل</th>
+              <th>البريد الإلكتروني</th>
+              <th>الهاتف</th>
+              <th></th> <!-- عمود التفاصيل -->
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- سيتم ملء البيانات ديناميكيًا -->
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
-
-  <!-- نافذة التأكيد (Modal) عند الضغط على أيقونة الرفض -->
-  <div id="confirmationModal">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <p>هل أنت متأكد من رفض المستخدم؟</p>
-      <button id="confirmRejectBtn">نعم، ارفض</button>
-      <button id="cancelRejectBtn">إلغاء</button>
-    </div>
-  </div>
-
   <!-- سكريبت المسؤول -->
-  <script type="module">
-    // admin-tasks.js
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-    import { getFirestore, collection, getDocs, getDoc, doc, deleteDoc, setDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-    import { getFunctions } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-functions.js';
-    import { getStorage } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
-    import * as XLSX from 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+<script type="module">
+  // admin-tasks.js
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+  import { getFirestore, collection, getDocs, getDoc, doc, deleteDoc, setDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+  import { getFunctions } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-functions.js';
+  import { getStorage } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
+  import * as XLSX from 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
 
-    // إعدادات Firebase (نفس الإعدادات)
-    const firebaseConfig = {
-      apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
-      authDomain: "project-hema.firebaseapp.com",
-      projectId: "project-hema",
-      storageBucket: "project-hema.firebasestorage.app",
-      messagingSenderId: "1079729179279",
-      appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
-      measurementId: "G-YFSTXKFQ9E"
-    };
+  // إعدادات Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBnqYuNCbt8QoHG1m9yBqoEhgZ6ThijyAI",
+    authDomain: "mr-tarek-226db.firebaseapp.com",
+    projectId: "mr-tarek-226db",
+    storageBucket: "mr-tarek-226db.firebasestorage.app",
+    messagingSenderId: "223389017591",
+    appId: "1:223389017591:web:802ce707c1c78d380abaf2",
+    measurementId: "G-2MKLQ0L2XW"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const functions = getFunctions(app);
-    const storage = getStorage(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const functions = getFunctions(app);
+  const storage = getStorage(app);
 
-    // قائمة حسابات المسؤول
-    const adminEmails = [
-      "seebrahemsobhy@gmail.com",
-      "tarekk1552@gmail.com",
-      "ahmedloda255@gmail.com",
-      "admin3@gmail.com"
-    ];
+  // قائمة حسابات المسؤولين المسموح لهم بالدخول
+  const adminEmails = [
+    'seebrahemsobhy@gmail.com',
+    'tarekk1552@gmail.com',
+    'ahmedloda255@gmail.com',
+    'halaraslan21@gmail.com'
+  ];
 
-    // متغير لتخزين معرّف المستخدم المرشح للرفض
-    let rejectCandidateId = null;
+  // إعداد العداد المركزي لإشعارات قبول الحسابات عبر Firestore
+  const EMAILJS_ACCEPT_LIMIT = 200; // الحد للإعداد الأساسي
+  const EMAIL_COUNTER_DOC = 'emailMessagesSent'; // اسم الوثيقة في مجموعة emailCounters
 
-    // متغيرات لتتبع حالة زر "عرض كافة التفاصيل" لكل جدول
-    let allDetailsShownPending = false;
-    let allDetailsShownActivated = false;
-
-    // التحقق من صلاحية المسؤول
-    onAuthStateChanged(auth, async (user) => {
-      if (user && user.email === 'seebrahemsobhy@gmail.com') {
-        console.log('مرحبًا يا مسؤول!');
-        await fetchPendingUsers();
-        await fetchActivatedUsers();
-      } else {
-        alert('تم رفض الوصول.');
-        window.location.href = '/login.html';
-      }
-    });
-
-    // تبديل عرض الأقسام
-    const pendingTab = document.getElementById('pendingTab');
-    const activatedTab = document.getElementById('activatedTab');
-    const pendingSection = document.getElementById('pendingSection');
-    const activatedSection = document.getElementById('activatedSection');
-
-    pendingTab.addEventListener('click', () => {
-      pendingTab.classList.add('active');
-      activatedTab.classList.remove('active');
-      pendingSection.style.display = 'block';
-      activatedSection.style.display = 'none';
-      document.getElementById('showAllDetailsBtn').textContent = "عرض كافة التفاصيل";
-      allDetailsShownPending = false;
-    });
-
-    activatedTab.addEventListener('click', () => {
-      activatedTab.classList.add('active');
-      pendingTab.classList.remove('active');
-      activatedSection.style.display = 'block';
-      pendingSection.style.display = 'none';
-      document.getElementById('showAllDetailsBtn').textContent = "عرض كافة التفاصيل";
-      allDetailsShownActivated = false;
-    });
-
-    // دالة إشعار بسيطة
-    function showNotification(type, message) {
-      const notif = document.createElement('div');
-      notif.textContent = message;
-      notif.className = 'notification';
-      notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
+  // تهيئة العداد المركزي في Firestore إذا لم يكن موجوداً
+  async function initializeEmailCounter() {
+    const counterRef = doc(db, 'emailCounters', EMAIL_COUNTER_DOC);
+    const counterSnap = await getDoc(counterRef);
+    if (!counterSnap.exists()) {
+      await setDoc(counterRef, { count: 0 });
     }
+  }
+  initializeEmailCounter();
 
-    // دالة لإنشاء صف تفاصيل المستخدم مع تنسيق Flex و انميشن
-    function createDetailsRow(detailsHtml) {
-      const detailsRow = document.createElement('tr');
-      detailsRow.classList.add('details-row');
-      const detailsCell = document.createElement('td');
-      detailsCell.colSpan = 7;
-      detailsCell.classList.add('details-cell');
-      detailsCell.innerHTML = `<div class="details-content">${detailsHtml}</div>`;
-      detailsRow.appendChild(detailsCell);
-      return detailsRow;
+  // دالة لاسترجاع قيمة العداد المركزي
+  async function getEmailCounter() {
+    const counterRef = doc(db, 'emailCounters', EMAIL_COUNTER_DOC);
+    const counterSnap = await getDoc(counterRef);
+    return counterSnap.exists() ? counterSnap.data().count : 0;
+  }
+
+  // دالة لتحديث العداد المركزي بزيادة واحدة
+  async function incrementEmailCounter() {
+    const counterRef = doc(db, 'emailCounters', EMAIL_COUNTER_DOC);
+    await updateDoc(counterRef, { count: increment(1) });
+  }
+
+  // متغير لتخزين معرّف المستخدم المرشح للرفض
+  let rejectCandidateId = null;
+
+  // متغيرات لتتبع حالة زر "عرض كافة التفاصيل" لكل جدول
+  let allDetailsShownPending = false;
+  let allDetailsShownActivated = false;
+
+  // التحقق من صلاحية المسؤول
+  onAuthStateChanged(auth, async (user) => {
+    if (user && adminEmails.includes(user.email)) {
+      console.log('مرحبًا يا مسؤول!');
+      await fetchPendingUsers();
+      await fetchActivatedUsers();
+    } else {
+      alert('تم رفض الوصول.');
+      window.location.href = '/login.html';
     }
+  });
 
-    // دالة تبديل عرض تفاصيل المستخدم مع انميشن
-    function toggleDetails(row, detailsHtml) {
-      if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
-        row.parentNode.removeChild(row.nextElementSibling);
-        row.querySelector('.expand-icon').classList.remove('rotate');
-      } else {
-        const detailsRow = createDetailsRow(detailsHtml);
-        row.parentNode.insertBefore(detailsRow, row.nextElementSibling);
-        row.querySelector('.expand-icon').classList.add('rotate');
-      }
+  // تبديل عرض الأقسام
+  const pendingTab = document.getElementById('pendingTab');
+  const activatedTab = document.getElementById('activatedTab');
+  const pendingSection = document.getElementById('pendingSection');
+  const activatedSection = document.getElementById('activatedSection');
+
+  pendingTab.addEventListener('click', () => {
+    pendingTab.classList.add('active');
+    activatedTab.classList.remove('active');
+    pendingSection.style.display = 'block';
+    activatedSection.style.display = 'none';
+    document.getElementById('showAllDetailsBtn').textContent = "عرض كافة التفاصيل";
+    allDetailsShownPending = false;
+  });
+
+  activatedTab.addEventListener('click', () => {
+    activatedTab.classList.add('active');
+    pendingTab.classList.remove('active');
+    activatedSection.style.display = 'block';
+    pendingSection.style.display = 'none';
+    document.getElementById('showAllDetailsBtn').textContent = "عرض كافة التفاصيل";
+    allDetailsShownActivated = false;
+  });
+
+  // دالة إشعار بسيطة
+  function showNotification(type, message) {
+    const notif = document.createElement('div');
+    notif.textContent = message;
+    notif.className = 'notification';
+    notif.style.backgroundColor = type === 'success' ? '#28a745' : '#dc3545';
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+  }
+
+  // دالة لإنشاء صف تفاصيل المستخدم مع تنسيق Flex و انميشن
+  function createDetailsRow(detailsHtml) {
+    const detailsRow = document.createElement('tr');
+    detailsRow.classList.add('details-row');
+    const detailsCell = document.createElement('td');
+    detailsCell.colSpan = 7; // بما أن الجدول الآن يحتوي على 7 أعمدة
+    detailsCell.classList.add('details-cell');
+    detailsCell.innerHTML = `<div class="details-content">${detailsHtml}</div>`;
+    detailsRow.appendChild(detailsCell);
+    return detailsRow;
+  }
+
+  // دالة تبديل عرض تفاصيل المستخدم مع انميشن
+  function toggleDetails(row, detailsHtml) {
+    if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
+      row.parentNode.removeChild(row.nextElementSibling);
+      row.querySelector('.expand-icon').classList.remove('rotate');
+    } else {
+      const detailsRow = createDetailsRow(detailsHtml);
+      row.parentNode.insertBefore(detailsRow, row.nextElementSibling);
+      row.querySelector('.expand-icon').classList.add('rotate');
     }
+  }
 
-    // زر "عرض كافة التفاصيل" لتبديل حالة كافة الصفوف في القسم الحالي
-    document.getElementById('showAllDetailsBtn').addEventListener('click', () => {
-      if (pendingSection.style.display !== 'none') {
-        const rows = document.querySelectorAll('#pendingTable tbody tr');
-        rows.forEach((row) => {
-          const expandIcon = row.querySelector('.expand-icon');
-          if (expandIcon) {
-            if (!allDetailsShownPending) {
-              if (!row.nextElementSibling || !row.nextElementSibling.classList.contains('details-row')) {
-                expandIcon.click();
-              }
-            } else {
-              if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
-                expandIcon.click();
-              }
+  // زر "عرض كافة التفاصيل" لتبديل حالة كافة الصفوف في القسم الحالي
+  document.getElementById('showAllDetailsBtn').addEventListener('click', () => {
+    if (pendingSection.style.display !== 'none') {
+      const rows = document.querySelectorAll('#pendingTable tbody tr');
+      rows.forEach((row) => {
+        const expandIcon = row.querySelector('.expand-icon');
+        if (expandIcon) {
+          if (!allDetailsShownPending) {
+            if (!row.nextElementSibling || !row.nextElementSibling.classList.contains('details-row')) {
+              expandIcon.click();
+            }
+          } else {
+            if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
+              expandIcon.click();
             }
           }
-        });
-        allDetailsShownPending = !allDetailsShownPending;
-        document.getElementById('showAllDetailsBtn').textContent = allDetailsShownPending ? "إخفاء كافة التفاصيل" : "عرض كافة التفاصيل";
-      } else if (activatedSection.style.display !== 'none') {
-        const rows = document.querySelectorAll('#activatedTable tbody tr');
-        rows.forEach((row) => {
-          const expandIcon = row.querySelector('.expand-icon');
-          if (expandIcon) {
-            if (!allDetailsShownActivated) {
-              if (!row.nextElementSibling || !row.nextElementSibling.classList.contains('details-row')) {
-                expandIcon.click();
-              }
-            } else {
-              if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
-                expandIcon.click();
-              }
-            }
-          }
-        });
-        allDetailsShownActivated = !allDetailsShownActivated;
-        document.getElementById('showAllDetailsBtn').textContent = allDetailsShownActivated ? "إخفاء كافة التفاصيل" : "عرض كافة التفاصيل";
-      }
-    });
-
-    // دالة فرز الحسابات: المسؤول أولاً، ثم الطلاب بترتيب أبجدي باللغة العربية
-    function sortActivatedDocs(docs) {
-      return docs.sort((a, b) => {
-        const aData = a.data();
-        const bData = b.data();
-        const aIsAdmin = adminEmails.includes(aData.email);
-        const bIsAdmin = adminEmails.includes(bData.email);
-        if (aIsAdmin && !bIsAdmin) return -1;
-        if (!aIsAdmin && bIsAdmin) return 1;
-        if (aIsAdmin && bIsAdmin) {
-          return aData.username.localeCompare(bData.username, "ar");
         }
-        return aData.fullName.localeCompare(bData.fullName, "ar");
       });
-    }
-
-    // جلب طلبات التسجيل المعلقة من مجموعة "pending_users"
-    async function fetchPendingUsers() {
-      try {
-        const pendingSnapshot = await getDocs(collection(db, 'pending_users'));
-        const pendingTableBody = document.querySelector('#pendingTable tbody');
-        pendingTableBody.innerHTML = '';
-        pendingSnapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><input type="checkbox" class="pending-checkbox" data-id="${docSnap.id}" /></td>
-            <td>${data.username || ''}</td>
-            <td>${data.fullName || ''}</td>
-            <td>${data.email || ''}</td>
-            <td>${data.phone || ''}</td>
-            <td><span class="expand-icon">&#9654;</span></td>
-            <td>
-              <div class="action-container">
-                <div class="action-box accept">
-                  <i class="fa-solid fa-check action-icon"></i>
-                </div>
-                <div class="action-box reject">
-                  <i class="fa-solid fa-xmark action-icon" onclick="confirmReject('${docSnap.id}')"></i>
-                </div>
-              </div>
-            </td>
-          `;
-          row.querySelector('.expand-icon').addEventListener('click', () => {
-            const detailsHtml = `
-              <div class="detail-item"><strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}</div>
-              <div class="detail-item"><strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}</div>
-              <div class="detail-item"><strong>المحافظة:</strong> ${data.verificationCode ? data.verificationCode : 'غير متوفر'}</div>
-              <div class="detail-item"><strong>رمز التحقق:</strong> ${data.verificationCode || 'غير متوفر'}</div>
-            `;
-            toggleDetails(row, detailsHtml);
-          });
-          pendingTableBody.appendChild(row);
-        });
-      } catch (error) {
-        console.error('خطأ في جلب طلبات التسجيل:', error);
-      }
-    }
-
-    // جلب الحسابات المفعلة من مجموعة "users" وفرزها بحيث تظهر المسؤولين في الأعلى وعدم عرض رمز السهم للمسؤولين
-    async function fetchActivatedUsers() {
-      try {
-        const activatedSnapshot = await getDocs(collection(db, 'users'));
-        let docs = [];
-        activatedSnapshot.forEach((docSnap) => {
-          docs.push(docSnap);
-        });
-        docs = sortActivatedDocs(docs);
-        const activatedTableBody = document.querySelector('#activatedTable tbody');
-        activatedTableBody.innerHTML = '';
-        docs.forEach((docSnap) => {
-          const data = docSnap.data();
-          const isAdmin = adminEmails.includes(data.email);
-          const usernameDisplay = isAdmin
-            ? `${data.username} <i class="fa-solid fa-circle-check verified-icon"></i>`
-            : data.username;
-          const detailsCell = isAdmin ? '' : '<span class="expand-icon">&#9654;</span>';
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><input type="checkbox" class="activated-checkbox" data-id="${docSnap.id}" /></td>
-            <td>${usernameDisplay}</td>
-            <td>${data.fullName || ''}</td>
-            <td>${data.email || ''}</td>
-            <td>${data.phone || ''}</td>
-            <td>${detailsCell}</td>
-            <td>
-              <div class="action-container">
-                <div class="action-box delete">
-                  <i class="fa-solid fa-trash action-icon" onclick="deleteActivatedUser('${docSnap.id}')"></i>
-                </div>
-              </div>
-            </td>
-          `;
-          if (!isAdmin) {
-            const expandIcon = row.querySelector('.expand-icon');
-            if (expandIcon) {
-              expandIcon.addEventListener('click', () => {
-                const detailsHtml = `
-                  <div class="detail-item"><strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}</div>
-                  <div class="detail-item"><strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}</div>
-                  <div class="detail-item"><strong>المحافظة:</strong> ${data.governorate || 'غير متوفر'}</div>
-                  ${data.activatedAt ? `<div class="detail-item"><strong>تاريخ التفعيل:</strong> ${data.activatedAt}</div>` : ''}
-                  <div class="detail-item"><strong>رمز التحقق:</strong> ${data.verificationCode || 'غير متوفر'}</div>
-                `;
-                toggleDetails(row, detailsHtml);
-              });
+      allDetailsShownPending = !allDetailsShownPending;
+      document.getElementById('showAllDetailsBtn').textContent = allDetailsShownPending ? "إخفاء كافة التفاصيل" : "عرض كافة التفاصيل";
+    } else if (activatedSection.style.display !== 'none') {
+      const rows = document.querySelectorAll('#activatedTable tbody tr');
+      rows.forEach((row) => {
+        const expandIcon = row.querySelector('.expand-icon');
+        if (expandIcon) {
+          if (!allDetailsShownActivated) {
+            if (!row.nextElementSibling || !row.nextElementSibling.classList.contains('details-row')) {
+              expandIcon.click();
+            }
+          } else {
+            if (row.nextElementSibling && row.nextElementSibling.classList.contains('details-row')) {
+              expandIcon.click();
             }
           }
-          activatedTableBody.appendChild(row);
-        });
-      } catch (error) {
-        console.error('خطأ في جلب الحسابات المفعلة:', error);
-      }
+        }
+      });
+      allDetailsShownActivated = !allDetailsShownActivated;
+      document.getElementById('showAllDetailsBtn').textContent = allDetailsShownActivated ? "إخفاء كافة التفاصيل" : "عرض كافة التفاصيل";
     }
+  });
 
-    // دالة مشتركة لإرسال بريد عبر EmailJS باستخدام آلية عداد الرسائل
-    async function sendEmailNotification(serviceIdPrimary, templateIdPrimary, serviceIdAlt, templateIdAlt, params) {
-      try {
-        let serviceId, templateId;
-        if (emailMessagesSent < EMAILJS_LIMIT) {
+  // دالة فرز الحسابات: المسؤول أولاً، ثم الطلاب بترتيب أبجدي باللغة العربية
+  function sortActivatedDocs(docs) {
+    return docs.sort((a, b) => {
+      const aData = a.data();
+      const bData = b.data();
+      const aIsAdmin = adminEmails.includes(aData.email);
+      const bIsAdmin = adminEmails.includes(bData.email);
+      if (aIsAdmin && !bIsAdmin) return -1;
+      if (!aIsAdmin && bIsAdmin) return 1;
+      if (aIsAdmin && bIsAdmin) {
+        return aData.username.localeCompare(bData.username, "ar");
+      }
+      return aData.fullName.localeCompare(bData.fullName, "ar");
+    });
+  }
+
+  // جلب طلبات التسجيل المعلقة من مجموعة "pending_users"
+  async function fetchPendingUsers() {
+    try {
+      const pendingSnapshot = await getDocs(collection(db, 'pending_users'));
+      const pendingTableBody = document.querySelector('#pendingTable tbody');
+      pendingTableBody.innerHTML = '';
+      let index = 1; // عداد الترقيم
+      pendingSnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <input type="checkbox" class="pending-checkbox" data-id="${docSnap.id}" /> ${index}
+          </td>
+          <td>${data.username || ''}</td>
+          <td>${data.fullName || ''}</td>
+          <td>${data.email || ''}</td>
+          <td>${data.phone || ''}</td>
+          <td><span class="expand-icon">&#9654;</span></td>
+          <td>
+            <div class="action-container">
+              <div class="action-box accept">
+                <i class="fa-solid fa-check action-icon" onclick="acceptUser('${docSnap.id}')"></i>
+              </div>
+              <div class="action-box reject">
+                <i class="fa-solid fa-xmark action-icon" onclick="confirmReject('${docSnap.id}')"></i>
+              </div>
+            </div>
+          </td>
+        `;
+        row.querySelector('.expand-icon').addEventListener('click', () => {
+          const detailsHtml = `
+            <div class="detail-item"><strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}</div>
+            <div class="detail-item"><strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}</div>
+            <div class="detail-item"><strong>المحافظة:</strong> ${data.governorate ? data.governorate : 'غير متوفر'}</div>
+            <div class="detail-item"><strong>رمز التحقق:</strong> ${data.verificationCode || 'غير متوفر'}</div>
+          `;
+          toggleDetails(row, detailsHtml);
+        });
+        pendingTableBody.appendChild(row);
+        index++;
+      });
+    } catch (error) {
+      console.error('خطأ في جلب طلبات التسجيل:', error);
+    }
+  }
+
+  // جلب الحسابات المفعلة من مجموعة "users"
+  async function fetchActivatedUsers() {
+    try {
+      const activatedSnapshot = await getDocs(collection(db, 'users'));
+      let docs = [];
+      activatedSnapshot.forEach((docSnap) => {
+        docs.push(docSnap);
+      });
+      docs = sortActivatedDocs(docs);
+      const activatedTableBody = document.querySelector('#activatedTable tbody');
+      activatedTableBody.innerHTML = '';
+      let index = 1; // عداد الترقيم
+      docs.forEach((docSnap) => {
+        const data = docSnap.data();
+        const isAdmin = adminEmails.includes(data.email);
+        const usernameDisplay = isAdmin
+          ? `${data.username} <i class="fa-solid fa-circle-check verified-icon"></i>`
+          : data.username;
+        const detailsCell = isAdmin ? '' : '<span class="expand-icon">&#9654;</span>';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <input type="checkbox" class="activated-checkbox" data-id="${docSnap.id}" /> ${index}
+          </td>
+          <td>${usernameDisplay}</td>
+          <td>${data.fullName || ''}</td>
+          <td>${data.email || ''}</td>
+          <td>${data.phone || ''}</td>
+          <td>${detailsCell}</td>
+          <td>
+            <div class="action-container">
+              <div class="action-box delete">
+                <i class="fa-solid fa-trash action-icon" onclick="deleteActivatedUser('${docSnap.id}')"></i>
+              </div>
+            </div>
+          </td>
+        `;
+        if (!isAdmin) {
+          const expandIcon = row.querySelector('.expand-icon');
+          if (expandIcon) {
+            expandIcon.addEventListener('click', () => {
+              const detailsHtml = `
+                <div class="detail-item"><strong>رقم هاتف الأب:</strong> ${data.fatherPhone || 'غير متوفر'}</div>
+                <div class="detail-item"><strong>رقم هاتف الأم:</strong> ${data.motherPhone || 'غير متوفر'}</div>
+                <div class="detail-item"><strong>المحافظة:</strong> ${data.governorate || 'غير متوفر'}</div>
+                ${data.activatedAt ? `<div class="detail-item"><strong>تاريخ التفعيل:</strong> ${data.activatedAt}</div>` : ''}
+                <div class="detail-item"><strong>رمز التحقق:</strong> ${data.verificationCode || 'غير متوفر'}</div>
+              `;
+              toggleDetails(row, detailsHtml);
+            });
+          }
+        }
+        activatedTableBody.appendChild(row);
+        index++;
+      });
+    } catch (error) {
+      console.error('خطأ في جلب الحسابات المفعلة:', error);
+    }
+  }
+
+  // دالة إرسال بريد إلكتروني عبر EmailJS مع استخدام العداد لإشعارات القبول فقط
+  async function sendEmailNotification(serviceIdPrimary, templateIdPrimary, serviceIdAlt, templateIdAlt, params, useCounter = false) {
+    try {
+      let serviceId, templateId;
+      if (useCounter) {
+        // قراءة العداد المركزي من Firestore
+        const emailMessagesSent = await getEmailCounter();
+        if (emailMessagesSent < EMAILJS_ACCEPT_LIMIT) {
           serviceId = serviceIdPrimary;
           templateId = templateIdPrimary;
         } else {
-          emailjs.init("YOUR_ALTERNATIVE_USER_ID");
+          emailjs.init("2H90EPluCXZf7Pfis"); // استبدل هذا بالـ User ID الخاص بالحساب البديل
           serviceId = serviceIdAlt;
           templateId = templateIdAlt;
         }
-        await emailjs.send(serviceId, templateId, params);
-        emailMessagesSent++;
-        localStorage.setItem("emailMessagesSent", emailMessagesSent);
-      } catch (error) {
-        console.error("فشل إرسال البريد:", error);
+      } else {
+        // لا يتم استخدام العداد (مثلاً لإشعار الرفض)
+        serviceId = serviceIdPrimary;
+        templateId = templateIdPrimary;
       }
-    }
-
-    // إرسال إشعار قبول الحساب
-    async function sendAcceptNotification(email, username) {
-      await sendEmailNotification(
-        "service_4de4l3i", "template_accept",
-        "service_alt", "template_accept_alt",
-        { email, username }
-      );
-    }
-
-    // إرسال إشعار رفض الحساب
-    async function sendRejectNotification(email, username) {
-      await sendEmailNotification(
-        "service_4de4l3i", "template_reject",
-        "service_alt", "template_reject_alt",
-        { email, username }
-      );
-    }
-
-    // قبول المستخدم: نقل بيانات المستخدم من "pending_users" إلى "users"
-    window.acceptUser = async function(userId) {
-      try {
-        const pendingDocRef = doc(db, 'pending_users', userId);
-        const pendingDocSnap = await getDoc(pendingDocRef);
-        if (pendingDocSnap.exists()) {
-          const data = pendingDocSnap.data();
-          await setDoc(doc(db, 'users', userId), {
-            ...data,
-            accountStatus: 'activated',
-            activatedAt: new Date().toISOString(),
-            uid: data.uid || userId
-          });
-          await deleteDoc(pendingDocRef);
-          showNotification('success', 'تم قبول المستخدم.');
-          await sendAcceptNotification(data.email, data.username);
-          fetchPendingUsers();
-          fetchActivatedUsers();
-        }
-      } catch (error) {
-        console.error('خطأ في قبول المستخدم:', error);
-        showNotification('error', 'حدث خطأ أثناء قبول المستخدم.');
+      await emailjs.send(serviceId, templateId, params);
+      // إذا كان استخدام العداد مفعل، يتم تحديث العداد المركزي بعد نجاح الإرسال
+      if (useCounter) {
+        await incrementEmailCounter();
       }
-    };
+    } catch (error) {
+      console.error("فشل إرسال البريد:", error);
+    }
+  }
 
-    // تعريف الدالة confirmReject وربطها بالنطاق العام (window) ليكون بالإمكان استخدامها في onclick
-    window.confirmReject = function(userId) {
-      rejectCandidateId = userId;
-      document.getElementById('confirmationModal').style.display = 'flex';
-    };
+  // إرسال إشعار قبول الحساب (مع العداد)
+  async function sendAcceptNotification(email, username) {
+    await sendEmailNotification(
+      "service_5rksi7s", "template_yk6g944", // الإعداد الأساسي
+      "service_l89tjfl", "template_54zd2jo",  // الإعداد البديل
+      { email, username },
+      true  // استخدام العداد هنا
+    );
+  }
 
-    // رفض المستخدم: حذف الوثيقة من "pending_users" وإرسال إشعار بالرفض
-    window.rejectUser = async function(userId) {
-      try {
-        const pendingDocRef = doc(db, 'pending_users', userId);
-        const pendingDocSnap = await getDoc(pendingDocRef);
-        if (pendingDocSnap.exists()) {
-          const data = pendingDocSnap.data();
-          await deleteDoc(pendingDocRef);
-          showNotification('success', 'تم رفض المستخدم وحذفه.');
-          await sendRejectNotification(data.email, data.username);
-          fetchPendingUsers();
-        }
-      } catch (error) {
-        console.error('خطأ في رفض المستخدم:', error);
-        showNotification('error', 'حدث خطأ أثناء رفض المستخدم.');
-      }
-    };
+  // إرسال إشعار رفض الحساب (بدون عداد)
+async function sendRejectNotification(email, username) {
+  try {
+    emailjs.init("cZ3FkMRXUK98J7h2i");
+    await emailjs.send("service_pm2hpkd", "template_ul63fre", { email, username });
+  } catch (error) {
+    console.error("فشل إرسال بريد الرفض:", error);
+  }
+}
 
-    // حذف المستخدم من الحسابات المفعلة
-    window.deleteActivatedUser = async function(userId) {
-      try {
-        await deleteDoc(doc(db, 'users', userId));
-        showNotification('success', 'تم حذف المستخدم.');
+  // قبول المستخدم: نقل بيانات المستخدم من "pending_users" إلى "users"
+  window.acceptUser = async function(userId) {
+    try {
+      const pendingDocRef = doc(db, 'pending_users', userId);
+      const pendingDocSnap = await getDoc(pendingDocRef);
+      if (pendingDocSnap.exists()) {
+        const data = pendingDocSnap.data();
+        await setDoc(doc(db, 'users', userId), {
+          ...data,
+          accountStatus: 'activated',
+          activatedAt: new Date().toISOString(),
+          uid: data.uid || userId
+        });
+        await deleteDoc(pendingDocRef);
+        showNotification('success', 'تم قبول المستخدم.');
+        await sendAcceptNotification(data.email, data.username);
+        fetchPendingUsers();
         fetchActivatedUsers();
-      } catch (error) {
-        console.error('خطأ في حذف المستخدم:', error);
-        showNotification('error', 'حدث خطأ أثناء حذف المستخدم.');
       }
-    };
+    } catch (error) {
+      console.error('خطأ في قبول المستخدم:', error);
+      showNotification('error', 'حدث خطأ أثناء قبول المستخدم.');
+    }
+  };
 
-    // الإجراءات الجماعية
-    document.getElementById('acceptSelectedPending').addEventListener('click', async () => {
-      const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
-      const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
-      for (const id of ids) {
-        await window.acceptUser(id);
-      }
-    });
-    document.getElementById('rejectSelectedPending').addEventListener('click', async () => {
-      const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
-      const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
-      for (const id of ids) {
-        // نستخدم نافذة التأكيد عند الرفض
-        window.confirmReject(id);
-      }
-    });
-    document.getElementById('deleteSelectedActivated').addEventListener('click', async () => {
-      const checkboxes = document.querySelectorAll('.activated-checkbox:checked');
-      const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
-      for (const id of ids) {
-        await window.deleteActivatedUser(id);
-      }
-    });
+  // تعريف الدالة confirmReject وربطها بالنطاق العام (window) ليكون بالإمكان استخدامها في onclick
+  window.confirmReject = function(userId) {
+    rejectCandidateId = userId;
+    document.getElementById('confirmationModal').style.display = 'flex';
+  };
 
-    // وظيفة "تحديد الكل" لكل جدول
-    document.getElementById('selectAllPending').addEventListener('change', function() {
-      const checked = this.checked;
-      document.querySelectorAll('.pending-checkbox').forEach(cb => cb.checked = checked);
-    });
-    document.getElementById('selectAllActivated').addEventListener('change', function() {
-      const checked = this.checked;
-      document.querySelectorAll('.activated-checkbox').forEach(cb => cb.checked = checked);
-    });
-
-    // التعامل مع نافذة التأكيد (Modal) للرفض
-    document.getElementById('confirmRejectBtn').addEventListener('click', async () => {
-      if (rejectCandidateId) {
-        await window.rejectUser(rejectCandidateId);
-        rejectCandidateId = null;
+  // رفض المستخدم: حذف الوثيقة من "pending_users" وإرسال إشعار بالرفض مباشرة (بدون عداد)
+  window.rejectUser = async function(userId) {
+    try {
+      const pendingDocRef = doc(db, 'pending_users', userId);
+      const pendingDocSnap = await getDoc(pendingDocRef);
+      if (pendingDocSnap.exists()) {
+        const data = pendingDocSnap.data();
+        await deleteDoc(pendingDocRef);
+        showNotification('success', 'تم رفض المستخدم وحذفه.');
+        await sendRejectNotification(data.email, data.username);
+        fetchPendingUsers();
       }
-      document.getElementById('confirmationModal').style.display = 'none';
-    });
+    } catch (error) {
+      console.error('خطأ في رفض المستخدم:', error);
+      showNotification('error', 'حدث خطأ أثناء رفض المستخدم.');
+    }
+  };
 
-    document.getElementById('cancelRejectBtn').addEventListener('click', () => {
+  // حذف المستخدم من الحسابات المفعلة
+  window.deleteActivatedUser = async function(userId) {
+    try {
+      await deleteDoc(doc(db, 'users', userId));
+      showNotification('success', 'تم حذف المستخدم.');
+      fetchActivatedUsers();
+    } catch (error) {
+      console.error('خطأ في حذف المستخدم:', error);
+      showNotification('error', 'حدث خطأ أثناء حذف المستخدم.');
+    }
+  };
+
+  // الإجراءات الجماعية
+  document.getElementById('acceptSelectedPending').addEventListener('click', async () => {
+    const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
+    const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+    for (const id of ids) {
+      await window.acceptUser(id);
+    }
+  });
+  document.getElementById('rejectSelectedPending').addEventListener('click', async () => {
+    const checkboxes = document.querySelectorAll('.pending-checkbox:checked');
+    const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+    for (const id of ids) {
+      window.confirmReject(id);
+    }
+  });
+  document.getElementById('deleteSelectedActivated').addEventListener('click', async () => {
+    const checkboxes = document.querySelectorAll('.activated-checkbox:checked');
+    const ids = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+    for (const id of ids) {
+      await window.deleteActivatedUser(id);
+    }
+  });
+
+  // وظيفة "تحديد الكل" لكل جدول
+  document.getElementById('selectAllPending').addEventListener('change', function() {
+    const checked = this.checked;
+    document.querySelectorAll('.pending-checkbox').forEach(cb => cb.checked = checked);
+  });
+  document.getElementById('selectAllActivated').addEventListener('change', function() {
+    const checked = this.checked;
+    document.querySelectorAll('.activated-checkbox').forEach(cb => cb.checked = checked);
+  });
+
+  // التعامل مع نافذة التأكيد (Modal) للرفض
+  document.getElementById('confirmRejectBtn').addEventListener('click', async () => {
+    if (rejectCandidateId) {
+      await window.rejectUser(rejectCandidateId);
       rejectCandidateId = null;
-      document.getElementById('confirmationModal').style.display = 'none';
-    });
-  </script>
+    }
+    document.getElementById('confirmationModal').style.display = 'none';
+  });
+
+  document.getElementById('cancelRejectBtn').addEventListener('click', () => {
+    rejectCandidateId = null;
+    document.getElementById('confirmationModal').style.display = 'none';
+  });
+</script>
   <!-- نافذة التأكيد (Modal) عند الضغط على أيقونة الرفض -->
   <div id="confirmationModal">
     <div class="modal-overlay"></div>
