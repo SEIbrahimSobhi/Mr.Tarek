@@ -763,7 +763,10 @@
   // إرسال إشعار رفض الحساب (بدون عداد)
 async function sendRejectNotification(email, username) {
   try {
+    // تهيئة emailjs باستخدام الـ public API الخاص بإشعار الرفض
     emailjs.init("cZ3FkMRXUK98J7h2i");
+    
+    // التأكد من إدخال Service ID و Template ID الصحيحين
     await emailjs.send("service_pm2hpkd", "template_ul63fre", { email, username });
   } catch (error) {
     console.error("فشل إرسال بريد الرفض:", error);
