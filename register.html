@@ -36,7 +36,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
-      emailjs.init("K0gXc0-X0CONTIkX_");
+      emailjs.init("L8t3vvuXoqp7zsp4I");
     })();
   </script>
 </head>
@@ -222,9 +222,9 @@
             <span class="white">أهلاً</span> <span class="blue" id="display-name"></span>
           </h1>
           <p>
-            لقد تم إنشاء حسابك بنجاح، وسيقوم المسؤولين بمراجعة بياناتك خلال 48 ساعة.
-            سيتم إرسال رسالة إلى بريدك الإلكتروني توضح حالة الحساب مع التفاصيل في حال تم رفضه.
-            وفي حالة قبول الحساب، يمكنك تسجيل الدخول والوصول إلى حسابك.
+              لقد تم إنشاء حسابك بنجاح، وسيقوم المسؤولون بمراجعة بياناتك خلال 48 ساعة.
+              سيصلك إشعار عبر بريدك الإلكتروني يحتوي على تفاصيل حالة الحساب، سواء تم رفضه أو قبوله.
+              وفي حال قبول الحساب، يمكنك تسجيل الدخول والوصول إلى حسابك.
           </p>
         </div>
         <div style="text-align: center;">
@@ -268,15 +268,15 @@
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
     // إعدادات Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyD92u7H0l0HANXlY6FaFk2qfcZ30txpdos",
-      authDomain: "project-hema.firebaseapp.com",
-      projectId: "project-hema",
-      storageBucket: "project-hema.firebasestorage.app",
-      messagingSenderId: "1079729179279",
-      appId: "1:1079729179279:web:39270a2a2cd1850744fefa",
-      measurementId: "G-YFSTXKFQ9E"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBnqYuNCbt8QoHG1m9yBqoEhgZ6ThijyAI",
+    authDomain: "mr-tarek-226db.firebaseapp.com",
+    projectId: "mr-tarek-226db",
+    storageBucket: "mr-tarek-226db.firebasestorage.app",
+    messagingSenderId: "223389017591",
+    appId: "1:223389017591:web:802ce707c1c78d380abaf2",
+    measurementId: "G-2MKLQ0L2XW"
+  };
 
     // تهيئة التطبيق وقاعدة البيانات والمصادقة
     const app = initializeApp(firebaseConfig);
@@ -285,12 +285,12 @@
 
     // إعدادات EmailJS
     const EMAILJS_LIMIT = 2;
-    const EMAILJS_PRIMARY_SERVICE_ID = "service_4de4l3i";
-    const EMAILJS_PRIMARY_TEMPLATE_ID = "template_gqjxtul";
+    const EMAILJS_PRIMARY_SERVICE_ID = "service_m8hn7rv";
+    const EMAILJS_PRIMARY_TEMPLATE_ID = "template_qkh2o2n";
 
-    const EMAILJS_ALT_USER_ID = "dSQ33zEgHrtn8uBju";
-    const EMAILJS_ALT_SERVICE_ID = "service_7dxji4s";
-    const EMAILJS_ALT_TEMPLATE_ID = "template_vxu1797";
+    const EMAILJS_ALT_USER_ID = "nGL4yLTx20fsHAI4h";
+    const EMAILJS_ALT_SERVICE_ID = "service_7rrlb3l";
+    const EMAILJS_ALT_TEMPLATE_ID = "template_dmkvstd";
 
     // متغيرات عامة لتخزين بيانات المستخدم مؤقتاً والإجابة الصحيحة للمسألة
     let countdownInterval;
@@ -406,7 +406,7 @@
         return newCount;
       } catch (error) {
         console.error("فشل تحديث العداد:", error);
-        throw new Error("فشل تحديث العداد العالمي للبريد الإلكتروني");
+        throw new Error("فشل تحديث العداد للبريد الإلكتروني");
       }
     }
 
@@ -490,14 +490,14 @@
 
         // التحقق من ملء الحقول الأساسية
         if (!firstName || !secondName || !username || !phone || !governorate || !email || !password || !confirmPassword) {
-          showNotification("error", "يرجى ملء جميع الحقول المطلوبة");
+          showNotification("error", "يرجى ملء جميع البيانات المطلوبة");
           toggleLoading(false);
           return;
         }
         // بالنسبة للطالب (إذا لم يكن البريد ضمن المسؤولين) يجب ملء الحقول الإضافية
         if (!adminEmails.includes(email)) {
           if (!thirdName || !lastName || !fatherPhone || !motherPhone) {
-            showNotification("error", "يرجى ملء جميع الحقول الخاصة بالطالب");
+            showNotification("error", "يرجى ملء جميع البيانات");
             toggleLoading(false);
             return;
           }
